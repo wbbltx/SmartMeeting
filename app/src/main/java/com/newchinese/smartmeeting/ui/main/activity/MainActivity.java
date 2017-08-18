@@ -37,17 +37,18 @@ public class MainActivity extends BaseSimpleActivity {
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-        ((RadioButton) rgMain.getChildAt(0)).setChecked(true);
+
     }
 
     @Override
     protected void initStateAndData() {
+        ((RadioButton) rgMain.getChildAt(1)).setChecked(true);
         fragmentManager = getSupportFragmentManager();
         recordsFragment = RecordsFragment.newInstance("记录");
         meetingFragemnt = MeetingFragment.newInstance("会议");
         mineFragment = MineFragment.newInstance("我的");
-        fragmentManager.beginTransaction().add(R.id.fl_container, recordsFragment).commit();
-        nowFragment = recordsFragment; //当前添加的为RecordsFragment
+        fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
+        nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
     }
 
     @Override
