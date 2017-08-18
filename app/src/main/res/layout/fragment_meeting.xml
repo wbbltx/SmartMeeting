@@ -1,11 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_meeting_classify"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="会议页Fragment" />
-</FrameLayout>
+        android:padding="10dp" />
+</LinearLayout>
