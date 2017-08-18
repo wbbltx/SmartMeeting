@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.newchinese.smartmeeting.R;
@@ -36,7 +37,7 @@ public class MainActivity extends BaseSimpleActivity {
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-
+        ((RadioButton) rgMain.getChildAt(0)).setChecked(true);
     }
 
     @Override

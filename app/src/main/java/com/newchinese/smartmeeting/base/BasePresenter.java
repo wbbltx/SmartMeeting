@@ -8,13 +8,11 @@ import io.reactivex.disposables.Disposable;
  * author         xulei
  * Date           2017/8/17 16:04
  */
-public class BasePresenter<T extends BaseView> {
+public class BasePresenter<T extends BaseView> implements BaseSimplePresenter<T> {
     protected T mView;
     protected CompositeDisposable mCompositeDisposable;
 
-    /**
-     * 绑定Presenter
-     */
+    @Override
     public void attachView(T view) {
         this.mView = view;
     }
