@@ -1,4 +1,4 @@
-package com.newchinese.smartmeeting.widget;
+package com.newchinese.smartmeeting.model.bean;
 
 /**
  * Description:
@@ -6,5 +6,5 @@ package com.newchinese.smartmeeting.widget;
  * Date           2017/8/18
  */
 
-public class test {
+public class TestBean {
 }
