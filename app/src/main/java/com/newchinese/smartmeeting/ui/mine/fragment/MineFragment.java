@@ -36,7 +36,7 @@ public class MineFragment extends BaseSimpleFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_records;
+        return R.layout.fragment_mine;
     }
 
     @Override

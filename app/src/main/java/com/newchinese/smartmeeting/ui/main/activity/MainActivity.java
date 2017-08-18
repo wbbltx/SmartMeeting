@@ -2,10 +2,8 @@ package com.newchinese.smartmeeting.ui.main.activity;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.FrameLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.newchinese.smartmeeting.R;
@@ -72,16 +70,22 @@ public class MainActivity extends BaseSimpleActivity {
     }
 
     /**
+     * 切换Fragment
      * 防止重复add或replaace
      */
     public void showFragment(BaseSimpleFragment fragment) {
-        if (nowFragment != fragment) { //判断切换的Fragment是否已经添加过
+        //判断要切换的Fragment当前是否已经显示
+        if (nowFragment != fragment) {
+            //判断切换的Fragment是否已经添加过
             if (!fragment.isAdded()) {
+                //未添加过则隐藏当前Fragment，添加切换Fragment
                 fragmentManager.beginTransaction().hide(nowFragment)
                         .add(R.id.fl_container, fragment).commit();
             } else {
+                //添加过则隐藏当前Fragment，显示切换Fragment
                 fragmentManager.beginTransaction().hide(nowFragment).show(fragment).commit();
             }
+            //更换当前Fragment
             nowFragment = fragment;
         }
     }
