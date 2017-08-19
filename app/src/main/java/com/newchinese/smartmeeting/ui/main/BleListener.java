@@ -7,49 +7,88 @@ import com.newchinese.coolpensdk.listener.OnConnectListener;
 import com.newchinese.coolpensdk.listener.OnElectricityRequestListener;
 import com.newchinese.coolpensdk.listener.OnKeyListener;
 import com.newchinese.coolpensdk.listener.OnLeNotificationListener;
+import com.newchinese.smartmeeting.base.BaseView;
 
 /**
  * Created by Administrator on 2017/8/19 0019.
  */
 
-public interface BleListener extends OnBleScanListener,OnConnectListener,OnElectricityRequestListener,OnLeNotificationListener,OnKeyListener{
+public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyListener,OnLeNotificationListener,OnElectricityRequestListener{
 
+    private BaseView mView;
 
-    @Override
-    void onScanResult(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord);
+    private interface BleListenerHolder{
+        BleListener BLE_LISTENER = new BleListener();
+    };
 
-    @Override
-    void onScanCompleted();
+    public static BleListener getDefault(){
+        return BleListenerHolder.BLE_LISTENER;
+    }
 
-    @Override
-    void onConnected();
-
-    @Override
-    void onDisconnected();
-
-    @Override
-    void onFailed(int i);
-
-    @Override
-    void isConnecting();
+    public BleListener init(BaseView iView) {
+        mView = iView;
+        return this;
+    }
 
     @Override
-    void onKeyGenerated(String key);
+    public void onScanResult(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
+        mView.showResult(bluetoothDevice);
+    }
 
     @Override
-    void onSetLocalKey();
+    public void onScanCompleted() {
+
+    }
 
     @Override
-    void onReadHistroyInfo();
+    public void onConnected() {
+
+    }
 
     @Override
-    void onHistroyInfoDetected();
+    public void onDisconnected() {
+
+    }
 
     @Override
-    void onHistroyInfoDeleted();
+    public void onFailed(int i) {
+
+    }
 
     @Override
-    void onElectricityDetected(String electricity);
+    public void isConnecting() {
+
+    }
+
+    @Override
+    public void onKeyGenerated(String key) {
+
+    }
+
+    @Override
+    public void onSetLocalKey() {
+
+    }
+
+    @Override
+    public void onReadHistroyInfo() {
+
+    }
+
+    @Override
+    public void onHistroyInfoDetected() {
+
+    }
+
+    @Override
+    public void onHistroyInfoDeleted() {
+
+    }
+
+    @Override
+    public void onElectricityDetected(String electricity) {
+
+    }
 }
     
 

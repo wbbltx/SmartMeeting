@@ -13,7 +13,7 @@ import com.newchinese.smartmeeting.base.BaseView;
  */
 
 public interface WelcomeContract {
-    interface View extends BaseView {
+    interface View<E> extends BaseView<E> {
         void jumpActivity();
     }
 

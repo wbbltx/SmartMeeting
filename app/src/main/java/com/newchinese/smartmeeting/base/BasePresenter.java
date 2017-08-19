@@ -8,7 +8,7 @@ import io.reactivex.disposables.Disposable;
  * author         xulei
  * Date           2017/8/17 16:04
  */
-public class BasePresenter<T extends BaseView> implements BaseSimplePresenter<T> {
+public abstract class BasePresenter<T extends BaseView> implements BaseSimplePresenter<T> {
     protected T mView;
     protected CompositeDisposable mCompositeDisposable;
 

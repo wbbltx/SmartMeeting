@@ -10,14 +10,11 @@ import com.newchinese.smartmeeting.base.BaseView;
  */
 
 public interface DraftBoxContract {
-    interface View extends BaseView {
+    interface View<E> extends BaseView<E> {
 
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-        boolean isBleOpen();
-
-        void openBle();
 
     }
 }

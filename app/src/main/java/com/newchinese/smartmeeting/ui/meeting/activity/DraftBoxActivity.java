@@ -21,7 +21,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements DraftBoxContract.View{
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,String> implements DraftBoxContract.View<String>{
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -67,13 +67,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements
             case R.id.iv_back:
                 break;
             case R.id.iv_pen:
-                boolean bleOpen = mPresenter.isBleOpen();
-                if (!bleOpen){
-                    mPresenter.openBle();
-                }else {
 
-                }
                 break;
         }
+    }
+
+    @Override
+    public void showResult(String o) {
+
     }
 }

@@ -11,14 +11,20 @@ import com.newchinese.smartmeeting.contract.DraftBoxContract;
  */
 
 public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
-
     @Override
-    public boolean isBleOpen() {
-        return BluetoothLe.getDefault().isBluetoothOpen();
+    public boolean isBluetoothOpen() {
+
+        return false;
     }
+
 
     @Override
     public void openBle() {
         BluetoothLe.getDefault().enableBluetooth();
+    }
+
+    @Override
+    public void scanBlueDevice() {
+
     }
 }

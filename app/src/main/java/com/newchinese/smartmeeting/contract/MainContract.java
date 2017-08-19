@@ -10,11 +10,13 @@ import com.newchinese.smartmeeting.base.BaseView;
  */
 
 public interface MainContract {
-    interface View extends BaseView {
+    interface View<E> extends BaseView<E> {
         void jumpDrawingBoard();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
         void checkjumpDrawingBoard();
+
+        void initListener();
     }
 }

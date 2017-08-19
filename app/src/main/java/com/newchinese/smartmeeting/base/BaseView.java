@@ -6,6 +6,8 @@ package com.newchinese.smartmeeting.base;
  * Date           2017/8/17
  */
 
-public interface BaseView {
+public interface BaseView<T> {
+
+    void showResult(T t);
     
 }

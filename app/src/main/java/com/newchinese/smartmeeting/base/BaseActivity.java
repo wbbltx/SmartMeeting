@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.base;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,7 +11,7 @@ import android.util.Log;
  * Date           2017/8/17
  */
 
-public abstract class BaseActivity<T extends BasePresenter> extends BaseSimpleActivity implements BaseView {
+public abstract class BaseActivity<T extends BasePresenter,E> extends BaseSimpleActivity implements BaseView<E> {
     protected T mPresenter;
 
     @Override

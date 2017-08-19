@@ -1,11 +1,14 @@
 package com.newchinese.smartmeeting.ui.login.activity;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.WelcomeContract;
-import com.newchinese.smartmeeting.presenter.WelcomePresenter;
+import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 
 /**
@@ -13,7 +16,7 @@ import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
  * author         xulei
  * Date           2017/8/18 13:22
  */
-public class WelcomeActivity extends BaseActivity<WelcomePresenter> implements WelcomeContract.View {
+public class WelcomeActivity extends BaseActivity<WelcomePresenter,View> implements WelcomeContract.View<View> {
     private WelcomePresenter welcomePresenter;
 
     @Override
@@ -45,5 +48,10 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter> implements W
         Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void showResult(View s) {
+
     }
 }

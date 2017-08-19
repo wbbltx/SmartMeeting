@@ -1,4 +1,4 @@
-package com.newchinese.smartmeeting.presenter;
+package com.newchinese.smartmeeting.presenter.login;
 
 import android.Manifest;
 import android.app.Activity;
@@ -66,5 +66,20 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View> implem
                         mView.jumpActivity();
                     }
                 }));
+    }
+
+    @Override
+    public boolean isBluetoothOpen() {
+        return false;
+    }
+
+    @Override
+    public void openBle() {
+
+    }
+
+    @Override
+    public void scanBlueDevice() {
+
     }
 }

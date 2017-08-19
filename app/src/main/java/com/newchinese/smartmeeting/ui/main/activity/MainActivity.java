@@ -1,10 +1,13 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,10 +18,13 @@ import android.widget.TextView;
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.listener.OnPointListener;
+import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.contract.MainContract;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
@@ -26,6 +32,12 @@ import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.widget.ScanResultDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 
@@ -34,8 +46,8 @@ import butterknife.BindView;
  * author         xulei
  * Date           2017/8/17 17:05
  */
-public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View,
-        RadioGroup.OnCheckedChangeListener, OnPointListener,BleListener {
+public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> implements MainContract.View<BluetoothDevice>,
+        RadioGroup.OnCheckedChangeListener, OnPointListener{
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     @BindView(R.id.rg_main)
@@ -46,10 +58,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
-    private MainPresenter mainPresenter;
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
+    private ScanResultDialog scanResultDialog;
+    private MainActivity context = MainActivity.this;
 
     @Override
     protected int getLayoutId() {
@@ -58,8 +71,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     protected MainPresenter initPresenter() {
-        mainPresenter = new MainPresenter();
-        return mainPresenter;
+        mPresenter = new MainPresenter();
+        return mPresenter;
     }
 
     @Override
@@ -78,12 +91,15 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
         //初始化书写SDK
         drawingboardAPI = DrawingboardAPI.getInstance();
+        //初始化弹出框
+        scanResultDialog = new ScanResultDialog(this);
     }
 
     @Override
     protected void initListener() {
         rgMain.setOnCheckedChangeListener(this);
         drawingboardAPI.setOnPointListener(this);
+        mPresenter.initListener();
     }
 
     /**
@@ -163,67 +179,25 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     }
     @Override
     protected void onResume() {
-
+        XLog.d("haha","onResume");
+        checkBle();
         super.onResume();
     }
 
-    @Override
-    public void onScanResult(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
-
+    private void checkBle(){
+        boolean bluetoothOpen = mPresenter.isBluetoothOpen();
+        if (!bluetoothOpen){
+            mPresenter.openBle();
+        }else {
+            XLog.d("haha","已经打开");
+            mPresenter.scanBlueDevice();
+        }
     }
 
-    @Override
-    public void onScanCompleted() {
-
-    }
 
     @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onFailed(int i) {
-
-    }
-
-    @Override
-    public void isConnecting() {
-
-    }
-
-    @Override
-    public void onKeyGenerated(String key) {
-
-    }
-
-    @Override
-    public void onSetLocalKey() {
-
-    }
-
-    @Override
-    public void onReadHistroyInfo() {
-
-    }
-
-    @Override
-    public void onHistroyInfoDetected() {
-
-    }
-
-    @Override
-    public void onHistroyInfoDeleted() {
-
-    }
-
-    @Override
-    public void onElectricityDetected(String electricity) {
-
+    public void showResult(BluetoothDevice bluetoothDevice) {
+//        scanResultDialog.addDevice(bluetoothDevice);
+        XLog.d("haha","有结果");
     }
 }

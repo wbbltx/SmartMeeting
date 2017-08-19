@@ -5,7 +5,8 @@ import android.os.Bundle;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
 import com.newchinese.smartmeeting.contract.RecordsContract;
-import com.newchinese.smartmeeting.presenter.RecordsFragPresenter;
+import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
+
 
 /**
  * Description:   记录页Fragment
@@ -53,5 +54,10 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     @Override
     protected RecordsFragPresenter initPresenter() {
         return new RecordsFragPresenter();
+    }
+
+    @Override
+    public void showResult(Object o) {
+
     }
 }

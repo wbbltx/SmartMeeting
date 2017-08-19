@@ -16,5 +16,11 @@ public interface BaseSimplePresenter<T extends BaseView> {
      */
     void detachView();
 
+    boolean isBluetoothOpen();
+
+    void openBle();
+
+    void scanBlueDevice();
+
 
 }
