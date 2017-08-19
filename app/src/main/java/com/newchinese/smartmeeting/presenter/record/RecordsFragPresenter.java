@@ -1,4 +1,4 @@
-package com.newchinese.smartmeeting.presenter;
+package com.newchinese.smartmeeting.presenter.record;
 
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.RecordsContract;
