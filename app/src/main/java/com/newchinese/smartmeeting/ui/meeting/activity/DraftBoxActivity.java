@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
-import com.newchinese.smartmeeting.presenter.DraftBoxPresenter;
+import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
