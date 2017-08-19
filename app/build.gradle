@@ -37,7 +37,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'io.reactivex.rxjava2:rxjava:2.1.2'

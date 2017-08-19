@@ -15,8 +15,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.newchinese.coolpensdk.entity.NotePoint;
-import com.newchinese.coolpensdk.entity.NoteStroke;
+import com.newchinese.smartmeeting.model.bean.NotePoint;
+import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.coolpensdk.listener.OnPointListener;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
@@ -27,7 +27,11 @@ import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.contract.MainContract;
+import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
+import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
+import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
+import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
@@ -36,6 +40,8 @@ import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -150,24 +156,33 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
      * 收到线回调
      */
     @Override
-    public void onStrokeCached(int fromType, NoteStroke noteStroke) {
-
+    public void onStrokeCached(int fromType, com.newchinese.coolpensdk.entity.NoteStroke noteStroke) {
+        EventBus.getDefault().post(new OnStrokeCatchedEvent(fromType, noteStroke));
     }
 
     /**
      * 收到点回调
      */
     @Override
-    public void onPointCatched(int fromType, NotePoint point) {
-
+    public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        if (nowFragment == meetingFragemnt) {
+            mainPresenter.checkjumpDrawingBoard(); //检查是否跳书写页
+            EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
+        }
+        //存线点
+        mainPresenter.saveStrokeAndPoint(notePoint);
     }
 
     /**
      * 收到换页回调
      */
     @Override
-    public void onPageIndexChanged(int fromType, NotePoint point) {
-
+    public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
+        //存记录
+        mainPresenter.saveRecord();
+        //存页
+        mainPresenter.savePage(notePoint);
     }
 
     /**
@@ -177,6 +192,7 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     public void jumpDrawingBoard() {
         startActivity(new Intent(this, DrawingBoardActivity.class));
     }
+
     @Override
     protected void onResume() {
         XLog.d("haha","onResume");

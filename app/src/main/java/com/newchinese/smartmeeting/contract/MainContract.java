@@ -17,6 +17,12 @@ public interface MainContract {
     interface Presenter extends BaseSimplePresenter<View> {
         void checkjumpDrawingBoard();
 
+        void saveRecord();
+
+        void savePage(final com.newchinese.coolpensdk.entity.NotePoint notePoint);
+
+        void saveStrokeAndPoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint);
+
         void initListener();
     }
 }
