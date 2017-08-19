@@ -10,4 +10,5 @@ import com.newchinese.smartmeeting.contract.MainContract;
  */
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
+    
 }
