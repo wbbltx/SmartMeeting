@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.newchinese.smartmeeting.ui.login.activity.LoginActivity">
+
+    <include layout="@layout/bar_base"/>
+
+    <RadioGroup
+        android:id="@+id/rg_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:textColor="@drawable/rg_login_selector"
+            android:checked="true"
+            android:id="@+id/rb_fast_login"
+            style="@style/Login_Radio_Button"
+            android:text="快捷登陆"/>
+
+        <RadioButton
+            android:textColor="@drawable/rg_login_selector"
+            android:id="@+id/rd_common_dogin"
+            style="@style/Login_Radio_Button"
+            android:text="普通登陆"/>
+    </RadioGroup>
+
+
+
+</LinearLayout>

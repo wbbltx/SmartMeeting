@@ -1,10 +1,12 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -19,7 +21,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements DraftBoxContract.View {
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements DraftBoxContract.View{
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -48,6 +50,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements
     protected void initStateAndData() {
         Intent intent = getIntent();
         classifyName = intent.getStringExtra("classify_name");
+
+        tvTitle.setText(classifyName);
+//        ivBack.setImageResource(0);
+        ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
     }
 
     @Override
@@ -61,6 +67,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements
             case R.id.iv_back:
                 break;
             case R.id.iv_pen:
+                boolean bleOpen = mPresenter.isBleOpen();
+                if (!bleOpen){
+                    mPresenter.openBle();
+                }else {
+
+                }
                 break;
         }
     }

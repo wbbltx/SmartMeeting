@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+<!--登录界面风格-->
+    <style name="Login_Radio_Button">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+      <item name="android:layout_height">30dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <!--搜索弹出结果界面风格-->
+    <style name="ScanResultDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>                       <!--是否浮在表面-->
+        <item name="android:windowIsTranslucent">true</item>                   <!--是否半透明-->
+        <item name="android:windowNoTitle">false</item>                         <!--窗口是否无标题-->
+        <item name="android:windowBackground">@android:color/transparent</item>       <!--但窗口背景透明-->
+        <item name="android:backgroundDimEnabled">true</item>                  <!--北京是否模糊-->
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

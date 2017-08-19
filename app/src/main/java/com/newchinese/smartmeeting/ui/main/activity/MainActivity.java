@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -18,6 +19,7 @@ import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.contract.MainContract;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
@@ -33,7 +35,7 @@ import butterknife.BindView;
  * Date           2017/8/17 17:05
  */
 public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View,
-        RadioGroup.OnCheckedChangeListener, OnPointListener {
+        RadioGroup.OnCheckedChangeListener, OnPointListener,BleListener {
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     @BindView(R.id.rg_main)
@@ -141,7 +143,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
      */
     @Override
     public void onPointCatched(int fromType, NotePoint point) {
-        
+
     }
 
     /**
@@ -158,5 +160,70 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     public void jumpDrawingBoard() {
         startActivity(new Intent(this, DrawingBoardActivity.class));
+    }
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
+    public void onScanResult(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
+
+    }
+
+    @Override
+    public void onScanCompleted() {
+
+    }
+
+    @Override
+    public void onConnected() {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onFailed(int i) {
+
+    }
+
+    @Override
+    public void isConnecting() {
+
+    }
+
+    @Override
+    public void onKeyGenerated(String key) {
+
+    }
+
+    @Override
+    public void onSetLocalKey() {
+
+    }
+
+    @Override
+    public void onReadHistroyInfo() {
+
+    }
+
+    @Override
+    public void onHistroyInfoDetected() {
+
+    }
+
+    @Override
+    public void onHistroyInfoDeleted() {
+
+    }
+
+    @Override
+    public void onElectricityDetected(String electricity) {
+
     }
 }

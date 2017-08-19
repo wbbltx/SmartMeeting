@@ -15,6 +15,9 @@ public interface DraftBoxContract {
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-        
+        boolean isBleOpen();
+
+        void openBle();
+
     }
 }
