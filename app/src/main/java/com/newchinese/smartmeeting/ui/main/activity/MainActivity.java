@@ -54,8 +54,6 @@ import butterknife.BindView;
  */
 public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> implements MainContract.View<BluetoothDevice>,
         RadioGroup.OnCheckedChangeListener, OnPointListener{
-    @BindView(R.id.fl_container)
-    FrameLayout flContainer;
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
     @BindView(R.id.iv_back)
@@ -166,11 +164,11 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     @Override
     public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         if (nowFragment == meetingFragemnt) {
-            mainPresenter.checkjumpDrawingBoard(); //检查是否跳书写页
+            mPresenter.checkjumpDrawingBoard(); //检查是否跳书写页
             EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
         }
         //存线点
-        mainPresenter.saveStrokeAndPoint(notePoint);
+        mPresenter.saveStrokeAndPoint(notePoint);
     }
 
     /**
@@ -180,9 +178,9 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
         //存记录
-        mainPresenter.saveRecord();
+        mPresenter.saveRecord();
         //存页
-        mainPresenter.savePage(notePoint);
+        mPresenter.savePage(notePoint);
     }
 
     /**
