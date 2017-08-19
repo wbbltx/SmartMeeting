@@ -44,6 +44,7 @@ public class DrawingBoardView extends View {
     private int resourceCache = 0;
     private float transX;
     private float transY;
+    private float strokeWidth; //线宽
     private float canvasScale;
     private float lastX, dataLastX;
     private float lastY, dataLastY;
@@ -134,6 +135,13 @@ public class DrawingBoardView extends View {
         this.offsetY = offsetY;
         LogicController.getInstance().setOffsetX(offsetX);
         LogicController.getInstance().setOffsetY(offsetY);
+    }
+
+    /**
+     * 设置笔宽
+     */
+    public void setStrokeWidth(float strokeWidth) {
+        this.strokeWidth = strokeWidth;
     }
 
     /**
@@ -258,6 +266,7 @@ public class DrawingBoardView extends View {
             foreGroundBitmap = LogicController.getInstance().getForeGroundBitmap();
         }
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         mOLPath0.setAntiAliasMeoth(true);
@@ -342,12 +351,24 @@ public class DrawingBoardView extends View {
      * 计算笔宽度
      */
     private float penWidth(float press) {
-        float penWidth = 0;
+        float penWidth;
         float maxWidth0 = 2;//5;//我设定笔粗最粗为
         float minWidth0 = 1;
         float penWidth0 = minWidth0 + (maxWidth0 - minWidth0) * press / 255.0f;//最大do值*压力比例---得到对应dp值
         penWidth = penWidth0 > minWidth0 ? penWidth0 : minWidth0;
-        return penWidth + 1;
+        return penWidth + 1 + strokeWidth;
+    }
+
+    /**
+     * 计算数据库笔宽度
+     */
+    private float penWidth(float press, float strokeWidth) {
+        float penWidth;
+        float maxWidth0 = 2;//5;//我设定笔粗最粗为
+        float minWidth0 = 1;
+        float penWidth0 = minWidth0 + (maxWidth0 - minWidth0) * press / 255.0f;//最大do值*压力比例---得到对应dp值
+        penWidth = penWidth0 > minWidth0 ? penWidth0 : minWidth0;
+        return penWidth + 1 + strokeWidth;
     }
 
     /**
@@ -485,7 +506,7 @@ public class DrawingBoardView extends View {
                         if (point.getPress() <= point.getFirstPress()) {
                             setIsDownData(true);//初始化起点00坐标
                         }
-                        drawDataBase(point, noteStroke.getStrokeColor());
+                        drawDataBase(point, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth());
                     }
                     queue.remove(noteStroke);
                 }
@@ -497,7 +518,7 @@ public class DrawingBoardView extends View {
      * 数据库绘制逻辑
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void drawDataBase(NotePoint point, int color) {
+    public void drawDataBase(NotePoint point, int color, float strokeWidth) {
         if (tempOlPath != null)
             tempOlPath.getmPaint().setColor(color);
         switch (point.getPointType()) {//down点与up点设置点初始化，move点去绘制
@@ -523,14 +544,14 @@ public class DrawingBoardView extends View {
                 float realY = (y * canvasScale) + offsetY;
 
                 if (isDownData()) {
-                    tempOlPath.setPaintStrokeWidth(penWidth(press));
+                    tempOlPath.setPaintStrokeWidth(penWidth(press, strokeWidth));
                     tempOlPath.touchDown(realX, realY);//mOLPath的初始点设为realx，realy  moveTo
                     drawPoint(bgCanvas, tempOlPath.getmPaint(), realX, realY);
                     dataLastX = realX;
                     dataLastY = realY;
                     setIsDownData(false);
                 } else {
-                    tempOlPath.setPaintStrokeWidth(penWidth(press));//仅仅只加了这一句就基本完成可笔锋的效果，但是还有很大的瑕疵
+                    tempOlPath.setPaintStrokeWidth(penWidth(press, strokeWidth));//仅仅只加了这一句就基本完成可笔锋的效果，但是还有很大的瑕疵
                     if (Objects.equals(point.getPress(), point.getFirstPress())) {
                         //当来的点是00点时，不再从上一个中点连到00点和上一点的中点，而是直接练到00点
                         tempOlPath.touchMove(realX, realY);

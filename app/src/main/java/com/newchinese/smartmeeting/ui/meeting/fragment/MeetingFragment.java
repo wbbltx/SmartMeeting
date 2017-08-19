@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.meeting.fragment;
 
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
 
 import java.util.ArrayList;
@@ -80,7 +82,9 @@ public class MeetingFragment extends BaseSimpleFragment {
                 if (position == (classifyNameList.size() - 1)) { //点的加号，添加Item
                     adapter.addItem(position, "学术报告");
                 } else {
-                    
+                    Intent intent = new Intent(mActivity, DraftBoxActivity.class);
+                    intent.putExtra("classify_name", classifyNameList.get(position));
+                    startActivity(intent);
                 }
             }
 
