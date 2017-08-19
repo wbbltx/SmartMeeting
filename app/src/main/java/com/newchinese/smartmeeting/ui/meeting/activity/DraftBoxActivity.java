@@ -8,11 +8,10 @@ import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
-import com.newchinese.smartmeeting.base.BasePresenter;
+import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.presenter.DraftBoxPresenter;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -20,7 +19,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity {
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter> implements DraftBoxContract.View {
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -41,6 +40,11 @@ public class DraftBoxActivity extends BaseActivity {
     }
 
     @Override
+    protected DraftBoxPresenter initPresenter() {
+        return new DraftBoxPresenter();
+    }
+
+    @Override
     protected void initStateAndData() {
         Intent intent = getIntent();
         classifyName = intent.getStringExtra("classify_name");
@@ -49,11 +53,6 @@ public class DraftBoxActivity extends BaseActivity {
     @Override
     protected void initListener() {
 
-    }
-
-    @Override
-    protected BasePresenter initPresenter() {
-        return new DraftBoxPresenter();
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen})
