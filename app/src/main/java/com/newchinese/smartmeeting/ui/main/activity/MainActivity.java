@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.contract.MainContract;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
+import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
@@ -139,7 +141,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
      */
     @Override
     public void onPointCatched(int fromType, NotePoint point) {
-
+        
     }
 
     /**
@@ -148,5 +150,13 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     public void onPageIndexChanged(int fromType, NotePoint point) {
 
+    }
+
+    /**
+     * 跳画板页
+     */
+    @Override
+    public void jumpDrawingBoard() {
+        startActivity(new Intent(this, DrawingBoardActivity.class));
     }
 }
