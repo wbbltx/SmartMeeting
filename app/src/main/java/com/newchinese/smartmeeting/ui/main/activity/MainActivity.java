@@ -11,8 +11,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.contract.MainContract;
+import com.newchinese.smartmeeting.presenter.MainPresenter;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
@@ -25,7 +28,7 @@ import butterknife.ButterKnife;
  * author         xulei
  * Date           2017/8/17 17:05
  */
-public class MainActivity extends BaseSimpleActivity {
+public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View {
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     @BindView(R.id.rg_main)
@@ -47,6 +50,11 @@ public class MainActivity extends BaseSimpleActivity {
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
+    }
+
+    @Override
+    protected MainPresenter initPresenter() {
+        return new MainPresenter();
     }
 
     @Override
