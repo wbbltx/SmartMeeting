@@ -10,24 +10,37 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.model.bean.NotePoint;
+import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.coolpensdk.listener.OnPointListener;
+import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
-import com.newchinese.smartmeeting.contract.MainContract;
 import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
+import com.newchinese.smartmeeting.ui.main.BleListener;
+import com.newchinese.smartmeeting.contract.MainContract;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
+import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.PointCacheUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 
@@ -49,7 +62,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
-    private ScanResultDialog scanResultDialog;
+//    private ScanResultDialog scanResultDialog;
     private MainActivity context = MainActivity.this;
 
     @Override
@@ -81,14 +94,15 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
         //初始化弹出框
-        scanResultDialog = new ScanResultDialog(this);
+//        scanResultDialog = new ScanResultDialog(context);
+
     }
 
     @Override
     protected void initListener() {
         rgMain.setOnCheckedChangeListener(this);
         drawingboardAPI.setOnPointListener(this);
-        mPresenter.initListener();
+//        mPresenter.initListener();
     }
 
     /**
@@ -177,30 +191,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
 
     @Override
     protected void onResume() {
-        XLog.d("haha", "onResume");
-        checkBle();
         super.onResume();
-    }
-
-    private void checkBle() {
-        boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-        if (!bluetoothOpen) {
-            mPresenter.openBle();
-        } else {
-            XLog.d("haha", "已经打开");
-            mPresenter.scanBlueDevice();
-        }
-    }
-
-
-    @Override
-    public void showResult(BluetoothDevice bluetoothDevice) {
-//        scanResultDialog.addDevice(bluetoothDevice);
-        XLog.d("haha", "有结果");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -45,8 +45,4 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
         finish();
     }
 
-    @Override
-    public void showResult(View s) {
-
-    }
 }

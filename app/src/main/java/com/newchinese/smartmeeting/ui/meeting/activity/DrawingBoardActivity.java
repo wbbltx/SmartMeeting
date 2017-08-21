@@ -65,11 +65,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     }
 
     @Override
-    public void showResult(String s) {
-
-    }
-
-    @Override
     protected DrawingBoardPresenter initPresenter() {
         return new DrawingBoardPresenter();
     }

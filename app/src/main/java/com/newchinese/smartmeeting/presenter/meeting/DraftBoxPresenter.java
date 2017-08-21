@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.presenter.meeting;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
+import com.newchinese.smartmeeting.ui.main.BleListener;
 
 /**
  * Description:   草稿箱Presenter
@@ -24,7 +25,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     @Override
     public boolean isBluetoothOpen() {
 
-        return false;
+        return BluetoothLe.getDefault().isBluetoothOpen();
     }
 
 
@@ -35,6 +36,14 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void scanBlueDevice() {
+        BluetoothLe.getDefault().setScanPeriod(5000).startScan();
+    }
 
+    @Override
+    public void initListener() {
+        BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView));
+        BluetoothLe.getDefault().setOnConnectListener(BleListener.getDefault().init(mView));
+        BluetoothLe.getDefault().setOnKeyListener(BleListener.getDefault().init(mView));
+        BluetoothLe.getDefault().setOnElectricityRequestListener(BleListener.getDefault().init(mView));
     }
 }

@@ -12,9 +12,13 @@ import com.newchinese.smartmeeting.base.BaseView;
 public interface DraftBoxContract {
     interface View<E> extends BaseView<E> {
 
+        void onScanComplete();
+
+        void showResult(E e);
+
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-
+        void initListener();
     }
 }

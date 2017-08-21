@@ -8,6 +8,5 @@ package com.newchinese.smartmeeting.base;
 
 public interface BaseView<T> {
 
-    void showResult(T t);
-    
+
 }

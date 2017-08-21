@@ -87,7 +87,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void initListener() {
-        BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView));
+//        BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView));
     }
 
     @Override
@@ -97,12 +97,12 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void openBle() {
-        BluetoothLe.getDefault().enableBluetooth();
+//        BluetoothLe.getDefault().enableBluetooth();
     }
 
     @Override
     public void scanBlueDevice() {
-        BluetoothLe.getDefault().setScanPeriod(5000).startScan();
+//        BluetoothLe.getDefault().setScanPeriod(5000).startScan();
     }
 
     @Override

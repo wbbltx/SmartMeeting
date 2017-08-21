@@ -55,9 +55,4 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     protected RecordsFragPresenter initPresenter() {
         return new RecordsFragPresenter();
     }
-
-    @Override
-    public void showResult(Object o) {
-
-    }
 }

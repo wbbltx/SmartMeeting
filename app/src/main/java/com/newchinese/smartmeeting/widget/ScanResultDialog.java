@@ -14,7 +14,12 @@ import android.widget.ListView;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.ui.meeting.adapter.BleListAdapter;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -54,9 +59,9 @@ public class ScanResultDialog extends Dialog {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BluetoothDevice device = getItem(position);
                 String address = device.getAddress();
-//                if (!address.equals(SharedPreUtils.getString(context, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !BluetoothLe.getDefault().getConnected()) {
-//                    EventBus.getDefault().post(new ConnectEvent(address, 0));
-//                }
+                if (!address.equals(SharedPreUtils.getString(context, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !BluetoothLe.getDefault().getConnected()) {
+                    EventBus.getDefault().post(new ConnectEvent(address, 0));
+                }
                 dismiss();
             }
         });
