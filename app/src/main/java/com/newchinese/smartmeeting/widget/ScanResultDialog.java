@@ -12,14 +12,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.model.event.ConnectEvent;
+import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.ui.meeting.adapter.BleListAdapter;
-import com.newchinese.smartmeeting.util.BluCommonUtils;
-import com.newchinese.smartmeeting.util.SharedPreUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -27,12 +22,12 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ScanResultDialog extends Dialog {
-    private final Activity context;
+    private final Context context;
     private ListView listView;
     private BleListAdapter bleListAdapter;
-//    private static ScanResultDialog scanResultDialog = new ScanResultDialog()
+    private OnDeviceItemClickListener onDeviceItemClickListener;
 
-    public ScanResultDialog(Activity context) {
+    public ScanResultDialog(Context context) {
         super(context, R.style.ScanResultDialog);
         this.context = context;
         listView = new ListView(context);
@@ -59,21 +54,21 @@ public class ScanResultDialog extends Dialog {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BluetoothDevice device = getItem(position);
                 String address = device.getAddress();
-                if (!address.equals(SharedPreUtils.getString(context, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !BluetoothLe.getDefault().getConnected()) {
-                    EventBus.getDefault().post(new ConnectEvent(address, 0));
-                }
                 dismiss();
+                if (onDeviceItemClickListener != null){
+                    onDeviceItemClickListener.onDeviceClick(address);
+                }
             }
         });
     }
 
     private void initWindow() {
 //
-        WindowManager windowManager = context.getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = display.getWidth() * 4 / 5; // 设置dialog宽度为屏幕的4/5
-        getWindow().setAttributes(lp);
+//        WindowManager windowManager = context.getWindowManager();
+//        Display display = windowManager.getDefaultDisplay();
+//        WindowManager.LayoutParams lp = getWindow().getAttributes();
+//        lp.width = display.getWidth() * 4 / 5; // 设置dialog宽度为屏幕的4/5
+//        getWindow().setAttributes(lp);
 
         setTitle("搜索结果");
     }
@@ -91,16 +86,11 @@ public class ScanResultDialog extends Dialog {
         return (BluetoothDevice) bleListAdapter.getItem(position);
     }
 
-    public void unregister() {
-//        EventBus.getDefault().unregister(context);
-    }
-
-    public String getActivePage(Context context) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        return am.getRunningTasks(1).get(0).topActivity.getClassName();
-    }
-
     public void clear(){
         bleListAdapter.clear();
+    }
+
+    public void setOnDeviceItemClickListener(OnDeviceItemClickListener onDeviceItemClickListener){
+        this.onDeviceItemClickListener = onDeviceItemClickListener;
     }
 }

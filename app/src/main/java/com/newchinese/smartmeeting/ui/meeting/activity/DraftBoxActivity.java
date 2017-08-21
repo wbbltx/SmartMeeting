@@ -16,14 +16,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
+import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
@@ -48,7 +51,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements DraftBoxContract.View<BluetoothDevice>, PopWindowListener {
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener {
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -63,6 +66,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private BluePopUpWindow bluePopUpWindow;
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
+    private static boolean isFirstTime = true;
 
     @Override
     protected int getLayoutId() {
@@ -114,6 +118,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void initListener() {
         mPresenter.initListener();
+        scanResultDialog.setOnDeviceItemClickListener(this);
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen})
@@ -131,7 +136,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        checkBle();
+        if (hasFocus && isFirstTime) {
+            XLog.d("haha", "onWindowFocusChanged被调用 " + hasFocus + isFirstTime);
+            checkBle();
+            isFirstTime = false;
+        }
     }
 
     @Override
@@ -142,12 +151,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void checkBle() {
         boolean bluetoothOpen = mPresenter.isBluetoothOpen();
         if (!bluetoothOpen) {
-            //应该是弹出一个框，先让直接打开
             XLog.d("haha", "蓝牙没有打开");
             bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
-//            mPresenter.openBle();
         } else {
-            XLog.d("haha", "已经打开");
+            XLog.d("haha", "已经打开" + mPresenter.isConnected());
             if (!mPresenter.isConnected()) {
                 mPresenter.scanBlueDevice();
             }
@@ -157,30 +164,25 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onStop() {
         super.onStop();
-        mPresenter.stopScan();
     }
 
     @Override
     public void showResult(BluetoothDevice s) {
         scanResultDialog.addDevice(s);
-        XLog.d("haha", "有结果");
     }
 
     @Subscribe
     public void onEvent(ConnectEvent type) {//重新连接
-        if (BluetoothLe.getDefault().getConnected()) {
-            Log.i("aaaaa", "已经连接，先断开 ");
-            BluetoothLe.getDefault().disconnectBleDevice();
+        if (mPresenter.isConnected()) {
+            mPresenter.disConnect();
         }
         SharedPreUtils.setString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, type.getAddress());
-        BluetoothLe.getDefault().connectBleDevice(type.getAddress());
-        Log.i("aaaaa", "去连接 ");
+        mPresenter.connectDevice(type.getAddress());
     }
 
     private void onComplete() {
         int count = scanResultDialog.getCount();
         if (count == 0) {//如果没有搜索到笔，提示
-            Log.i("controlltest", "没有扫描到笔");
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
         } else if (count == 1) {   //如果只搜索到一支笔，将其地址信息保存，同时跳转 自动连接  要完善的是该笔是否处于可连接状态
             String address = scanResultDialog.getItem(0).getAddress();
@@ -200,10 +202,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     Log.i("controlltest", "有key 地址与上次相同 " + address);
                 }
             }
-        } else { //如果扫描到多支笔
-            Log.i("controlltest", "扫描到多支笔 " + scanResultDialog.isShowing());
-            scanResultDialog.show();
-            Log.i("controlltest", "扫描到多支笔 " + scanResultDialog.isShowing());
+        } else {
+                scanResultDialog.show();
         }
     }
 
@@ -226,6 +226,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 .create().show();
     }
 
+    /**
+     * 点击确认打开蓝牙
+     */
     @Override
     public void onConfirm() {
         mPresenter.openBle();
@@ -235,6 +238,18 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onCancel() {
 
+    }
+
+    /**
+     * 设备列表的item点击事件
+     * @param add
+     */
+    @Override
+    public void onDeviceClick(String add) {
+        XLog.d("hahaha", "点击了" + add + ",停止扫描");
+        if (!add.equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
+            EventBus.getDefault().post(new ConnectEvent(add, 0));
+        }
     }
 
     /**

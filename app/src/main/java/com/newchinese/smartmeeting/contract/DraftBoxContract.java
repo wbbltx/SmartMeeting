@@ -29,6 +29,10 @@ public interface DraftBoxContract {
 
         boolean isConnected();
 
+        void disConnect();
+
+        void connectDevice(String add);
+
         void loadActivePageList();
     }
 }

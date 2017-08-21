@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.ui.meeting.adapter;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.contract.MainContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,14 @@ import java.util.List;
  */
 
 public class BleListAdapter extends BaseAdapter {
+    private final Context context;
     private List<BluetoothDevice> devices;
     private LayoutInflater inflater;
 
-    public BleListAdapter(Activity context) {
+    public BleListAdapter(Context context) {
+        this.context = context;
         this.devices = new ArrayList<>();
-        this.inflater = context.getLayoutInflater();
+//        this.inflater = context.getLayoutInflater();
     }
 
     public void addDevice(BluetoothDevice device){
@@ -59,7 +63,7 @@ public class BleListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null){
-            convertView = inflater.inflate(R.layout.listitem_device,null);
+            convertView = View.inflate(context,R.layout.listitem_device,null);
             viewHolder = new ViewHolder();
             viewHolder.deviceAddress = (TextView) convertView.findViewById(R.id.device_address);
             viewHolder.deviceName = (TextView) convertView.findViewById(R.id.device_name);

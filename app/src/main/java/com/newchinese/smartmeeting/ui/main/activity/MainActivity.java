@@ -42,7 +42,6 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
-import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -67,7 +66,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
-    //    private ScanResultDialog scanResultDialog;
     private MainActivity context = MainActivity.this;
 
     @Override
@@ -98,9 +96,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         mineFragment = MineFragment.newInstance("我的");
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
-        //初始化弹出框
-//        scanResultDialog = new ScanResultDialog(context);
-
     }
 
     @Override
