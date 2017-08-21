@@ -104,11 +104,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         bluePopUpWindow = new BluePopUpWindow(this, this);
 
         EventBus.getDefault().register(this);
-        
-        //加载数据库当前活动记录的所有页
-        mPresenter.loadActivePageList();
-        //初始化
-        
+
+        //初始化Adapter
+        adapter = new DraftPageRecyAdapter(this);
+        rvDraftPageList.setAdapter(adapter);
     }
 
 
@@ -127,12 +126,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 checkBle();
                 break;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
     }
 
     @Override
@@ -171,14 +164,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void showResult(BluetoothDevice s) {
         scanResultDialog.addDevice(s);
         XLog.d("haha", "有结果");
-    }
-
-    /**
-     * 获取到数据库当前活动记录的所有页
-     */
-    @Override
-    public void getActivePageList(List<NotePage> pageList) {
-        
     }
 
     @Subscribe
@@ -252,10 +237,26 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     }
 
+    /**
+     * 获取到数据库当前活动记录的所有页
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+    public void getActivePageList(final List<NotePage> pageList) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("test_greendao", "" + pageList.toString());
+                if (pageList != null && pageList.size() > 0) {
+                    adapter.setNotePageList(pageList);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //加载数据库当前活动记录的所有页
+        mPresenter.loadActivePageList();
     }
 }

@@ -53,7 +53,7 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tvIndex.setText(notePageList.get(position).getPageIndex());
+        holder.tvIndex.setText(notePageList.get(position).getPageIndex() + "");
         holder.tvDate.setText(DateUtils.formatLongDate(notePageList.get(position).getDate()));
     }
 

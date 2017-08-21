@@ -4,11 +4,13 @@ import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
+import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -68,7 +70,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
             public void run() {
                 NoteRecord activeRecord = DataCacheUtil.getInstance().getActiveNoteRecord();
                 NotePageDao notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
-                mView.getActivePageList(notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeRecord.getId())).list());
+                List<NotePage> notePageList = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeRecord.getId()))
+                        .orderDesc(NotePageDao.Properties.Date).list();
+                mView.getActivePageList(notePageList);
             }
         };
         singleThreadExecutor.execute(loadPageRunnable);
