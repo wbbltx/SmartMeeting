@@ -152,4 +152,16 @@ public class NotePage {
     public void setInsertPicPath(String insertPicPath) {
         this.insertPicPath = insertPicPath;
     }
+
+    @Override
+    public String toString() {
+        return "NotePage{" +
+                "id=" + id +
+                ", pageIndex=" + pageIndex +
+                ", bookId=" + bookId +
+                ", date=" + date +
+                ", insertPicPath='" + insertPicPath + '\'' +
+                ", screenPathList=" + screenPathList +
+                '}';
+    }
 }

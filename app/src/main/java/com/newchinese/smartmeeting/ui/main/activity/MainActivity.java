@@ -38,6 +38,8 @@ import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -214,5 +216,10 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     public void showResult(BluetoothDevice bluetoothDevice) {
 //        scanResultDialog.addDevice(bluetoothDevice);
         XLog.d("haha", "有结果");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

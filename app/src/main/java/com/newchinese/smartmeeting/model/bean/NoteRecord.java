@@ -178,4 +178,17 @@ public class NoteRecord {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getNoteRecordDao() : null;
     }
+
+    @Override
+    public String toString() {
+        return "NoteRecord{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", date='" + date + '\'' +
+                ", location='" + location + '\'' +
+                ", member='" + member + '\'' +
+                ", manager='" + manager + '\'' +
+                ", classifyName='" + classifyName + '\'' +
+                '}';
+    }
 }

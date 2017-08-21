@@ -122,18 +122,24 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
      */
     @Override
     public void initNoteRecord() {
-        // TODO: 2017/8/21  需从服务器获取是否过12点标记, 过12点则收藏并清空之前所有记录表内数据
-        if (noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_WORK) == null) {
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_WORK);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_PROJECT);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_STUDY);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_EXPLORE);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_REPORT);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_REVIEW);
-            noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_OTHER);
-        }
-        NoteRecord otherRecord = noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_OTHER);
-        dataCacheUtil.setActiveNoteRecord(otherRecord);
+        Runnable insertRecordRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // TODO: 2017/8/21  需从服务器获取是否过12点标记, 过12点则收藏并清空之前所有记录表内数据
+                if (noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_WORK) == null) {
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_WORK);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_PROJECT);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_STUDY);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_EXPLORE);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_REPORT);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_REVIEW);
+                    noteRecordManager.insertNoteRecord(noteRecordDao, "", "", "", "", "", Constant.CLASSIFY_NAME_OTHER);
+                }
+                NoteRecord otherRecord = noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_OTHER);
+                dataCacheUtil.setActiveNoteRecord(otherRecord);
+            }
+        };
+        singleThreadExecutor.execute(insertRecordRunnable);
     }
 
     /**
@@ -161,7 +167,6 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
             }
         };
         singleThreadExecutor.execute(savePageRunnable);
-
     }
 
     /**

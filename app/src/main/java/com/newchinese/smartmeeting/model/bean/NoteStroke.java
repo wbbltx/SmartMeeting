@@ -130,4 +130,14 @@ public class NoteStroke {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getNoteStrokeDao() : null;
     }
+
+    @Override
+    public String toString() {
+        return "NoteStroke{" +
+                "id=" + id +
+                ", pageId=" + pageId +
+                ", strokeColor=" + strokeColor +
+                ", strokeWidth=" + strokeWidth +
+                '}';
+    }
 }
