@@ -15,6 +15,7 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
+import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
@@ -23,6 +24,8 @@ import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 
@@ -35,8 +38,8 @@ public class MeetingFragment extends BaseSimpleFragment {
     @BindView(R.id.rv_meeting_classify)
     RecyclerView rvMeetingClassify;
     private List<String> classifyNameList;
-
     private MeetingClassifyRecyAdapter adapter;
+    private ExecutorService singleThreadExecutor; //单核心线程线程池
 
     @Override
     protected int getLayoutId() {
@@ -65,6 +68,8 @@ public class MeetingFragment extends BaseSimpleFragment {
         initClassifyData();
         adapter = new MeetingClassifyRecyAdapter(mContext, classifyNameList);
         rvMeetingClassify.setAdapter(adapter);
+        //初始化线程池
+        singleThreadExecutor = Executors.newSingleThreadExecutor();
     }
 
     private void initClassifyData() {
@@ -81,7 +86,7 @@ public class MeetingFragment extends BaseSimpleFragment {
 
     @Override
     protected void initListener() {
-        adapter.setOnItemClickedListener(new MeetingClassifyRecyAdapter.onItemClickedListener() {
+        adapter.setOnItemClickedListener(new OnItemClickedListener() {
             @Override
             public void onClick(View view, int position) {
                 Toast.makeText(mActivity, "点击了:" + classifyNameList.get(position), Toast.LENGTH_SHORT).show();
@@ -105,11 +110,23 @@ public class MeetingFragment extends BaseSimpleFragment {
     /**
      * 存储选择的分类名称，并设置当前活动记录表
      */
-    public void setActiveNoteRecord(String classifyName) {
-        DataCacheUtil dataCacheUtil = DataCacheUtil.getInstance();
-        dataCacheUtil.setChosenClassifyName(classifyName); //缓存选择的分类名称
-        NoteRecord activeNoteRecord = NoteRecordManager.getInstance().getNoteRecord(
-                GreenDaoUtil.getInstance().getNoteRecordDao(), classifyName);
-        dataCacheUtil.setActiveNoteRecord(activeNoteRecord); //缓存当前活动记录表
+    public void setActiveNoteRecord(final String classifyName) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                DataCacheUtil dataCacheUtil = DataCacheUtil.getInstance();
+                dataCacheUtil.setChosenClassifyName(classifyName); //缓存选择的分类名称
+                NoteRecord activeNoteRecord = NoteRecordManager.getInstance().getNoteRecord(
+                        GreenDaoUtil.getInstance().getNoteRecordDao(), classifyName);
+                dataCacheUtil.setActiveNoteRecord(activeNoteRecord); //缓存当前活动记录表
+            }
+        };
+        singleThreadExecutor.execute(runnable);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        singleThreadExecutor.shutdown();
     }
 }

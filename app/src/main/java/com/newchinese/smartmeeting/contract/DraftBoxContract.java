@@ -2,6 +2,9 @@ package com.newchinese.smartmeeting.contract;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
+import com.newchinese.smartmeeting.model.bean.NotePage;
+
+import java.util.List;
 
 /**
  * Description:
@@ -16,6 +19,7 @@ public interface DraftBoxContract {
 
         void showResult(E e);
 
+        void getActivePageList(List<NotePage> pageList);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
@@ -24,5 +28,7 @@ public interface DraftBoxContract {
         void stopScan();
 
         boolean isConnected();
+
+        void loadActivePageList();
     }
 }

@@ -12,7 +12,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.model.bean.NotePoint;
+import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.coolpensdk.listener.OnPointListener;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
@@ -36,6 +38,8 @@ import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -155,7 +159,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        Log.e("test_point", "onPointCatched：" + notePoint.toString());
+//        Log.e("test_point", "onPointCatched：" + notePoint.toString());
         //存线点
         mPresenter.saveStrokeAndPoint(notePoint);
         //会议页才可跳页，其他的地方书写则只存数据库
@@ -170,7 +174,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onStrokeCached(int fromType, com.newchinese.coolpensdk.entity.NoteStroke noteStroke) {
-        Log.e("test_point", "onStrokeCached：" + noteStroke.toString());
+//        Log.e("test_point", "onStrokeCached：" + noteStroke.toString());
         EventBus.getDefault().post(new OnStrokeCatchedEvent(fromType, noteStroke));
     }
 
@@ -179,7 +183,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        Log.e("test_point", "onPageIndexChanged：" + notePoint.toString());
+//        Log.e("test_point", "onPageIndexChanged：" + notePoint.toString());
         //存页
         mPresenter.savePage(notePoint);
         EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));

@@ -2,7 +2,6 @@ package com.newchinese.smartmeeting.contract;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
-import com.newchinese.smartmeeting.model.bean.NotePoint;
 
 /**
  * Description:   画板页Contract
@@ -12,13 +11,16 @@ import com.newchinese.smartmeeting.model.bean.NotePoint;
 
 public interface DrawingBoardContract {
     interface View<E> extends BaseView<E> {
-        void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth);
+        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor, float strokeWidth);
+
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
-        
+
+        void clearCanvars();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-        void readDataBasePoint();
+        void readDataBasePoint(int pageIndex);
+
         void loadFirstStokeCache();
     }
 }

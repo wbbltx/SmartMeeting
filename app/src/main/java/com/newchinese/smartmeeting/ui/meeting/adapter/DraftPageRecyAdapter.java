@@ -9,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.util.DateUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,16 +25,20 @@ import butterknife.ButterKnife;
  * Date           2017/8/18
  */
 
-public class MeetingClassifyRecyAdapter extends RecyclerView.Adapter<MeetingClassifyRecyAdapter.MyViewHolder> {
+public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdapter.MyViewHolder> {
     private Context context;
-    private List<String> classifyList;
+    private List<NotePage> notePageList = new ArrayList<>();
     private LayoutInflater inflater;
     private OnItemClickedListener onItemClickedListener;
 
-    public MeetingClassifyRecyAdapter(Context context, List<String> classifyList) {
+    public DraftPageRecyAdapter(Context context) {
         this.context = context;
-        this.classifyList = classifyList;
         inflater = LayoutInflater.from(context);
+    }
+
+    public void setNotePageList(List<NotePage> notePageList) {
+        this.notePageList = notePageList;
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickedListener(OnItemClickedListener onItemClickedListener) {
@@ -40,41 +47,28 @@ public class MeetingClassifyRecyAdapter extends RecyclerView.Adapter<MeetingClas
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_meeting_classify, parent, false);
+        View view = inflater.inflate(R.layout.item_draft_pages, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tvClassifyName.setText(classifyList.get(position));
+        holder.tvIndex.setText(notePageList.get(position).getPageIndex());
+        holder.tvDate.setText(DateUtils.formatLongDate(notePageList.get(position).getDate()));
     }
 
     @Override
     public int getItemCount() {
-        return classifyList.size();
-    }
-
-    /**
-     * 添加条目
-     */
-    public void addItem(int position, String name) {
-        classifyList.add(position, name);
-        notifyItemInserted(position);//调用这个才有动画效果
-    }
-
-    /**
-     * 移除条目
-     */
-    public void removeItem(int position) {
-        classifyList.remove(position);
-        notifyItemRemoved(position);
+        return notePageList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_back_line)
-        ImageView ivBackLine;
-        @BindView(R.id.tv_classify_name)
-        TextView tvClassifyName;
+        @BindView(R.id.iv_thumnbail)
+        ImageView ivThumnbail;
+        @BindView(R.id.tv_index)
+        TextView tvIndex;
+        @BindView(R.id.tv_date)
+        TextView tvDate;
 
         MyViewHolder(View itemView) {
             super(itemView);

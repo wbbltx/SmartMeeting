@@ -7,13 +7,15 @@
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/simple_lr_padding">
+        android:layout_height="50dp"
+        android:paddingLeft="@dimen/simple_lr_padding"
+        android:paddingRight="@dimen/simple_lr_padding">
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_centerVertical="true"
             android:src="@mipmap/ic_launcher" />
 
         <TextView

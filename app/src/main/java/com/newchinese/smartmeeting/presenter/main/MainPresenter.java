@@ -49,8 +49,8 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private NotePage activeNotePage;
     private NoteStroke activeNoteStroke;
     private DataCacheUtil dataCacheUtil;
-    private ExecutorService singleThreadExecutor;
     private PointCacheUtil pointCacheUtil;
+    private ExecutorService singleThreadExecutor;
 
     /**
      * 获取当前线程池对象
@@ -73,11 +73,11 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         //获取缓存的当前活动页与本
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         activeNotePage = dataCacheUtil.getActiveNotePage();
-        //初始化线程池
-        singleThreadExecutor = Executors.newSingleThreadExecutor();
         //初始化第一笔缓存工具类
         pointCacheUtil = PointCacheUtil.getInstance();
         pointCacheUtil.setCanAddFlag(true);
+        //初始化线程池
+        singleThreadExecutor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -156,7 +156,17 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
      * 过了则收藏所有记录表内缩略图，清空7张记录表内数据。
      */
     private void collectAndClearAllRecord() {
-
+        // TODO: 2017/8/21 收藏
+        //清空页线点
+        Runnable deleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                notePageDao.deleteAll();
+                noteStrokeDao.deleteAll();
+                notePointDao.deleteAll();
+            }
+        };
+        singleThreadExecutor.execute(deleteRunnable);
     }
 
     /**
