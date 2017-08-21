@@ -34,9 +34,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
         public final static Property Press = new Property(4, float.class, "press", false, "PRESS");
         public final static Property FirstPress = new Property(5, float.class, "firstPress", false, "FIRST_PRESS");
         public final static Property TestTime = new Property(6, float.class, "testTime", false, "TEST_TIME");
-        public final static Property StrokeWidth = new Property(7, float.class, "strokeWidth", false, "STROKE_WIDTH");
-        public final static Property PageIndex = new Property(8, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PointType = new Property(9, int.class, "pointType", false, "POINT_TYPE");
+        public final static Property PageIndex = new Property(7, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PointType = new Property(8, int.class, "pointType", false, "POINT_TYPE");
     }
 
     private Query<NotePoint> noteStroke_PointListQuery;
@@ -60,9 +59,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
                 "\"PRESS\" REAL NOT NULL ," + // 4: press
                 "\"FIRST_PRESS\" REAL NOT NULL ," + // 5: firstPress
                 "\"TEST_TIME\" REAL NOT NULL ," + // 6: testTime
-                "\"STROKE_WIDTH\" REAL NOT NULL ," + // 7: strokeWidth
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 8: pageIndex
-                "\"POINT_TYPE\" INTEGER NOT NULL );"); // 9: pointType
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 7: pageIndex
+                "\"POINT_TYPE\" INTEGER NOT NULL );"); // 8: pointType
     }
 
     /** Drops the underlying database table. */
@@ -85,9 +83,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
         stmt.bindDouble(5, entity.getPress());
         stmt.bindDouble(6, entity.getFirstPress());
         stmt.bindDouble(7, entity.getTestTime());
-        stmt.bindDouble(8, entity.getStrokeWidth());
-        stmt.bindLong(9, entity.getPageIndex());
-        stmt.bindLong(10, entity.getPointType());
+        stmt.bindLong(8, entity.getPageIndex());
+        stmt.bindLong(9, entity.getPointType());
     }
 
     @Override
@@ -104,9 +101,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
         stmt.bindDouble(5, entity.getPress());
         stmt.bindDouble(6, entity.getFirstPress());
         stmt.bindDouble(7, entity.getTestTime());
-        stmt.bindDouble(8, entity.getStrokeWidth());
-        stmt.bindLong(9, entity.getPageIndex());
-        stmt.bindLong(10, entity.getPointType());
+        stmt.bindLong(8, entity.getPageIndex());
+        stmt.bindLong(9, entity.getPointType());
     }
 
     @Override
@@ -124,9 +120,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
             cursor.getFloat(offset + 4), // press
             cursor.getFloat(offset + 5), // firstPress
             cursor.getFloat(offset + 6), // testTime
-            cursor.getFloat(offset + 7), // strokeWidth
-            cursor.getInt(offset + 8), // pageIndex
-            cursor.getInt(offset + 9) // pointType
+            cursor.getInt(offset + 7), // pageIndex
+            cursor.getInt(offset + 8) // pointType
         );
         return entity;
     }
@@ -140,9 +135,8 @@ public class NotePointDao extends AbstractDao<NotePoint, Long> {
         entity.setPress(cursor.getFloat(offset + 4));
         entity.setFirstPress(cursor.getFloat(offset + 5));
         entity.setTestTime(cursor.getFloat(offset + 6));
-        entity.setStrokeWidth(cursor.getFloat(offset + 7));
-        entity.setPageIndex(cursor.getInt(offset + 8));
-        entity.setPointType(cursor.getInt(offset + 9));
+        entity.setPageIndex(cursor.getInt(offset + 7));
+        entity.setPointType(cursor.getInt(offset + 8));
      }
     
     @Override

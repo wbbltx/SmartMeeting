@@ -38,6 +38,7 @@ import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
@@ -67,6 +68,7 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     private DrawingboardAPI drawingboardAPI;
     private ScanResultDialog scanResultDialog;
     private MainActivity context = MainActivity.this;
+    private PointCacheUtil pointCacheUtil;
 
     @Override
     protected int getLayoutId() {
@@ -75,12 +77,16 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
 
     @Override
     protected MainPresenter initPresenter() {
-        mPresenter = new MainPresenter();
-        return mPresenter;
+        return new MainPresenter();
     }
 
     @Override
     protected void initStateAndData() {
+        //初始化第一笔缓存工具类
+        pointCacheUtil = PointCacheUtil.getInstance();
+        pointCacheUtil.setCanAddFlag(true);
+        //初始化书写SDK
+        drawingboardAPI = DrawingboardAPI.getInstance();
         //初始化bar状态
         ivBack.setVisibility(View.GONE);
         ivPen.setVisibility(View.GONE);
@@ -93,8 +99,6 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
         mineFragment = MineFragment.newInstance("我的");
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
-        //初始化书写SDK
-        drawingboardAPI = DrawingboardAPI.getInstance();
         //初始化弹出框
         scanResultDialog = new ScanResultDialog(this);
     }
@@ -164,6 +168,9 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     @Override
     public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         if (nowFragment == meetingFragemnt) {
+            if (pointCacheUtil.isCanAddFlag()) { //DrawingBoardActivity未初始化完之前的点都缓存起来
+                pointCacheUtil.putInQueue(notePoint);
+            }
             mPresenter.checkjumpDrawingBoard(); //检查是否跳书写页
             EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
         }
@@ -176,11 +183,11 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
         //存记录
         mPresenter.saveRecord();
         //存页
         mPresenter.savePage(notePoint);
+        EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
     }
 
     /**

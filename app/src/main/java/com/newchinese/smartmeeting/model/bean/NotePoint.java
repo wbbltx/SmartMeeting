@@ -21,11 +21,9 @@ public class NotePoint {
     private float testTime;
     private int pageIndex;
     private int pointType; //down:1 move:2 up:3
-
-    @Generated(hash = 2083650289)
+    @Generated(hash = 1047354121)
     public NotePoint(Long id, long strokeId, float pX, float pY, float press,
-                     float firstPress, float testTime, int pageIndex,
-                     int pointType) {
+            float firstPress, float testTime, int pageIndex, int pointType) {
         this.id = id;
         this.strokeId = strokeId;
         this.pX = pX;
@@ -36,79 +34,60 @@ public class NotePoint {
         this.pageIndex = pageIndex;
         this.pointType = pointType;
     }
-
     @Generated(hash = 1614831008)
     public NotePoint() {
     }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public long getStrokeId() {
         return this.strokeId;
     }
-
     public void setStrokeId(long strokeId) {
         this.strokeId = strokeId;
     }
-
     public float getPX() {
         return this.pX;
     }
-
     public void setPX(float pX) {
         this.pX = pX;
     }
-
     public float getPY() {
         return this.pY;
     }
-
     public void setPY(float pY) {
         this.pY = pY;
     }
-
-    public float getTestTime() {
-        return this.testTime;
-    }
-
-    public void setTestTime(float testTime) {
-        this.testTime = testTime;
-    }
-
-    public float getFirstPress() {
-        return this.firstPress;
-    }
-
-    public void setFirstPress(float firstPress) {
-        this.firstPress = firstPress;
-    }
-
     public float getPress() {
         return this.press;
     }
-
     public void setPress(float press) {
         this.press = press;
     }
-
+    public float getFirstPress() {
+        return this.firstPress;
+    }
+    public void setFirstPress(float firstPress) {
+        this.firstPress = firstPress;
+    }
+    public float getTestTime() {
+        return this.testTime;
+    }
+    public void setTestTime(float testTime) {
+        this.testTime = testTime;
+    }
     public int getPageIndex() {
         return this.pageIndex;
     }
-
     public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
     }
-
     public int getPointType() {
         return this.pointType;
     }
-
     public void setPointType(int pointType) {
         this.pointType = pointType;
     }

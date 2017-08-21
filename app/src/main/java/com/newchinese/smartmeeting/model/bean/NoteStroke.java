@@ -5,10 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
-
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
-
 import com.newchinese.smartmeeting.database.DaoSession;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
@@ -27,17 +25,12 @@ public class NoteStroke {
     private float strokeWidth; //线宽
     @ToMany(referencedJoinProperty = "strokeId") 
     private List<NotePoint> pointList; //线点一对多关联
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 1790906883)
     private transient NoteStrokeDao myDao;
-
     @Generated(hash = 1818537999)
     public NoteStroke(Long id, long pageId, int strokeColor, float strokeWidth) {
         this.id = id;
@@ -45,35 +38,33 @@ public class NoteStroke {
         this.strokeColor = strokeColor;
         this.strokeWidth = strokeWidth;
     }
-
     @Generated(hash = 566528330)
     public NoteStroke() {
     }
-
     public Long getId() {
         return this.id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public long getPageId() {
         return this.pageId;
     }
-
     public void setPageId(long pageId) {
         this.pageId = pageId;
     }
-
     public int getStrokeColor() {
         return this.strokeColor;
     }
-
     public void setStrokeColor(int strokeColor) {
         this.strokeColor = strokeColor;
     }
-
+    public float getStrokeWidth() {
+        return this.strokeWidth;
+    }
+    public void setStrokeWidth(float strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
@@ -95,15 +86,11 @@ public class NoteStroke {
         }
         return pointList;
     }
-
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 18518400)
     public synchronized void resetPointList() {
         pointList = null;
     }
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -115,7 +102,6 @@ public class NoteStroke {
         }
         myDao.delete(this);
     }
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -127,7 +113,6 @@ public class NoteStroke {
         }
         myDao.refresh(this);
     }
-
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
      * Entity must attached to an entity context.
@@ -139,21 +124,10 @@ public class NoteStroke {
         }
         myDao.update(this);
     }
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1078723076)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getNoteStrokeDao() : null;
-    }
-
-    public float getStrokeWidth() {
-        return this.strokeWidth;
-    }
-
-    public void setStrokeWidth(float strokeWidth) {
-        this.strokeWidth = strokeWidth;
     }
 }

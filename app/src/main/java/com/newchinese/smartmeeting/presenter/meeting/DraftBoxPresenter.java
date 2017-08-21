@@ -5,7 +5,7 @@ import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
 
 /**
- * Description:
+ * Description:   草稿箱Presenter
  * author         xulei
  * Date           2017/8/18
  */

@@ -1,9 +1,7 @@
 package com.newchinese.smartmeeting.ui.login.activity;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -16,9 +14,7 @@ import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
  * author         xulei
  * Date           2017/8/18 13:22
  */
-public class WelcomeActivity extends BaseActivity<WelcomePresenter,View> implements WelcomeContract.View<View> {
-    private WelcomePresenter welcomePresenter;
-
+public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implements WelcomeContract.View<View> {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_welcome;
@@ -26,14 +22,13 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter,View> impleme
 
     @Override
     protected WelcomePresenter initPresenter() {
-        welcomePresenter = new WelcomePresenter();
-        return welcomePresenter;
+        return new WelcomePresenter();
     }
 
     @Override
     protected void initStateAndData() {
-        welcomePresenter.requestPermissing(this);
-        welcomePresenter.startTimer();
+        mPresenter.requestPermissing(this);
+        mPresenter.startTimer();
     }
 
     @Override
