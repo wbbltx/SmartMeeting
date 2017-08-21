@@ -40,6 +40,16 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     }
 
     @Override
+    public void stopScan() {
+        BluetoothLe.getDefault().stopScan();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return BluetoothLe.getDefault().getConnected();
+    }
+
+    @Override
     public void initListener() {
         BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView));
         BluetoothLe.getDefault().setOnConnectListener(BleListener.getDefault().init(mView));

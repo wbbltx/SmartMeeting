@@ -28,4 +28,10 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <!--popup的弹出和消失样式-->
+    <style name="popup_anim">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
+    </style>
+
 </resources>

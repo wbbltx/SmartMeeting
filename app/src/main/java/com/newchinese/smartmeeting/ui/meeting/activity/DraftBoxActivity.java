@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
+import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
@@ -24,6 +27,7 @@ import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +41,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDevice> implements DraftBoxContract.View<BluetoothDevice>{
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements DraftBoxContract.View<BluetoothDevice>, PopWindowListener {
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -47,6 +51,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
     private String classifyName; //分类名
 
     private ScanResultDialog scanResultDialog;
+    private BluePopUpWindow bluePopUpWindow;
+    private ViewGroup root_view;
 
     @Override
     protected int getLayoutId() {
@@ -56,7 +62,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
-
+        root_view = (ViewGroup) findViewById(R.id.rl_parent);
     }
 
     @Override
@@ -75,6 +81,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
 //        ivBack.setImageResource(0);
         ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
 
+        bluePopUpWindow = new BluePopUpWindow(this, this);
+
         EventBus.getDefault().register(this);
     }
 
@@ -89,7 +97,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
             case R.id.iv_back:
                 break;
             case R.id.iv_pen:
-                EventBus.getDefault().post(new CheckBlueStateEvent());
+//                EventBus.getDefault().post(new CheckBlueStateEvent());
+                checkBle();
                 break;
         }
     }
@@ -97,6 +106,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
     @Override
     protected void onResume() {
         super.onResume();
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
         checkBle();
     }
 
@@ -109,11 +124,21 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
         boolean bluetoothOpen = mPresenter.isBluetoothOpen();
         if (!bluetoothOpen) {
             //应该是弹出一个框，先让直接打开
-            mPresenter.openBle();
+            XLog.d("haha", "蓝牙没有打开");
+            bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
+//            mPresenter.openBle();
         } else {
             XLog.d("haha", "已经打开");
-            mPresenter.scanBlueDevice();
+            if (!mPresenter.isConnected()) {
+                mPresenter.scanBlueDevice();
+            }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mPresenter.stopScan();
     }
 
     @Override
@@ -180,5 +205,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter,BluetoothDe
                     }
                 })
                 .create().show();
+    }
+
+    @Override
+    public void onConfirm() {
+        mPresenter.openBle();
+        checkBle();
+    }
+
+    @Override
+    public void onCancel() {
+
     }
 }

@@ -20,5 +20,9 @@ public interface DraftBoxContract {
 
     interface Presenter extends BaseSimplePresenter<View> {
         void initListener();
+
+        void stopScan();
+
+        boolean isConnected();
     }
 }
