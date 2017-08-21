@@ -86,7 +86,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
             case PointFromType.POINT_FROM_SAVE://存储来的点
                 break;
         }
-        drawViewMeeting.drawLine(notePoint);
+        if (drawViewMeeting != null)
+            drawViewMeeting.drawLine(notePoint);
     }
 
     /**
@@ -131,6 +132,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     public void getFirstStrokeCachePoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         pageIndex = notePoint.getPageIndex();
+        tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
         drawViewMeeting.drawLine(notePoint);
     }
 

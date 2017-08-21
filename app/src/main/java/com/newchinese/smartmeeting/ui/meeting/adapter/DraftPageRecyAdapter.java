@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Description:   会议Fragment分类列表Recycler适配器
+ * Description:   草稿箱页列表Recycler适配器
  * author         xulei
  * Date           2017/8/18
  */
