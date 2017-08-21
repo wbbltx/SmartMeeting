@@ -53,8 +53,8 @@ import butterknife.BindView;
  * author         xulei
  * Date           2017/8/17 17:05
  */
-public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> implements MainContract.View<BluetoothDevice>,
-        RadioGroup.OnCheckedChangeListener, OnPointListener{
+public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> implements MainContract.View<BluetoothDevice>,
+        RadioGroup.OnCheckedChangeListener, OnPointListener {
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
     @BindView(R.id.iv_back)
@@ -68,7 +68,6 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     private DrawingboardAPI drawingboardAPI;
     private ScanResultDialog scanResultDialog;
     private MainActivity context = MainActivity.this;
-    private PointCacheUtil pointCacheUtil;
 
     @Override
     protected int getLayoutId() {
@@ -82,9 +81,8 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
 
     @Override
     protected void initStateAndData() {
-        //初始化第一笔缓存工具类
-        pointCacheUtil = PointCacheUtil.getInstance();
-        pointCacheUtil.setCanAddFlag(true);
+        //初始化7张分类记录表
+        mPresenter.initNoteRecord();
         //初始化书写SDK
         drawingboardAPI = DrawingboardAPI.getInstance();
         //初始化bar状态
@@ -155,6 +153,20 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     }
 
     /**
+     * 收到点回调
+     */
+    @Override
+    public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        //存线点
+        mPresenter.saveStrokeAndPoint(notePoint);
+        //会议页才可跳页，其他的地方书写则只存数据库
+        if (nowFragment == meetingFragemnt) {
+            mPresenter.checkjumpDrawingBoard(notePoint); //缓存第一笔并检查当前是否在画板页，不在则jump
+            EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
+        }
+    }
+
+    /**
      * 收到线回调
      */
     @Override
@@ -163,28 +175,10 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     }
 
     /**
-     * 收到点回调
-     */
-    @Override
-    public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        if (nowFragment == meetingFragemnt) {
-            if (pointCacheUtil.isCanAddFlag()) { //DrawingBoardActivity未初始化完之前的点都缓存起来
-                pointCacheUtil.putInQueue(notePoint);
-            }
-            mPresenter.checkjumpDrawingBoard(); //检查是否跳书写页
-            EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
-        }
-        //存线点
-        mPresenter.saveStrokeAndPoint(notePoint);
-    }
-
-    /**
      * 收到换页回调
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        //存记录
-        mPresenter.saveRecord();
         //存页
         mPresenter.savePage(notePoint);
         EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
@@ -200,17 +194,17 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
 
     @Override
     protected void onResume() {
-        XLog.d("haha","onResume");
+        XLog.d("haha", "onResume");
         checkBle();
         super.onResume();
     }
 
-    private void checkBle(){
+    private void checkBle() {
         boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-        if (!bluetoothOpen){
+        if (!bluetoothOpen) {
             mPresenter.openBle();
-        }else {
-            XLog.d("haha","已经打开");
+        } else {
+            XLog.d("haha", "已经打开");
             mPresenter.scanBlueDevice();
         }
     }
@@ -219,6 +213,6 @@ public class MainActivity extends BaseActivity<MainPresenter,BluetoothDevice> im
     @Override
     public void showResult(BluetoothDevice bluetoothDevice) {
 //        scanResultDialog.addDevice(bluetoothDevice);
-        XLog.d("haha","有结果");
+        XLog.d("haha", "有结果");
     }
 }

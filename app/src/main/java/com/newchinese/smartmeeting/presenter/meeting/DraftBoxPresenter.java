@@ -12,6 +12,16 @@ import com.newchinese.smartmeeting.contract.DraftBoxContract;
 
 public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
     @Override
+    public void onPresenterCreated() {
+        
+    }
+
+    @Override
+    public void onPresenterDestroy() {
+
+    }
+
+    @Override
     public boolean isBluetoothOpen() {
 
         return false;

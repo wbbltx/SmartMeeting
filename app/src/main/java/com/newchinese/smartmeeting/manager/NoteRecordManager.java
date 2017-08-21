@@ -3,6 +3,8 @@ package com.newchinese.smartmeeting.manager;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 
+import java.util.List;
+
 /**
  * Description:   记录表操作类
  * author         xulei
@@ -40,15 +42,10 @@ public class NoteRecordManager {
         return noteRecord;
     }
 
-//    /**
-//     * 获取当前NoteRecord本对象
-//     */
-//    public NoteRecord getNoteRecord(NoteRecordDao noteRecordDao) {
-//        List<NoteRecord> noteRecordList = noteRecordDao.queryBuilder().list();
-//        if (noteRecordList == null || noteRecordList.size() == 0) {
-//            return null;
-//        } else {
-//            return noteRecordList.get(0);
-//        }
-//    }
+    /**
+     * 根据分类获取NoteRecord对象
+     */
+    public NoteRecord getNoteRecord(NoteRecordDao noteRecordDao, String classifyName) {
+        return noteRecordDao.queryBuilder().where(NoteRecordDao.Properties.ClassifyName.eq(classifyName)).unique();
+    }
 }

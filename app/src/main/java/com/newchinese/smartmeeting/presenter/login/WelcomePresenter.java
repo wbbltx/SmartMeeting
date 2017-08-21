@@ -69,6 +69,16 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View> implem
     }
 
     @Override
+    public void onPresenterCreated() {
+        
+    }
+
+    @Override
+    public void onPresenterDestroy() {
+
+    }
+
+    @Override
     public boolean isBluetoothOpen() {
         return false;
     }

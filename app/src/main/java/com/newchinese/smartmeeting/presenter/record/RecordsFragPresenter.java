@@ -12,6 +12,16 @@ import com.newchinese.smartmeeting.contract.RecordsContract;
 public class RecordsFragPresenter extends BasePresenter<RecordsContract.View> implements RecordsContract.Presenter {
 
     @Override
+    public void onPresenterCreated() {
+        
+    }
+
+    @Override
+    public void onPresenterDestroy() {
+
+    }
+
+    @Override
     public boolean isBluetoothOpen() {
         return false;
     }

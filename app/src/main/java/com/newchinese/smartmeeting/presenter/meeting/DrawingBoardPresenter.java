@@ -13,6 +13,16 @@ import com.newchinese.smartmeeting.util.PointCacheUtil;
 public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.View> implements DrawingBoardContract.Presenter {
 
     @Override
+    public void onPresenterCreated() {
+        
+    }
+
+    @Override
+    public void onPresenterDestroy() {
+
+    }
+
+    @Override
     public boolean isBluetoothOpen() {
         return false;
     }
@@ -26,7 +36,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     public void scanBlueDevice() {
 
     }
-
+    
+    
+    
     /**
      * 根据当前活动页读数据库的点
      */

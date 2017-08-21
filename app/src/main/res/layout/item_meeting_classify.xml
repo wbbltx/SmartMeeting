@@ -19,6 +19,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
         android:text="工作例会"
-        android:textColor="@color/simple_title"
+        android:textColor="@color/simple_text"
         android:textSize="18sp" />
 </RelativeLayout>

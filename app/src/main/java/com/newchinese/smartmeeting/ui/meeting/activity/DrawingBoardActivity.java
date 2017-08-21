@@ -9,6 +9,7 @@ import com.newchinese.coolpensdk.constants.PointFromType;
 import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardContract;
 import com.newchinese.smartmeeting.model.bean.NotePoint;
@@ -16,12 +17,18 @@ import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.PointCacheUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Description:   画板Activity
@@ -35,11 +42,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
-    @BindView(R.id.draw_board_view_meeting)
-    DrawingBoardView drawBoardViewMeeting;
+    @BindView(R.id.draw_view_meeting)
+    DrawingBoardView drawViewMeeting;
     private int pageIndex;
     private boolean isFirstLoad = true; //初次加载第一笔缓存标记
-    private Handler delayHandler = new Handler(); //用于延时的Handler
 
     @Override
     protected int getLayoutId() {
@@ -49,7 +55,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
-        mPresenter.loadFirstStokeCache(); //加载第一笔缓存
+//        mPresenter.loadFirstStokeCache(); //加载第一笔缓存
         tvTitle.setText("书写");
     }
 
@@ -93,7 +99,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
             case PointFromType.POINT_FROM_SAVE://存储来的点
                 break;
         }
-        drawBoardViewMeeting.drawLine(notePoint);
+        drawViewMeeting.drawLine(notePoint);
     }
 
     /**
@@ -123,8 +129,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
             @Override
             public void run() {
                 tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
-                if (drawBoardViewMeeting != null) { //换页清空画布
-                    drawBoardViewMeeting.clearCanvars();
+                if (drawViewMeeting != null) { //换页清空画布
+                    drawViewMeeting.clearCanvars();
                 }
             }
         });
@@ -141,15 +147,16 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
             pageIndex = notePoint.getPageIndex();
             tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
             //延时加载数据库，否则view未初始化完毕会丢点
-            delayHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPresenter.readDataBasePoint();
-                }
-            }, 500);
+            Flowable.timer(500, TimeUnit.MILLISECONDS)
+                    .subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            mPresenter.readDataBasePoint();
+                        }
+                    });
             isFirstLoad = false;
         }
-        drawBoardViewMeeting.drawLine(notePoint);
+        drawViewMeeting.drawLine(notePoint);
     }
 
     /**
@@ -158,8 +165,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     public void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth) {
         //转换点对象为SDK所需格式并绘制
-        drawBoardViewMeeting.drawDataBase(new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
+        drawViewMeeting.drawDataBase(new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
                 notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(), notePoint.getPress(),
                 notePoint.getPageIndex(), notePoint.getPointType()), strokeColor, strokeWidth);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //重置第一笔缓存标志，初始笔色，初始线宽
+        PointCacheUtil.getInstance().setCanAddFlag(true);
+        DataCacheUtil.getInstance().setCurrentColor(Constant.colors[0]);
+        DataCacheUtil.getInstance().setStrokeWidth(0);
     }
 }

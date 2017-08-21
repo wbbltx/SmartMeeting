@@ -11,9 +11,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.manager.NoteRecordManager;
+import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
+import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +69,13 @@ public class MeetingFragment extends BaseSimpleFragment {
 
     private void initClassifyData() {
         classifyNameList = new ArrayList<>();
-        classifyNameList.add("工作例会");
-        classifyNameList.add("项目会议");
-        classifyNameList.add("学习培训");
-        classifyNameList.add("研讨会");
-        classifyNameList.add("工作汇报");
-        classifyNameList.add("评审会");
-        classifyNameList.add("其他");
+        classifyNameList.add(Constant.CLASSIFY_NAME_WORK);
+        classifyNameList.add(Constant.CLASSIFY_NAME_PROJECT);
+        classifyNameList.add(Constant.CLASSIFY_NAME_STUDY);
+        classifyNameList.add(Constant.CLASSIFY_NAME_EXPLORE);
+        classifyNameList.add(Constant.CLASSIFY_NAME_REPORT);
+        classifyNameList.add(Constant.CLASSIFY_NAME_REVIEW);
+        classifyNameList.add(Constant.CLASSIFY_NAME_OTHER);
         classifyNameList.add("+");
     }
 
@@ -85,6 +91,7 @@ public class MeetingFragment extends BaseSimpleFragment {
                     Intent intent = new Intent(mActivity, DraftBoxActivity.class);
                     intent.putExtra("classify_name", classifyNameList.get(position));
                     startActivity(intent);
+                    setActiveNoteRecord(classifyNameList.get(position));
                 }
             }
 
@@ -93,5 +100,16 @@ public class MeetingFragment extends BaseSimpleFragment {
                 Toast.makeText(mActivity, "长点击了:" + classifyNameList.get(position), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * 存储选择的分类名称，并设置当前活动记录表
+     */
+    public void setActiveNoteRecord(String classifyName) {
+        DataCacheUtil dataCacheUtil = DataCacheUtil.getInstance();
+        dataCacheUtil.setChosenClassifyName(classifyName); //缓存选择的分类名称
+        NoteRecord activeNoteRecord = NoteRecordManager.getInstance().getNoteRecord(
+                GreenDaoUtil.getInstance().getNoteRecordDao(), classifyName);
+        dataCacheUtil.setActiveNoteRecord(activeNoteRecord); //缓存当前活动记录表
     }
 }

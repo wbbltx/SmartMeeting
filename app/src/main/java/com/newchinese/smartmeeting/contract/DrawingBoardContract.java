@@ -14,6 +14,7 @@ public interface DrawingBoardContract {
     interface View<E> extends BaseView<E> {
         void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth);
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
+        
     }
 
     interface Presenter extends BaseSimplePresenter<View> {

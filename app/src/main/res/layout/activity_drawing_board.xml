@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/simple_background"
+    android:background="@color/colorWhite"
     tools:context="com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity">
 
     <include
@@ -11,8 +11,33 @@
         layout="@layout/bar_base" />
 
     <com.newchinese.coolpensdk.manager.DrawingBoardView
-        android:id="@+id/draw_board_view_meeting"
+        android:id="@+id/draw_view_meeting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/bar" />
+
+    <RelativeLayout
+        android:id="@+id/rl_top_message"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/bar"
+        android:background="@color/simple_background"
+        android:paddingLeft="@dimen/simple_lr_padding"
+        android:paddingRight="@dimen/simple_lr_padding">
+
+        <TextView
+            android:id="@+id/tv_top_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="17-08-15 14:30"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher" />
+    </RelativeLayout>
 </RelativeLayout>

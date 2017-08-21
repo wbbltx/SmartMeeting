@@ -26,6 +26,7 @@ public class NotePage {
     private int pageIndex; //页码
     private long bookId; //记录表Id
     private long date; //时间
+    private String insertPicPath;
     @Convert(columnType = String.class, converter = StringConverterUtil.class)
     private List<String> screenPathList; //录屏文件路径，需将List转换为StringBuilder
     @ToMany(referencedJoinProperty = "pageId") //页线一对多
@@ -36,13 +37,14 @@ public class NotePage {
     /** Used for active entity operations. */
     @Generated(hash = 1639320209)
     private transient NotePageDao myDao;
-    @Generated(hash = 1818281193)
-    public NotePage(Long id, int pageIndex, long bookId, long date,
+    @Generated(hash = 127767579)
+    public NotePage(Long id, int pageIndex, long bookId, long date, String insertPicPath,
             List<String> screenPathList) {
         this.id = id;
         this.pageIndex = pageIndex;
         this.bookId = bookId;
         this.date = date;
+        this.insertPicPath = insertPicPath;
         this.screenPathList = screenPathList;
     }
     @Generated(hash = 1457843902)
@@ -143,5 +145,11 @@ public class NotePage {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getNotePageDao() : null;
+    }
+    public String getInsertPicPath() {
+        return this.insertPicPath;
+    }
+    public void setInsertPicPath(String insertPicPath) {
+        this.insertPicPath = insertPicPath;
     }
 }

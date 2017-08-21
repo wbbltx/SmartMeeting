@@ -11,7 +11,7 @@ import android.util.Log;
  * Date           2017/8/17
  */
 
-public abstract class BaseActivity<T extends BasePresenter,E> extends BaseSimpleActivity implements BaseView<E> {
+public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpleActivity implements BaseView<E> {
     protected T mPresenter;
 
     @Override
@@ -19,15 +19,19 @@ public abstract class BaseActivity<T extends BasePresenter,E> extends BaseSimple
         //初始化Presenter
         mPresenter = initPresenter();
         //给Presenter绑定View
-        if (mPresenter != null)
+        if (mPresenter != null) {
             mPresenter.attachView(this);
+            mPresenter.onPresenterCreated();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null)
+        if (mPresenter != null) {
             mPresenter.detachView();
+            mPresenter.onPresenterDestroy();
+        }
     }
 
     protected abstract T initPresenter();

@@ -16,6 +16,16 @@ public interface BaseSimplePresenter<T extends BaseView> {
      */
     void detachView();
 
+    /**
+     * Presenter创建回调
+     */
+    void onPresenterCreated();
+
+    /**
+     * Presenter销毁回调
+     */
+    void onPresenterDestroy();
+
     boolean isBluetoothOpen();
 
     void openBle();
