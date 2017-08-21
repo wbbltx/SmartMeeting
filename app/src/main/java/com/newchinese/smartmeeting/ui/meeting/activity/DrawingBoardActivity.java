@@ -1,6 +1,5 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,7 +54,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
-//        mPresenter.loadFirstStokeCache(); //加载第一笔缓存
+        mPresenter.loadFirstStokeCache(); //加载第一笔缓存
         tvTitle.setText("书写");
     }
 

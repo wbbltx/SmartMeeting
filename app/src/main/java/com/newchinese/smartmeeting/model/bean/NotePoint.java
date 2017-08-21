@@ -91,4 +91,19 @@ public class NotePoint {
     public void setPointType(int pointType) {
         this.pointType = pointType;
     }
+
+    @Override
+    public String toString() {
+        return "NotePoint{" +
+                "id=" + id +
+                ", strokeId=" + strokeId +
+                ", pX=" + pX +
+                ", pY=" + pY +
+                ", press=" + press +
+                ", firstPress=" + firstPress +
+                ", testTime=" + testTime +
+                ", pageIndex=" + pageIndex +
+                ", pointType=" + pointType +
+                '}';
+    }
 }

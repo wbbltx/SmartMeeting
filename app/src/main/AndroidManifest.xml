@@ -34,10 +34,14 @@
             android:name=".ui.main.activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.meeting.activity.DraftBoxActivity" />
+        <activity
+            android:name=".ui.meeting.activity.DraftBoxActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".ui.login.activity.LoginActivity" />
         <activity android:name=".ui.login.activity.RegisterActivity"></activity>
-        <activity android:name=".ui.meeting.activity.DrawingBoardActivity"></activity>
+        <activity
+            android:name=".ui.meeting.activity.DrawingBoardActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -62,7 +63,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
-//    private ScanResultDialog scanResultDialog;
+    //    private ScanResultDialog scanResultDialog;
     private MainActivity context = MainActivity.this;
 
     @Override
@@ -154,6 +155,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        Log.e("test_point", "onPointCatched：" + notePoint.toString());
         //存线点
         mPresenter.saveStrokeAndPoint(notePoint);
         //会议页才可跳页，其他的地方书写则只存数据库
@@ -164,10 +166,11 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     }
 
     /**
-     * 收到线回调
+     * 收到线回调8
      */
     @Override
     public void onStrokeCached(int fromType, com.newchinese.coolpensdk.entity.NoteStroke noteStroke) {
+        Log.e("test_point", "onStrokeCached：" + noteStroke.toString());
         EventBus.getDefault().post(new OnStrokeCatchedEvent(fromType, noteStroke));
     }
 
@@ -176,6 +179,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        Log.e("test_point", "onPageIndexChanged：" + notePoint.toString());
         //存页
         mPresenter.savePage(notePoint);
         EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));

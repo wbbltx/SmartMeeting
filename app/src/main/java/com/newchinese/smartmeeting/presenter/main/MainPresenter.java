@@ -156,7 +156,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
      * 过了则收藏所有记录表内缩略图，清空7张记录表内数据。
      */
     private void collectAndClearAllRecord() {
-        //
+
     }
 
     /**
@@ -168,9 +168,10 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         Runnable savePageRunnable = new Runnable() {
             @Override
             public void run() {
+                Log.e("test_point", "savePage");
                 activeNotePage = notePageManager.getPageByIndex(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex());
                 if (activeNotePage == null) {
-                    notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
+                    activeNotePage = notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
                             System.currentTimeMillis(), "", "", new ArrayList<String>()); //截图与录屏文件path都置空待手动设置更新
                 }
                 dataCacheUtil.setActiveNotePage(activeNotePage); //缓存当前活动页
@@ -187,6 +188,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         Runnable saveStrokePointRunnable = new Runnable() {
             @Override
             public void run() {
+                Log.e("test_point", "saveStrokeAndPoint");
                 //down点时往数据库存线
                 if (notePoint.getPointType() == PointType.TYPE_DOWN) {
                     activeNoteStroke = noteStrokeManager.insertNoteStroke(noteStrokeDao,
