@@ -143,10 +143,20 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     /**
-     * 过0点收藏所有记录表内缩略图，清空7张记录表内数据。
+     * 从服务器获取是否过零点的状态
+     */
+    private void requestZeroStatus() {
+        //RxJava2+Retrofit2请求
+        if (true) {
+            collectAndClearAllRecord();
+        }
+    }
+
+    /**
+     * 过了则收藏所有记录表内缩略图，清空7张记录表内数据。
      */
     private void collectAndClearAllRecord() {
-
+        //
     }
 
     /**
@@ -161,7 +171,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 activeNotePage = notePageManager.getPageByIndex(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex());
                 if (activeNotePage == null) {
                     notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
-                            System.currentTimeMillis(), "", new ArrayList<String>()); //截图与录屏文件path都置空待手动设置更新
+                            System.currentTimeMillis(), "", "", new ArrayList<String>()); //截图与录屏文件path都置空待手动设置更新
                 }
                 dataCacheUtil.setActiveNotePage(activeNotePage); //缓存当前活动页
             }

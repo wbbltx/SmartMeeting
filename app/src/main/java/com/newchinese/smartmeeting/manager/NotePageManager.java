@@ -33,13 +33,14 @@ public class NotePageManager {
      * @param bookId 关联本id
      */
     public NotePage insertNotePage(NotePageDao notePageDao, long bookId, int pageIndex, long date,
-                                   String insertPicPath, List<String> screenPathList) {
+                                   String insertPicPath, String thumbnailPath, List<String> screenPathList) {
         NotePage notePage = new NotePage();
         notePage.setId(null);
         notePage.setBookId(bookId);
         notePage.setPageIndex(pageIndex);
         notePage.setDate(date);
         notePage.setInsertPicPath(insertPicPath);
+        notePage.setThumbnailPath(thumbnailPath);
         notePage.setScreenPathList(screenPathList);
         notePageDao.insert(notePage);
         return notePage;
