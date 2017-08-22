@@ -4,6 +4,9 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Description:   数据缓存工具类
  * author         xulei
@@ -16,6 +19,7 @@ public class DataCacheUtil {
     private int currentColor = Constant.colors[0]; //笔的颜色
     private float strokeWidth = 0; //线宽
     private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
+    private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
 
     private static class SingleHolder {
         private static final DataCacheUtil INSTANCE = new DataCacheUtil();
@@ -66,5 +70,13 @@ public class DataCacheUtil {
 
     public void setChosenClassifyName(String chosenClassifyName) {
         this.chosenClassifyName = chosenClassifyName;
+    }
+
+    public List<NotePage> getActiveNotePageList() {
+        return activeNotePageList;
+    }
+
+    public void setActiveNotePageList(List<NotePage> activeNotePageList) {
+        this.activeNotePageList = activeNotePageList;
     }
 }

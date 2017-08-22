@@ -143,10 +143,9 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     /**
-     * 从服务器获取是否过零点的状态
+     * 获取当前时间与缓存时间对比不是一天
      */
     private void requestZeroStatus() {
-        //RxJava2+Retrofit2请求
         if (true) {
             collectAndClearAllRecord();
         }
@@ -175,10 +174,10 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     @Override
     public void savePage(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
+        Log.i("test_active", "savePage：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable savePageRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.e("test_point", "savePage");
                 activeNotePage = notePageManager.getPageByIndex(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex());
                 if (activeNotePage == null) {
                     activeNotePage = notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
@@ -198,7 +197,6 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         Runnable saveStrokePointRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.e("test_point", "saveStrokeAndPoint");
                 //down点时往数据库存线
                 if (notePoint.getPointType() == PointType.TYPE_DOWN) {
                     activeNoteStroke = noteStrokeManager.insertNoteStroke(noteStrokeDao,
@@ -207,7 +205,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 }
                 //防止currentNoteStroke为空
                 if (activeNoteStroke == null) {
-                    Log.e("greendao_test", "saveStrokeAndPoint：noteStrokeData为空，向数据库添加");
+                    Log.i("test_greendao", "saveStrokeAndPoint：noteStrokeData为空，向数据库添加");
                     activeNoteStroke = noteStrokeManager.insertNoteStroke(noteStrokeDao,
                             dataCacheUtil.getActiveNotePage().getId(), dataCacheUtil.getCurrentColor(),
                             dataCacheUtil.getStrokeWidth());

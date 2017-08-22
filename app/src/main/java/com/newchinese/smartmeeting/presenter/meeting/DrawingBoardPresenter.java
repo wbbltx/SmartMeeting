@@ -93,6 +93,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
                                 }
                             });
                     isFirstLoad = false;
+                    mView.setTitleText(pageIndex);
                 }
                 mView.getFirstStrokeCachePoint(notePoint);
             }
@@ -108,6 +109,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     public void readDataBasePoint(final int pageIndex) {
         mView.clearCanvars(); //清屏防止有上一页缓存
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord(); //当前活动的分类记录表
+        Log.i("test_active", "readDataBasePoint：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable readDataRunnable = new Runnable() {
             @Override
             public void run() {

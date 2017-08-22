@@ -1,11 +1,15 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.coolpensdk.constants.PointFromType;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
+import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -20,8 +24,12 @@ import com.newchinese.smartmeeting.util.PointCacheUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Description:   画板Activity
@@ -29,6 +37,7 @@ import butterknife.OnClick;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, String> implements DrawingBoardContract.View<String> {
+    public final static String TAG_PAGE_INDEX = "selectPageIndex";
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -45,10 +54,27 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     }
 
     @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
+
+    }
+
+    @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
         mPresenter.loadFirstStokeCache(); //加载第一笔缓存
-        tvTitle.setText("书写");
+        //仅列表点击进入逻辑
+        Intent intent = getIntent();
+        if (intent.hasExtra(TAG_PAGE_INDEX)) {
+            pageIndex = intent.getIntExtra("selectPageIndex", 0);
+            setTitleText(pageIndex); //设置当前页数
+            Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    mPresenter.readDataBasePoint(pageIndex);
+                }
+            });
+        }
     }
 
     @Override
@@ -116,7 +142,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
+                setTitleText(pageIndex); //设置当前页数
                 if (drawViewMeeting != null) { //换页清空画布
                     drawViewMeeting.clearCanvars();
                 }
@@ -131,8 +157,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
      */
     @Override
     public void getFirstStrokeCachePoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        pageIndex = notePoint.getPageIndex();
-        tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
         drawViewMeeting.drawLine(notePoint);
     }
 
@@ -142,6 +166,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     public void clearCanvars() {
         drawViewMeeting.clearCanvars();
+    }
+
+    /**
+     * 设置标题
+     */
+    @Override
+    public void setTitleText(int pageIndex) {
+        tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
     }
 
     /**
@@ -162,5 +194,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
         DataCacheUtil.getInstance().setStrokeWidth(0);
         //关闭线程池
         mPresenter.shutDownExecutor();
+        //清除SDK数据缓存
+        DrawingboardAPI.getInstance().clearCache();
     }
 }

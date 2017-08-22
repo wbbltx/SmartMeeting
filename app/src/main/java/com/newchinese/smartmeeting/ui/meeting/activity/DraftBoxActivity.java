@@ -14,11 +14,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -26,13 +23,14 @@ import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
-import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
+import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.DraftPageRecyAdapter;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -43,7 +41,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -51,7 +48,8 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/18 16:34
  */
-public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener {
+public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
+        DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener, OnItemClickedListener {
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
@@ -61,12 +59,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @BindView(R.id.rv_draft_page_list)
     RecyclerView rvDraftPageList;
     private String classifyName; //分类名
+    private static boolean isFirstTime = true;
 
     private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
-    private static boolean isFirstTime = true;
 
     @Override
     protected int getLayoutId() {
@@ -96,18 +94,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     protected void initStateAndData() {
+        EventBus.getDefault().register(this);
         Intent intent = getIntent();
         classifyName = intent.getStringExtra("classify_name");
-
-        scanResultDialog = new ScanResultDialog(this);
 
         tvTitle.setText(classifyName);
 //        ivBack.setImageResource(0);
         ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
 
+        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
-
-        EventBus.getDefault().register(this);
 
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
@@ -119,6 +115,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void initListener() {
         mPresenter.initListener();
         scanResultDialog.setOnDeviceItemClickListener(this);
+        adapter.setOnItemClickedListener(this);
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen})
@@ -203,7 +200,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
             }
         } else {
-                scanResultDialog.show();
+            scanResultDialog.show();
         }
     }
 
@@ -242,6 +239,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     /**
      * 设备列表的item点击事件
+     *
      * @param add
      */
     @Override
@@ -257,6 +255,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void getActivePageList(final List<NotePage> pageList) {
+        //更新当前记录表所有页缓存
+        DataCacheUtil.getInstance().setActiveNotePageList(pageList);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -273,5 +273,25 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         super.onResume();
         //加载数据库当前活动记录的所有页
         mPresenter.loadActivePageList();
+    }
+
+    /**
+     * 列表点击事件
+     */
+    @Override
+    public void onClick(View view, int position) {
+        NotePage selectNotePage = adapter.getItem(position);
+        DataCacheUtil.getInstance().setActiveNotePage(selectNotePage); //更新活动页
+        Intent intent = new Intent(this, DrawingBoardActivity.class);
+        intent.putExtra(DrawingBoardActivity.TAG_PAGE_INDEX, selectNotePage.getPageIndex());
+        startActivity(intent);
+    }
+
+    /**
+     * 列表长点击事件
+     */
+    @Override
+    public void onLongClick(View view, int position) {
+
     }
 }

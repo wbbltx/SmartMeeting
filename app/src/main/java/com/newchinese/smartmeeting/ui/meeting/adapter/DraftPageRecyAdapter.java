@@ -62,6 +62,10 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
         return notePageList.size();
     }
 
+    public NotePage getItem(int position) {
+        return notePageList.get(position);
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_thumnbail)
         ImageView ivThumnbail;

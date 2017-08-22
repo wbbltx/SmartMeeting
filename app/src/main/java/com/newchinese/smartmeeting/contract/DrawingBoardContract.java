@@ -16,6 +16,8 @@ public interface DrawingBoardContract {
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
         void clearCanvars();
+        
+        void setTitleText(int pageIndex);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
