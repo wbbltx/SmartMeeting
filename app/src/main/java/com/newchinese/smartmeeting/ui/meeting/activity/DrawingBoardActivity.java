@@ -62,9 +62,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     }
 
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
-
+    protected DrawingBoardPresenter initPresenter() {
+        return new DrawingBoardPresenter();
     }
 
     @Override
@@ -106,8 +105,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                         break;
                     case MotionEvent.ACTION_UP:
                         if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            activeNotePageList = dataCacheUtil.getActiveNotePageList();
                             //读下一页的数据库数据
-                            int position = getCurrentPosition();
+                            int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                             if (position > 0 && position <= (activeNotePageList.size() - 1)) {
 //                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                                 drawViewMeeting.clearCanvars(); //换页清空画布
@@ -116,8 +116,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                                 mPresenter.readDataBasePoint(pageIndex);
                             }
                         } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            activeNotePageList = dataCacheUtil.getActiveNotePageList();
                             //读上一页的数据库数据
-                            int position = getCurrentPosition();
+                            int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                             if (position >= 0 && position < (activeNotePageList.size() - 1)) {
 //                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                                 drawViewMeeting.clearCanvars(); //换页清空画布
@@ -131,26 +132,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 return true;
             }
         });
-    }
-
-    /**
-     * 获取当前NotePage在集合中的Pointion
-     */
-    public int getCurrentPosition() {
-        activeNotePageList = dataCacheUtil.getActiveNotePageList();
-        Log.e("test_active", "size：" + activeNotePageList.size() + "," + activeNotePageList.toString());
-        int position = 0;
-        for (int i = 0; i < activeNotePageList.size(); i++) {
-            if (activeNotePageList.get(i).getPageIndex() == pageIndex) {
-                position = i;
-            }
-        }
-        return position;
-    }
-
-    @Override
-    protected DrawingBoardPresenter initPresenter() {
-        return new DrawingBoardPresenter();
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen})
@@ -218,14 +199,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     }
 
     /**
-     * 获取到第一笔缓存的点
-     */
-    @Override
-    public void getFirstStrokeCachePoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-        drawViewMeeting.drawLine(notePoint);
-    }
-
-    /**
      * 清屏
      */
     @Override
@@ -242,24 +215,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     }
 
     /**
+     * 获取到第一笔缓存的点
+     */
+    @Override
+    public void getFirstStrokeCachePoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        drawViewMeeting.drawLine(notePoint);
+    }
+
+    /**
      * 获取到数据库的点
      */
     @Override
     public void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor, float strokeWidth) {
         //转换点对象为SDK所需格式并绘制
         drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //重置第一笔缓存标志，初始笔色，初始线宽
-        PointCacheUtil.getInstance().setCanAddFlag(true);
-        DataCacheUtil.getInstance().setCurrentColor(Constant.colors[0]);
-        DataCacheUtil.getInstance().setStrokeWidth(0);
-        //关闭线程池
-        mPresenter.shutDownExecutor();
-        //清除SDK数据缓存
-        DrawingboardAPI.getInstance().clearCache();
     }
 }

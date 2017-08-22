@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.content.Intent;
+
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 import com.newchinese.smartmeeting.model.bean.NotePage;

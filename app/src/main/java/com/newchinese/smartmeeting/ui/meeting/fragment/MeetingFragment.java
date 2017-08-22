@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ public class MeetingFragment extends BaseSimpleFragment {
         //设置RecyclerView保持固定的大小
         rvMeetingClassify.setHasFixedSize(true);
         //设置RecyclerView布局管理
-        rvMeetingClassify.setLayoutManager(new GridLayoutManager(mActivity, 2));
+        rvMeetingClassify.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         //设置RecyclerView的动画
         rvMeetingClassify.setItemAnimator(new DefaultItemAnimator());
     }
@@ -76,12 +77,12 @@ public class MeetingFragment extends BaseSimpleFragment {
         classifyNameList = new ArrayList<>();
         classifyNameList.add(Constant.CLASSIFY_NAME_WORK);
         classifyNameList.add(Constant.CLASSIFY_NAME_PROJECT);
-        classifyNameList.add(Constant.CLASSIFY_NAME_STUDY);
         classifyNameList.add(Constant.CLASSIFY_NAME_EXPLORE);
+        classifyNameList.add(Constant.CLASSIFY_NAME_STUDY);
         classifyNameList.add(Constant.CLASSIFY_NAME_REPORT);
         classifyNameList.add(Constant.CLASSIFY_NAME_REVIEW);
-        classifyNameList.add(Constant.CLASSIFY_NAME_OTHER);
         classifyNameList.add("+");
+        classifyNameList.add(Constant.CLASSIFY_NAME_OTHER);
     }
 
     @Override
@@ -89,8 +90,8 @@ public class MeetingFragment extends BaseSimpleFragment {
         adapter.setOnItemClickedListener(new OnItemClickedListener() {
             @Override
             public void onClick(View view, int position) {
-                if (position == (classifyNameList.size() - 1)) { //点的加号，添加Item
-                    adapter.addItem(position, "学术报告");
+                if (position == (classifyNameList.size() - 2)) { //点的加号，添加Item
+//                    adapter.addItem(position, "学术报告");
                 } else {
                     Intent intent = new Intent(mActivity, DraftBoxActivity.class);
                     intent.putExtra("classify_name", classifyNameList.get(position));

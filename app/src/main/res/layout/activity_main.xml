@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/simple_background"
+    android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.main.activity.MainActivity">
 
     <include layout="@layout/bar_base" />
@@ -15,10 +15,16 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/simple_line" />
+
     <RadioGroup
         android:id="@+id/rg_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:orientation="horizontal">
 
         <RadioButton
@@ -26,23 +32,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="记录" />
+            android:button="@null"
+            android:drawablePadding="-10dp"
+            android:drawableTop="@drawable/selector_bottom_record"
+            android:gravity="center" />
 
         <RadioButton
             android:id="@+id/rb_meeting"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="会议" />
+            android:button="@null"
+            android:drawablePadding="-10dp"
+            android:drawableTop="@drawable/selector_bottom_meeting"
+            android:gravity="center" />
 
         <RadioButton
             android:id="@+id/rb_mine"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="我" />
+            android:button="@null"
+            android:drawablePadding="-10dp"
+            android:drawableTop="@drawable/selector_bottom_mine"
+            android:gravity="center" />
     </RadioGroup>
 </LinearLayout>

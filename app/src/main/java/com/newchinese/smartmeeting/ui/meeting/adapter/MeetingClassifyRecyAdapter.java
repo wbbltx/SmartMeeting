@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class MeetingClassifyRecyAdapter extends RecyclerView.Adapter<MeetingClas
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tvClassifyName.setText(classifyList.get(position));
+        holder.ivBackLine.setImageResource(Constant.classifyPics[position]);
     }
 
     @Override
@@ -73,8 +74,6 @@ public class MeetingClassifyRecyAdapter extends RecyclerView.Adapter<MeetingClas
     class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_back_line)
         ImageView ivBackLine;
-        @BindView(R.id.tv_classify_name)
-        TextView tvClassifyName;
 
         MyViewHolder(View itemView) {
             super(itemView);

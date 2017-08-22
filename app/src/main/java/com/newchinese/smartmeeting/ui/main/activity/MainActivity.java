@@ -48,7 +48,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
-    private MainActivity context = MainActivity.this;
 
     @Override
     protected int getLayoutId() {

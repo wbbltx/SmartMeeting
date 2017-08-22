@@ -122,6 +122,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
+                finish();
                 break;
             case R.id.iv_pen:
 //                EventBus.getDefault().post(new CheckBlueStateEvent());

@@ -1,8 +1,11 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.constants.PointType;
+import com.newchinese.coolpensdk.manager.DrawingboardAPI;
+import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DrawingBoardContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
@@ -55,7 +58,14 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
 
     @Override
     public void onPresenterDestroy() {
-
+        //重置第一笔缓存标志，初始笔色，初始线宽
+        PointCacheUtil.getInstance().setCanAddFlag(true);
+        DataCacheUtil.getInstance().setCurrentColor(Constant.colors[0]);
+        DataCacheUtil.getInstance().setStrokeWidth(0);
+        //关闭线程池
+        shutDownExecutor();
+        //清除SDK数据缓存
+        DrawingboardAPI.getInstance().clearCache();
     }
 
     @Override
@@ -72,7 +82,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     public void scanBlueDevice() {
 
     }
-
+    
     /**
      * 加载第一笔缓存
      */
@@ -140,7 +150,21 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         };
         singleThreadExecutor.execute(readDataRunnable);
     }
-    
+
+    /**
+     * 获取当前NotePage在集合中的Pointion
+     */
+    public int getCurrentPosition(List<NotePage> activeNotePageList, int pageIndex) {
+        Log.i("test_active", "size：" + activeNotePageList.size() + "," + activeNotePageList.toString());
+        int position = 0;
+        for (int i = 0; i < activeNotePageList.size(); i++) {
+            if (activeNotePageList.get(i).getPageIndex() == pageIndex) {
+                position = i;
+            }
+        }
+        return position;
+    }
+
     /**
      * 中断线程池
      */
