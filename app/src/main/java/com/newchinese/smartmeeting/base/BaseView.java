@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.base;
 
+import com.newchinese.smartmeeting.listener.PopWindowListener;
+
 /**
  * Description:   MVP中的基本view接口类
  * author         xulei
@@ -8,5 +10,19 @@ package com.newchinese.smartmeeting.base;
 
 public interface BaseView<T> {
 
+    void onScanComplete();
 
+    void showResult(T t);
+
+    void onSuccess();
+
+    void onFailed();
+
+    void onConnecting();
+
+    void onDisconnected();
+
+    void onHistoryDetected(String str, PopWindowListener popWindowListener);
+
+    void onElecReceived(String ele);
 }

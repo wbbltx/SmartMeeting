@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.newchinese.smartmeeting.listener.PopWindowListener;
+
 /**
  * Description:   基于MVP的基本Fragment
  * author         xulei
@@ -27,4 +29,44 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSimpleFr
     }
 
     protected abstract T initPresenter();
+
+    @Override
+    public void onScanComplete() {
+
+    }
+
+    @Override
+    public void showResult(Object o) {
+
+    }
+
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onFailed() {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onConnecting() {
+
+    }
+
+    @Override
+    public void onHistoryDetected(String str, PopWindowListener popWindowListener) {
+
+    }
+
+    @Override
+    public void onElecReceived(String ele) {
+
+    }
 }

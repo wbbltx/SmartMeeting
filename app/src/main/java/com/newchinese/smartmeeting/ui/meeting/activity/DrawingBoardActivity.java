@@ -48,7 +48,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
-    ImageView ivPen;
+    TextView ivPen;
     @BindView(R.id.draw_view_meeting)
     DrawingBoardView drawViewMeeting;
     private int pageIndex;

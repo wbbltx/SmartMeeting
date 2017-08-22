@@ -8,11 +8,11 @@ import com.newchinese.coolpensdk.listener.OnElectricityRequestListener;
 import com.newchinese.coolpensdk.listener.OnKeyListener;
 import com.newchinese.coolpensdk.listener.OnLeNotificationListener;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
+import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
-import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseView;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
-import com.newchinese.smartmeeting.contract.MainContract;
+import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
@@ -21,11 +21,21 @@ import com.newchinese.smartmeeting.util.SharedPreUtils;
  * Created by Administrator on 2017/8/19 0019.
  */
 
-public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyListener,OnLeNotificationListener,OnElectricityRequestListener{
+public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyListener,OnLeNotificationListener,OnElectricityRequestListener, PopWindowListener {
 
-    private DraftBoxContract.View mView;
+    private BaseView mView;
     private boolean isInited;
     private static String TAG = "BleListener";
+
+    @Override
+    public void onConfirm() {//确认读取存储数据
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.READ_STORAGE_INFO);
+    }
+
+    @Override
+    public void onCancel() {//删除存储数据
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
+    }
 
     private interface BleListenerHolder{
         BleListener BLE_LISTENER = new BleListener();
@@ -35,7 +45,7 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
         return BleListenerHolder.BLE_LISTENER;
     }
 
-    public BleListener init(DraftBoxContract.View iView) {
+    public BleListener init(BaseView iView) {
         if (!isInited) {
             mView = iView;
             isInited = true;
@@ -55,21 +65,28 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
 
     @Override
     public void onConnected() {
+        XLog.d(TAG,"已连接");
+        //连接成功以后将临时变量中的地址放入sp中 同时询问有没有存储数据
+        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+        mView.onSuccess();
     }
 
     @Override
     public void onDisconnected() {
+        mView.onDisconnected();
         XLog.d(TAG,"连接断开");
     }
 
     @Override
     public void onFailed(int i) {
+        mView.onFailed();
         XLog.d(TAG,"连接失败");
     }
 
     @Override
     public void isConnecting() {
+        mView.onConnecting();
         XLog.d(TAG,"连接中...");
     }
 
@@ -86,13 +103,12 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
 
     @Override
     public void onReadHistroyInfo() {
-
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
     }
 
     @Override
     public void onHistroyInfoDetected() {
-
-        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
+        mView.onHistoryDetected(App.getAppliction().getResources().getString(R.string.read_channel),this);
     }
 
     @Override
@@ -101,8 +117,12 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
     }
 
     @Override
-    public void onElectricityDetected(String electricity) {
-
+    public void onElectricityDetected(String s) {
+        String str = s.substring(s.length() - 2, s.length());
+        str = Integer.valueOf(str, 16).toString();
+        if (mView != null){
+            mView.onElecReceived(str);
+        }
     }
 }
     

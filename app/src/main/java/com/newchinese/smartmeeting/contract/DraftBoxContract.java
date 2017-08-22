@@ -1,5 +1,8 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 import com.newchinese.smartmeeting.model.bean.NotePage;
@@ -14,11 +17,6 @@ import java.util.List;
 
 public interface DraftBoxContract {
     interface View<E> extends BaseView<E> {
-
-        void onScanComplete();
-
-        void showResult(E e);
-
         void getActivePageList(List<NotePage> pageList);
     }
 
@@ -34,5 +32,11 @@ public interface DraftBoxContract {
         void connectDevice(String add);
 
         void loadActivePageList();
+
+        void requestElectricity();
+
+        void startTimer();
+
+        void stopTimer();
     }
 }

@@ -44,5 +44,4 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
         startActivity(intent);
         finish();
     }
-
 }

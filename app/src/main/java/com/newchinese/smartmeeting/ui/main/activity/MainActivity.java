@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
-    ImageView ivPen;
+    TextView ivPen;
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;

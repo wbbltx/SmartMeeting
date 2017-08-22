@@ -3,5 +3,7 @@
     <string name="bluetooth_request">酷神笔开启蓝牙！</string>
     <string name="bluetooth_open">开启 下一步</string>
     <string name="bluetooth_stay">不开启</string>
+    <string name="read_channel">是否读取存储数据</string>
+
 
 </resources>

@@ -34,11 +34,13 @@
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
-            <ImageView
+            <TextView
                 android:id="@+id/iv_pen"
+                android:gravity="center"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/ic_launcher" />
+                android:textColor="@color/colorWhite"
+                 />
 
             <TextView
                 android:id="@+id/tv_share"

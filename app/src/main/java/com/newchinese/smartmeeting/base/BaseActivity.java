@@ -1,8 +1,20 @@
 package com.newchinese.smartmeeting.base;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.graphics.drawable.Animatable2Compat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
+import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 
 /**
@@ -12,12 +24,18 @@ import android.util.Log;
  */
 
 public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpleActivity implements BaseView<E> {
+    private static final String TAG = "BaseActivity";
     protected T mPresenter;
+    private AlertDialog.Builder mBuilder;
+    private AlertDialog mAlertDialog;
+    public Animation animation;
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         //初始化Presenter
         mPresenter = initPresenter();
+
+        animation = AnimationUtils.loadAnimation(this, R.anim.pen_loading);
         //给Presenter绑定View
         if (mPresenter != null) {
             mPresenter.attachView(this);
@@ -35,4 +53,80 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     }
 
     protected abstract T initPresenter();
+
+    @Override
+    public void onScanComplete() {
+
+    }
+
+    @Override
+    public void showResult(E e) {
+
+    }
+
+    @Override
+    public void onSuccess() {//设置图标的状态为连接
+        XLog.d(TAG,"连接成功在 "+TAG+" 中被调用");
+        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
+    }
+
+    @Override
+    public void onFailed() {//设置图标的状态为断开
+    }
+
+    @Override
+    public void onConnecting() {//设置图标的状态为正在连接
+
+    }
+
+    @Override
+    public void onDisconnected() {//设置图标的状态为断开
+
+    }
+
+    @Override
+    public void onElecReceived(String ele) {
+
+    }
+
+    @Override
+    public void onHistoryDetected(String msg, final PopWindowListener listener) {
+        //应该弹出询问框 读取或者删除存储数据
+        showDialog(msg, listener);
+    }
+
+    public void showDialog(String msg, final PopWindowListener listener) {
+        if (!mAlertDialog.isShowing()) {
+            return;
+        }
+        mBuilder = mBuilder == null ? new AlertDialog.Builder(this) : mBuilder;
+        mAlertDialog = mAlertDialog == null ? mBuilder.setTitle("提示：")
+                .setMessage(msg)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (listener != null) {
+                            listener.onConfirm();
+                        }
+                    }
+                })
+                .setNegativeButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (listener != null) {
+                            listener.onCancel();
+                        }
+                    }
+                })
+                .create() : mAlertDialog;
+//        if (!mAlertDialog.isShowing()) {
+//            mAlertDialog.show();
+//        } else {
+//            mAlertDialog.setMessage(msg);
+//        }
+    }
+
+
 }

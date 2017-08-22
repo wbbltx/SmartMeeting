@@ -1,18 +1,25 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
+import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
+import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.ui.main.BleListener;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,7 +30,15 @@ import java.util.concurrent.Executors;
  */
 
 public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
+    private static final String TAG = "DraftBoxPresenter";
     private ExecutorService singleThreadExecutor; //单核心线程线程池
+    private Timer timer = new Timer();
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            requestElectricity();
+        }
+    };
 
     @Override
     public void onPresenterCreated() {
@@ -33,6 +48,14 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void onPresenterDestroy() {
+        if (timer != null){
+            timer.cancel();
+            timer = null;
+        }
+        if (timerTask != null){
+            timerTask.cancel();
+            timerTask = null;
+        }
 
     }
 
@@ -50,6 +73,23 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     @Override
     public void scanBlueDevice() {
         BluetoothLe.getDefault().setScanPeriod(5000).startScan();
+    }
+
+    @Override
+    public void requestElectricity() {
+        XLog.d(TAG,"发送请求电量命令");
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OBTAIN_ELECTRICITY);
+    }
+
+    @Override
+    public void startTimer() {
+        timer.schedule(timerTask,0,20000);
+    }
+
+    @Override
+    public void stopTimer() {
+        timerTask.cancel();
+        timer.cancel();
     }
 
     @Override
@@ -87,6 +127,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void connectDevice(String add) {
+        //去连接设备时 将mac地址放在临时变量中
+        BluCommonUtils.setDeviceAddress(add);
         BluetoothLe.getDefault().connectBleDevice(add);
     }
 
