@@ -89,7 +89,6 @@ public class MeetingFragment extends BaseSimpleFragment {
         adapter.setOnItemClickedListener(new OnItemClickedListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(mActivity, "点击了:" + classifyNameList.get(position), Toast.LENGTH_SHORT).show();
                 if (position == (classifyNameList.size() - 1)) { //点的加号，添加Item
                     adapter.addItem(position, "学术报告");
                 } else {
@@ -102,7 +101,6 @@ public class MeetingFragment extends BaseSimpleFragment {
 
             @Override
             public void onLongClick(View view, int position) {
-                Toast.makeText(mActivity, "长点击了:" + classifyNameList.get(position), Toast.LENGTH_SHORT).show();
             }
         });
     }

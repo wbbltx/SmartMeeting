@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.util.Log;
+
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;

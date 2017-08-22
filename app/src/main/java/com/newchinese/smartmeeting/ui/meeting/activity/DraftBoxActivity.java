@@ -294,4 +294,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onLongClick(View view, int position) {
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //清空活动记录所有页集合
+        DataCacheUtil.getInstance().clearActiveNotePageList();
+    }
 }

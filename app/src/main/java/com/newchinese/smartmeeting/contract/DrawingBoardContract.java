@@ -2,6 +2,9 @@ package com.newchinese.smartmeeting.contract;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
+import com.newchinese.smartmeeting.model.bean.NotePage;
+
+import java.util.List;
 
 /**
  * Description:   画板页Contract
@@ -16,7 +19,7 @@ public interface DrawingBoardContract {
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
         void clearCanvars();
-        
+
         void setTitleText(int pageIndex);
     }
 

@@ -140,7 +140,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         };
         singleThreadExecutor.execute(readDataRunnable);
     }
-
+    
     /**
      * 中断线程池
      */

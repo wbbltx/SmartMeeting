@@ -79,4 +79,8 @@ public class DataCacheUtil {
     public void setActiveNotePageList(List<NotePage> activeNotePageList) {
         this.activeNotePageList = activeNotePageList;
     }
+
+    public void clearActiveNotePageList() {
+        activeNotePageList.clear();
+    }
 }

@@ -3,9 +3,12 @@ package com.newchinese.smartmeeting.ui.meeting.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.coolpensdk.constants.PointFromType;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
@@ -14,6 +17,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardContract;
+import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
@@ -24,6 +28,7 @@ import com.newchinese.smartmeeting.util.PointCacheUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -47,6 +52,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @BindView(R.id.draw_view_meeting)
     DrawingBoardView drawViewMeeting;
     private int pageIndex;
+    private List<NotePage> activeNotePageList;
+    private float mPosX, mPosY, mCurPosX, mCurPosY;
+    private DataCacheUtil dataCacheUtil;
 
     @Override
     protected int getLayoutId() {
@@ -62,8 +70,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
-        mPresenter.loadFirstStokeCache(); //加载第一笔缓存
-        //仅列表点击进入逻辑
+        //获取当前活动本所有页
+        dataCacheUtil = DataCacheUtil.getInstance();
+        activeNotePageList = dataCacheUtil.getActiveNotePageList();
+        //加载第一笔缓存
+        mPresenter.loadFirstStokeCache();
+        //仅列表页点击进入逻辑
         Intent intent = getIntent();
         if (intent.hasExtra(TAG_PAGE_INDEX)) {
             pageIndex = intent.getIntExtra("selectPageIndex", 0);
@@ -79,7 +91,61 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
 
     @Override
     protected void initListener() {
+        // 设置左右滑动作监听器
+        drawViewMeeting.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mPosX = event.getX();
+                        mPosY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        mCurPosX = event.getX();
+                        mCurPosY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            //读下一页的数据库数据
+                            int position = getCurrentPosition();
+                            if (position > 0 && position <= (activeNotePageList.size() - 1)) {
+//                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                                drawViewMeeting.clearCanvars(); //换页清空画布
+                                pageIndex = activeNotePageList.get(position - 1).getPageIndex();
+                                setTitleText(pageIndex);
+                                mPresenter.readDataBasePoint(pageIndex);
+                            }
+                        } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 25)) {
+                            //读上一页的数据库数据
+                            int position = getCurrentPosition();
+                            if (position >= 0 && position < (activeNotePageList.size() - 1)) {
+//                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                                drawViewMeeting.clearCanvars(); //换页清空画布
+                                pageIndex = activeNotePageList.get(position + 1).getPageIndex();
+                                setTitleText(pageIndex);
+                                mPresenter.readDataBasePoint(pageIndex);
+                            }
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+    }
 
+    /**
+     * 获取当前NotePage在集合中的Pointion
+     */
+    public int getCurrentPosition() {
+        activeNotePageList = dataCacheUtil.getActiveNotePageList();
+        Log.e("test_active", "size：" + activeNotePageList.size() + "," + activeNotePageList.toString());
+        int position = 0;
+        for (int i = 0; i < activeNotePageList.size(); i++) {
+            if (activeNotePageList.get(i).getPageIndex() == pageIndex) {
+                position = i;
+            }
+        }
+        return position;
     }
 
     @Override
@@ -94,7 +160,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 finish();
                 break;
             case R.id.iv_pen:
-
                 break;
         }
     }

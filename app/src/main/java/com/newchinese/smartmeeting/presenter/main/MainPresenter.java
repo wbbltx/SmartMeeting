@@ -27,6 +27,7 @@ import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,6 +52,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private DataCacheUtil dataCacheUtil;
     private PointCacheUtil pointCacheUtil;
     private ExecutorService singleThreadExecutor;
+    private List<NotePage> activeNotePageList;
 
     /**
      * 获取当前线程池对象
@@ -70,7 +72,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         noteStrokeManager = NoteStrokeManager.getInstance();
         notePointManager = NotePointManager.getInstance();
         dataCacheUtil = DataCacheUtil.getInstance();
-        //获取缓存的当前活动页与本
+        //获取缓存的当前活动记录与页,活动记录下所有页
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         activeNotePage = dataCacheUtil.getActiveNotePage();
         //初始化第一笔缓存工具类
@@ -170,9 +172,11 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     /**
      * 存页
+     * 在此将新添加的页插入到缓存的活动记录页集合中
      */
     @Override
     public void savePage(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+        activeNotePageList = dataCacheUtil.getActiveNotePageList();
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         Log.i("test_active", "savePage：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable savePageRunnable = new Runnable() {
@@ -182,6 +186,8 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 if (activeNotePage == null) {
                     activeNotePage = notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
                             System.currentTimeMillis(), "", "", new ArrayList<String>()); //截图与录屏文件path都置空待手动设置更新
+                    activeNotePageList.add(0, activeNotePage);
+                    dataCacheUtil.setActiveNotePageList(activeNotePageList);
                 }
                 dataCacheUtil.setActiveNotePage(activeNotePage); //缓存当前活动页
             }
