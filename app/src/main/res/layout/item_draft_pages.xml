@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/simple_background"
-    android:paddingBottom="15dp">
+    android:layout_marginBottom="25dp"
+    android:background="@color/simple_background">
 
     <RelativeLayout
         android:id="@+id/layout1"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
+        android:layout_width="154.5dp"
+        android:layout_height="207dp"
         android:layout_centerHorizontal="true"
         android:background="@color/colorWhite">
 
@@ -19,19 +19,18 @@
             android:scaleType="centerCrop" />
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="58.5dp"
+            android:layout_height="58.5dp"
             android:layout_centerInParent="true"
-            android:background="#c7d9f7" />
+            android:src="@mipmap/circle_index_back" />
 
         <TextView
             android:id="@+id/tv_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="1"
             android:textColor="@color/colorWhite"
-            android:textSize="16sp" />
+            android:textSize="24.5sp" />
     </RelativeLayout>
 
     <TextView
@@ -40,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="17-07-08-12:36" />
+        android:layout_marginTop="13dp"
+        android:textColor="@color/gray6"
+        android:textSize="14sp" />
 </RelativeLayout>
