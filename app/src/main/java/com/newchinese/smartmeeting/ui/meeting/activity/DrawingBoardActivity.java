@@ -2,13 +2,18 @@ package com.newchinese.smartmeeting.ui.meeting.activity;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,7 +60,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener {
+        DrawingBoardContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     @BindView(R.id.iv_back)
     ImageView ivBack;
@@ -71,6 +76,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     RelativeLayout rlMenuContainer;
     @BindView(R.id.rl_draw_view_container)
     RelativeLayout rlDrawViewContainer;
+    private View strokeWidthView;
+    private RadioGroup rgStrkoeWidth;
+    private PopupWindow pwStrkoeWidth;
     private CheckColorPopWin checkColorPopWin;
 
     private int pageIndex;
@@ -89,6 +97,25 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected DrawingBoardPresenter initPresenter() {
         return new DrawingBoardPresenter();
+    }
+
+    @Override
+    protected void onViewCreated(Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
+        strokeWidthView = LayoutInflater.from(this).inflate(R.layout.layout_stroke_width, null);
+        rgStrkoeWidth = (RadioGroup) strokeWidthView.findViewById(R.id.rg_pop_stroke_width);
+        initPopupWindow();
+    }
+
+    /**
+     * 初始化笔粗窗口
+     */
+    private void initPopupWindow() {
+        pwStrkoeWidth = new PopupWindow(strokeWidthView, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pwStrkoeWidth.setAnimationStyle(R.style.take_photo_anim);// 淡入淡出动画
+        pwStrkoeWidth.setBackgroundDrawable(new BitmapDrawable());
+        pwStrkoeWidth.setOutsideTouchable(true);
     }
 
     @Override
@@ -147,6 +174,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 drawViewMeeting.setPaintColor(Constant.colors[dataCacheUtil.getCurrentColorPosition()]);
             }
         });
+        rgStrkoeWidth.setOnCheckedChangeListener(this);
     }
 
     /**
@@ -308,11 +336,38 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_pen_stroke: //笔迹粗细
                 hideMenu();
+                showStrokeWidth();
                 break;
             case R.id.iv_review: //笔记回放
                 hideMenu();
                 break;
         }
+    }
+
+    /**
+     * 选择笔粗RadioGroup选择回调
+     */
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_pop_stroke_width1:
+                drawViewMeeting.setStrokeWidth(0);
+                dataCacheUtil.setStrokeWidth(0);
+                break;
+            case R.id.rb_pop_stroke_width2:
+                drawViewMeeting.setStrokeWidth(1);
+                dataCacheUtil.setStrokeWidth(1);
+                break;
+            case R.id.rb_pop_stroke_width3:
+                drawViewMeeting.setStrokeWidth(2);
+                dataCacheUtil.setStrokeWidth(2);
+                break;
+            case R.id.rb_pop_stroke_width4:
+                drawViewMeeting.setStrokeWidth(3);
+                dataCacheUtil.setStrokeWidth(3);
+                break;
+        }
+        hideStrokeWidth();
     }
 
     private void checkState() {
@@ -359,11 +414,26 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     /**
+     * 显示笔粗
+     */
+    private void showStrokeWidth() {
+        pwStrkoeWidth.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    /**
+     * 隐藏笔粗
+     */
+    private void hideStrokeWidth() {
+        pwStrkoeWidth.dismiss();
+    }
+
+    /**
      * 隐藏所有菜单窗口
      */
     private void hideAll() {
         hideMenu();
         hideStrokeColor();
+        hideStrokeWidth();
     }
 
     /**
@@ -397,30 +467,30 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             ivPen.setText(value + "%");
     }
 
+    @Subscribe
+    public void onEvent(CheckBlueStateEvent stateEvent) {
+        int flag = stateEvent.getFlag();
+        if (flag == 0) {
+            ivPen.setBackgroundResource(R.mipmap.pen_loading);
+            ivPen.startAnimation(animation);
+            ivPen.setText("");
+        } else if (flag == 1) {
+            ivPen.setBackgroundResource(R.mipmap.pen_succes);
+            ivPen.clearAnimation();
+            animation.cancel();
+        } else if (flag == -1) {
+            ivPen.setBackgroundResource(R.mipmap.pen_break);
+            ivPen.setText("");
+            ivPen.clearAnimation();
+            animation.cancel();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         if (pageIndex != 0)
             mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
-    }
-
-    @Subscribe
-    public void onEvent(CheckBlueStateEvent stateEvent){
-        int flag = stateEvent.getFlag();
-        if (flag == 0){
-            ivPen.setBackgroundResource(R.mipmap.pen_loading);
-            ivPen.startAnimation(animation);
-            ivPen.setText("");
-        }else if(flag == 1){
-            ivPen.setBackgroundResource(R.mipmap.pen_succes);
-            ivPen.clearAnimation();
-            animation.cancel();
-        }else if(flag == -1){
-            ivPen.setBackgroundResource(R.mipmap.pen_break);
-            ivPen.setText("");
-            ivPen.clearAnimation();
-            animation.cancel();
-        }
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <RadioGroup
+        android:id="@+id/rg_pop_stroke_width"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <RadioButton
+            android:id="@+id/rb_pop_stroke_width1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="-13dp"
+            android:drawableTop="@drawable/selector_stroke_width1"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/icon_stroke_line" />
+
+        <RadioButton
+            android:id="@+id/rb_pop_stroke_width2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="-13dp"
+            android:drawableTop="@drawable/selector_stroke_width2"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/icon_stroke_line" />
+
+        <RadioButton
+            android:id="@+id/rb_pop_stroke_width3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="-13dp"
+            android:drawableTop="@drawable/selector_stroke_width3"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/icon_stroke_line" />
+
+        <RadioButton
+            android:id="@+id/rb_pop_stroke_width4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawablePadding="-13dp"
+            android:drawableTop="@drawable/selector_stroke_width4"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
+    </RadioGroup>
+</RelativeLayout>
