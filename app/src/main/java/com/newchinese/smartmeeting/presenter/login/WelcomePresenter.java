@@ -56,18 +56,4 @@ public class WelcomePresenter extends BasePresenter<WelcomeContract.View> implem
 
     }
 
-    @Override
-    public boolean isBluetoothOpen() {
-        return false;
-    }
-
-    @Override
-    public void openBle() {
-
-    }
-
-    @Override
-    public void scanBlueDevice() {
-
-    }
 }

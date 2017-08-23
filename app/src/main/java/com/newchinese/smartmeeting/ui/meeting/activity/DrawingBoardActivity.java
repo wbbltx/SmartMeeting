@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,13 +20,23 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardContract;
+import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.model.bean.NotePage;
+import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
+import com.newchinese.smartmeeting.model.event.DisconnectEvent;
+import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
+import com.newchinese.smartmeeting.model.event.OpenBleEvent;
+import com.newchinese.smartmeeting.model.event.ScanEvent;
+import com.newchinese.smartmeeting.model.event.ScanResultEvent;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
+import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,8 +54,8 @@ import io.reactivex.functions.Consumer;
  * author         xulei
  * Date           2017/8/20 21:12
  */
-public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, String> implements
-        DrawingBoardContract.View<String>, View.OnTouchListener {
+public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
+        DrawingBoardContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     @BindView(R.id.iv_back)
     ImageView ivBack;
@@ -67,6 +78,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private List<NotePage> activeNotePageList;
     private DataCacheUtil dataCacheUtil;
+    private ScanResultDialog scanResultDialog;
+    private BluePopUpWindow bluePopUpWindow;
 
     @Override
     protected int getLayoutId() {
@@ -101,6 +114,26 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
         }
         //初始化调色板窗口
         checkColorPopWin = new CheckColorPopWin(this);
+
+        //初始化笔状态
+        ivPen.setAnimation(animation);
+        initPenState();
+
+        scanResultDialog = new ScanResultDialog(this);
+        bluePopUpWindow = new BluePopUpWindow(this, this);
+    }
+
+    private void initPenState() {
+        int penState = dataCacheUtil.getPenState();
+        if (penState == BluCommonUtils.PEN_CONNECTED) {
+            ivPen.setBackgroundResource(R.mipmap.pen_succes);
+            ivPen.clearAnimation();
+            animation.cancel();
+        } else {
+            ivPen.setBackgroundResource(R.mipmap.pen_break);
+            ivPen.clearAnimation();
+            animation.cancel();
+        }
     }
 
     @Override
@@ -257,6 +290,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 finish();
                 break;
             case R.id.iv_pen: //笔图标
+                checkState();
                 break;
             case R.id.iv_menu_btn: //菜单
                 if (!isMenuBtnClicked) showMenu();
@@ -278,6 +312,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
             case R.id.iv_review: //笔记回放
                 hideMenu();
                 break;
+        }
+    }
+
+    private void checkState() {
+        boolean bluetoothOpen = mPresenter.isBluetoothOpen();
+        if (!bluetoothOpen) {
+            //如果蓝牙没有打开，弹出是否打开蓝牙对话框
+            bluePopUpWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM, 0, 0);
+        } else {
+            //如果蓝牙已经打开，则去扫描
+            EventBus.getDefault().post(new ScanEvent());
         }
     }
 
@@ -321,11 +366,62 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
         hideStrokeColor();
     }
 
+    /**
+     * 是否打开蓝牙
+     */
+    @Override
+    public void onConfirm() {
+        //该类不操作蓝牙，发送消息到第二个activity 使其打开蓝牙
+        EventBus.getDefault().post(new OpenBleEvent());
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Subscribe
+    public void onEvent(ScanResultEvent scanResultEvent) {
+        int flag = scanResultEvent.getFlag();
+        if (flag == 0) {//如果是断开状态进行的搜索，应该判断
+
+        } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
+            scanResultDialog.show();
+        }
+    }
+
+    @Subscribe
+    public void onEvent(ElectricityReceivedEvent receivedEvent) {
+        String value = receivedEvent.getValue();
+        if (ivPen != null)
+            ivPen.setText(value + "%");
+    }
+
     @Override
     protected void onDestroy() {
-        //销毁时截缩略图
+        super.onDestroy();
         if (pageIndex != 0)
             mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
-        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(CheckBlueStateEvent stateEvent){
+        int flag = stateEvent.getFlag();
+        if (flag == 0){
+            ivPen.setBackgroundResource(R.mipmap.pen_loading);
+            ivPen.startAnimation(animation);
+            ivPen.setText("");
+        }else if(flag == 1){
+            ivPen.setBackgroundResource(R.mipmap.pen_succes);
+            ivPen.clearAnimation();
+            animation.cancel();
+        }else if(flag == -1){
+            ivPen.setBackgroundResource(R.mipmap.pen_break);
+            ivPen.setText("");
+            ivPen.clearAnimation();
+            animation.cancel();
+        }
     }
 }

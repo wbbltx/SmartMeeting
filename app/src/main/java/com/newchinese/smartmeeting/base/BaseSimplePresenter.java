@@ -26,11 +26,5 @@ public interface BaseSimplePresenter<T extends BaseView> {
      */
     void onPresenterDestroy();
 
-    boolean isBluetoothOpen();
-
-    void openBle();
-
-    void scanBlueDevice();
-
 
 }

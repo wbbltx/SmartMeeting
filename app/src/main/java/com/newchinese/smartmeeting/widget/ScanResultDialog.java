@@ -16,6 +16,8 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.ui.meeting.adapter.BleListAdapter;
 
+import java.util.List;
+
 
 /**
  * Created by Administrator on 2017/7/20 0020.
@@ -86,11 +88,15 @@ public class ScanResultDialog extends Dialog {
         return (BluetoothDevice) bleListAdapter.getItem(position);
     }
 
-    public void clear(){
+    public List<BluetoothDevice> getDevices() {
+        return bleListAdapter.getDevices();
+    }
+
+    public void clear() {
         bleListAdapter.clear();
     }
 
-    public void setOnDeviceItemClickListener(OnDeviceItemClickListener onDeviceItemClickListener){
+    public void setOnDeviceItemClickListener(OnDeviceItemClickListener onDeviceItemClickListener) {
         this.onDeviceItemClickListener = onDeviceItemClickListener;
     }
 }

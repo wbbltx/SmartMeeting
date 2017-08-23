@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
+import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxContract;
@@ -32,13 +33,8 @@ import java.util.concurrent.Executors;
 public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
     private static final String TAG = "DraftBoxPresenter";
     private ExecutorService singleThreadExecutor; //单核心线程线程池
-    private Timer timer = new Timer();
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            requestElectricity();
-        }
-    };
+    private Timer timer;
+    private TimerTask timerTask;
 
     @Override
     public void onPresenterCreated() {
@@ -48,14 +44,6 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void onPresenterDestroy() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTask = null;
-        }
         //清空活动记录所有页集合
         DataCacheUtil.getInstance().clearActiveNotePageList();
     }
@@ -84,13 +72,22 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void startTimer() {
-        timer.schedule(timerTask, 0, 20000);
+        timer = null;
+        timerTask = null;
+        timer = new Timer();
+        timerTask= new TimerTask() {
+            @Override
+            public void run() {
+                requestElectricity();
+            }
+        };
+        timer.schedule(timerTask,500,20000);
     }
 
     @Override
     public void stopTimer() {
-        timerTask.cancel();
-        timer.cancel();
+//        timerTask.cancel();
+//        timer.cancel();
     }
 
     @Override
@@ -141,5 +138,25 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
         BluetoothLe.getDefault().setOnElectricityRequestListener(BleListener.getDefault().init(mView));
     }
 
+    @Override
+    public void updatePenState(int state) {
+        int i = R.mipmap.pen_break;
+        XLog.d(TAG,"设置图标状态 "+state);
+        switch (state) {
+            case BSTATE_CONNECTED:
+                i = R.mipmap.pen_succes;
+                break;
+
+            case BSTATE_CONNECTING:
+            case BSTATE_SCANNING:
+                i = R.mipmap.pen_loading;
+                break;
+
+            case BSTATE_DISCONNECT:
+                i = R.mipmap.pen_break;
+                break;
+        }
+        mView.setState(i);
+    }
 
 }

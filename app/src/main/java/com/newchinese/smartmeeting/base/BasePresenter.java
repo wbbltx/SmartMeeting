@@ -23,6 +23,7 @@ public abstract class BasePresenter<T extends BaseView> implements BaseSimplePre
     public static final int BSTATE_DISCONNECT = 0;
     public static final int BSTATE_CONNECTED = 1;
     public static final int BSTATE_CONNECTING = 2;
+    public static final int BSTATE_SCANNING = 3;
 //    protected static String BSTATE_DISCONNECT;
 
     @Override
@@ -57,24 +58,5 @@ public abstract class BasePresenter<T extends BaseView> implements BaseSimplePre
         }
     }
 
-    public void updatePenState(int state, View view) {
-        int i = 0;
-        XLog.d(TAG,"设置图标状态 "+state);
-        switch (state) {
-            case BSTATE_CONNECTED:
-                i = R.mipmap.pen_succes;
-//                view.clearAnimation();
-                break;
 
-            case BSTATE_CONNECTING:
-                i = R.mipmap.pen_loading;
-                break;
-
-            case BSTATE_DISCONNECT:
-                i = R.mipmap.pen_break;
-//                view.clearAnimation();
-                break;
-        }
-        view.setBackgroundResource(i);
-    }
 }

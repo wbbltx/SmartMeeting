@@ -66,27 +66,28 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
 
     @Override
     public void onSuccess() {//设置图标的状态为连接
-        XLog.d(TAG,"连接成功在 "+TAG+" 中被调用");
-        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
+        XLog.d(TAG,TAG+" onSuccess");
+//        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
     }
 
     @Override
     public void onFailed() {//设置图标的状态为断开
+        XLog.d(TAG,TAG+" onFailed");
     }
 
     @Override
     public void onConnecting() {//设置图标的状态为正在连接
-
+        XLog.d(TAG,TAG+" onConnecting");
     }
 
     @Override
     public void onDisconnected() {//设置图标的状态为断开
-
+        XLog.d(TAG,TAG+" onDisconnected");
     }
 
     @Override
     public void onElecReceived(String ele) {
-
+        XLog.d(TAG,TAG+" onElecReceived");
     }
 
     @Override

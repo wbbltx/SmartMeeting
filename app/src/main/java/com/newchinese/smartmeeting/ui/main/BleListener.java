@@ -15,6 +15,7 @@ import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 /**
@@ -65,8 +66,9 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
 
     @Override
     public void onConnected() {
-        XLog.d(TAG,"已连接");
+        XLog.d(TAG,TAG+" 已连接");
         //连接成功以后将临时变量中的地址放入sp中 同时询问有没有存储数据
+        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTED);
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
         mView.onSuccess();
@@ -74,12 +76,14 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
 
     @Override
     public void onDisconnected() {
+        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_DISCONNECTED);
         mView.onDisconnected();
-        XLog.d(TAG,"连接断开");
+        XLog.d(TAG,TAG+" 连接断开");
     }
 
     @Override
     public void onFailed(int i) {
+        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_FAILED);
         mView.onFailed();
         XLog.d(TAG,"连接失败");
     }
@@ -87,7 +91,7 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
     @Override
     public void isConnecting() {
         mView.onConnecting();
-        XLog.d(TAG,"连接中...");
+        XLog.d(TAG,TAG+" 连接中...");
     }
 
     @Override

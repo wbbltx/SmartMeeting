@@ -129,21 +129,6 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     @Override
-    public boolean isBluetoothOpen() {
-        return BluetoothLe.getDefault().isBluetoothOpen();
-    }
-
-    @Override
-    public void openBle() {
-//        BluetoothLe.getDefault().enableBluetooth();
-    }
-
-    @Override
-    public void scanBlueDevice() {
-//        BluetoothLe.getDefault().setScanPeriod(5000).startScan();
-    }
-
-    @Override
     public void checkjumpDrawingBoard(com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         if (pointCacheUtil.isCanAddFlag()) { //DrawingBoardActivity未初始化完之前的点都缓存起来
             pointCacheUtil.putInQueue(notePoint);

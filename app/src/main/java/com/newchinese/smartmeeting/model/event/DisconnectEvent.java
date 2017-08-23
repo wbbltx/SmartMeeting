@@ -1,15 +1,11 @@
 package com.newchinese.smartmeeting.model.event;
 
 /**
- * Created by Administrator on 2017/8/21 0021.
+ * Created by Administrator on 2017/8/23 0023.
  */
 
-public class CheckBlueStateEvent {
+public class DisconnectEvent {
     private int flag;
-
-    public CheckBlueStateEvent(int flag) {
-        this.flag = flag;
-    }
 
     public int getFlag() {
         return flag;

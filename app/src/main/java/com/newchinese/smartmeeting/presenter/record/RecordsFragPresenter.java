@@ -21,18 +21,4 @@ public class RecordsFragPresenter extends BasePresenter<RecordsContract.View> im
 
     }
 
-    @Override
-    public boolean isBluetoothOpen() {
-        return false;
-    }
-
-    @Override
-    public void openBle() {
-
-    }
-
-    @Override
-    public void scanBlueDevice() {
-
-    }
 }

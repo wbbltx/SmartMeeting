@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.newchinese.coolpensdk.constants.PointType;
+import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
@@ -77,17 +78,12 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
 
     @Override
     public boolean isBluetoothOpen() {
-        return false;
+        return BluetoothLe.getDefault().isBluetoothOpen();
     }
 
     @Override
-    public void openBle() {
-
-    }
-
-    @Override
-    public void scanBlueDevice() {
-
+    public boolean isConnected() {
+        return BluetoothLe.getDefault().getConnected();
     }
 
     /**
@@ -118,6 +114,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         }
         pointCacheUtil.setCanAddFlag(false);
     }
+
 
     /**
      * 根据当前活动页读数据库的点

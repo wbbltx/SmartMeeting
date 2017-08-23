@@ -31,5 +31,14 @@ public interface DrawingBoardContract {
         Bitmap viewToBitmap(android.view.View view);
 
         void savePageThumbnail(Bitmap bitmap, int pageIndex);
+//        void scanBlueDevice();
+
+        boolean isBluetoothOpen();
+
+//        void openBle();
+
+//        void connectDevice(String address);
+
+        boolean isConnected();
     }
 }

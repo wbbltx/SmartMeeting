@@ -39,6 +39,10 @@ public class BleListAdapter extends BaseAdapter {
         }
     }
 
+    public List<BluetoothDevice> getDevices(){
+        return devices;
+    }
+
     public void clear(){
         devices.clear();
         notifyDataSetChanged();

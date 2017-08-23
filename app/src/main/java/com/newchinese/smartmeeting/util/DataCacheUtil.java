@@ -22,6 +22,15 @@ public class DataCacheUtil {
     private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
     private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
     private String picSDCardDirectory = "";
+    private int penState = 100;//记录笔的状态
+
+    public int getPenState() {
+        return penState;
+    }
+
+    public void setPenState(int penState) {
+        this.penState = penState;
+    }
 
     private static class SingleHolder {
         private static final DataCacheUtil INSTANCE = new DataCacheUtil();

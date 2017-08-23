@@ -305,7 +305,7 @@ public class BluetoothLe {
             Log.i(TAG, "onConnectionStateChange---" + status + "-------" + newState);
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(TAG, "connected 1 level" + System.currentTimeMillis());
-                bleManager.setIsConnected(true);
+//                bleManager.setIsConnected(true);
                 errorCount = 2;
                 mHandler.postDelayed(new Runnable() {
                     @Override
@@ -536,6 +536,7 @@ public class BluetoothLe {
                         Log.i(TAG, "connected 2 level, send QUERY_STORAGE_INFO and query historical info");
                         is_Receive_Have_Key_Write_Success_State = true;
                         mHandler.removeCallbacks(runnableHaveKeyWite);
+                        bleManager.setIsConnected(true);
                         if (bleManager.getScanning()) {
                             stopScan();
                         }

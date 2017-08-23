@@ -30,6 +30,11 @@ import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
+import com.newchinese.smartmeeting.model.event.DisconnectEvent;
+import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
+import com.newchinese.smartmeeting.model.event.OpenBleEvent;
+import com.newchinese.smartmeeting.model.event.ScanEvent;
+import com.newchinese.smartmeeting.model.event.ScanResultEvent;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.DraftPageRecyAdapter;
@@ -88,9 +93,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     private void initView() {
         if (mPresenter.isConnected()) {
-            mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED, ivPen);
+//            mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED);
+            ivPen.setBackgroundResource(R.mipmap.pen_succes);
+            ivPen.clearAnimation();
+            animation.cancel();
         } else {
-            mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT, ivPen);
+//            mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
+            ivPen.setBackgroundResource(R.mipmap.pen_break);
+            ivPen.clearAnimation();
+            animation.cancel();
         }
     }
 
@@ -150,19 +161,28 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+        if (hasFocus ) {
             initView();
-            if (isFirstTime) {
-//            XLog.d("haha", "onWindowFocusChanged被调用 ");
+            if (isFirstTime){
+            XLog.d(TAG,TAG+" onWindowFocusChanged");
                 checkBle();
                 isFirstTime = false;
             }
         }
     }
 
+    /**
+     * 扫描结束调用该方法
+     */
     @Override
     public void onScanComplete() {
-        onComplete();
+        if (mPresenter.isConnected()) {
+            scanResultDialog.show();
+            EventBus.getDefault().post(new ScanResultEvent(1));
+        } else {
+            EventBus.getDefault().post(new ScanResultEvent(0));
+            onComplete();
+        }
     }
 
     private void checkBle() {
@@ -170,19 +190,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (!bluetoothOpen) {
             bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
         } else {
-//            XLog.d("haha", "已经打开" + mPresenter.isConnected());
-            if (!mPresenter.isConnected()) {
-                String string = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
-                if (!"".equals(string)) {
-                    mPresenter.connectDevice(string);
-                } else {
-                    mPresenter.scanBlueDevice();
-                }
-            } else {
-                mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED, ivPen);
-                mPresenter.scanBlueDevice();
-//                mPresenter.requestElectricity();
-            }
+            XLog.d("haha", "连接状态" + mPresenter.isConnected());
+            mPresenter.scanBlueDevice();
+            mPresenter.updatePenState(BasePresenter.BSTATE_SCANNING);
+            ivPen.startAnimation(animation);
         }
     }
 
@@ -191,6 +202,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         super.onStop();
     }
 
+    /**
+     * 每扫描到一个设备，调用该方法
+     * @param s
+     */
     @Override
     public void showResult(BluetoothDevice s) {
         scanResultDialog.addDevice(s);
@@ -206,27 +221,24 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     private void onComplete() {
         int count = scanResultDialog.getCount();
+        List<BluetoothDevice> devices = scanResultDialog.getDevices();
+        String key = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_WRITE_PEN_KEY);
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
         if (count == 0) {//如果没有搜索到笔，提示
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
-        } else if (count == 1) {   //如果只搜索到一支笔，将其地址信息保存，同时跳转 自动连接  要完善的是该笔是否处于可连接状态
-            String address = scanResultDialog.getItem(0).getAddress();
-            Log.i("controlltest", "扫描到一支笔 " + address);
-            String key = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_WRITE_PEN_KEY);
-            if ("".equals(key)) {//如果key为空，则直接连接
-                Log.i("controlltest", "没有key");
-                EventBus.getDefault().post(new ConnectEvent(address, 0));
-            } else {             //如果key不为空，则判断是否为上次连接的笔
-                String preAddress = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
-                if (!preAddress.equals(address)) {//如果已经保存的address与扫描到的地址不相符，询问用户是否连接笔
-                    Log.i("controlltest", "有key 地址与上次不同 " + address);
-                    showDialog(address);
-                } else {                           //如果保存的地址与本地扫描到的地址一致，直接连接 同时将信息保存到sp
+        } else {
+            for (BluetoothDevice device : devices) {
+                XLog.d(TAG, "连接的所有设备：" + device.getAddress());
+                if (device.getAddress().equals(address)) {
                     EventBus.getDefault().post(new ConnectEvent(address, 0));
-                    Log.i("controlltest", "有key 地址与上次相同 " + address);
+                    return;
                 }
             }
-        } else {
-            scanResultDialog.show();
+            if (count == 1) {
+                showDialog(devices.get(0).getAddress());
+            } else {
+                scanResultDialog.show();
+            }
         }
     }
 
@@ -254,7 +266,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onConfirm() {
         mPresenter.openBle();
-        checkBle();
     }
 
     @Override
@@ -264,32 +275,42 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onSuccess() {
-        super.onSuccess();
-        XLog.d(TAG, "连接成功在 " + TAG + " 中被调用");
-        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED, ivPen);
-        mPresenter.startTimer();
+        XLog.d(TAG,TAG+" onSuccess");
+        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
+        EventBus.getDefault().post(new CheckBlueStateEvent(1));
+//        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED);
+        ivPen.setBackgroundResource(R.mipmap.pen_succes);
         ivPen.clearAnimation();
+        animation.cancel();
+        mPresenter.startTimer();
     }
 
     @Override
     public void onFailed() {
-        super.onFailed();
-        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT, ivPen);
+        EventBus.getDefault().post(new CheckBlueStateEvent(-1));
+//        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
+        ivPen.setBackgroundResource(R.mipmap.pen_break);
+        ivPen.setText("");
+        animation.cancel();
         ivPen.clearAnimation();
     }
 
     @Override
     public void onConnecting() {
-        super.onConnecting();
-        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTING, ivPen);
-        ivPen.setAnimation(animation);
+        EventBus.getDefault().post(new CheckBlueStateEvent(0));
+//        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTING);
+        ivPen.setBackgroundResource(R.mipmap.pen_loading);
         ivPen.startAnimation(animation);
+        ivPen.setText("");
     }
 
     @Override
     public void onDisconnected() {
-        super.onDisconnected();
-        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT, ivPen);
+        XLog.d(TAG,TAG+"中的onDisconnected被调用1");
+        EventBus.getDefault().post(new CheckBlueStateEvent(-1));
+//        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
+        ivPen.setBackgroundResource(R.mipmap.pen_break);
+        animation.cancel();
         mPresenter.stopTimer();
         ivPen.clearAnimation();
         ivPen.setText("");
@@ -297,18 +318,24 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onElecReceived(String s) {
-        XLog.d(TAG, "接收到的电量：" + s);
-        ivPen.setText(s + "%");
+        if (ivPen != null) {
+            ivPen.setText(s + "%");
+            EventBus.getDefault().post(new ElectricityReceivedEvent(s));
+            Log.d("hahaha", "收到电量信息 笔不为空:"+ivPen.getText());
+        }
+    }
+
+    @Override
+    public void setState(int id) {
+        ivPen.setBackgroundResource(id);
     }
 
     /**
      * 设备列表的item点击事件
-     *
      * @param add
      */
     @Override
     public void onDeviceClick(String add) {
-        XLog.d("hahaha", "点击了" + add + ",停止扫描");
         if (!add.equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
             EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
@@ -358,5 +385,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onLongClick(View view, int position) {
 
+    }
+
+    @Subscribe
+    public void onEvent(OpenBleEvent openBleEvent){
+        mPresenter.openBle();
+    }
+
+    @Subscribe
+    public void onEvent(ScanEvent scanEvent){
+        mPresenter.scanBlueDevice();
     }
 }

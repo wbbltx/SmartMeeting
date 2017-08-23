@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
 import com.newchinese.smartmeeting.contract.RecordsContract;
+import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
 
 
@@ -54,5 +55,45 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     @Override
     protected RecordsFragPresenter initPresenter() {
         return new RecordsFragPresenter();
+    }
+
+    @Override
+    public void onScanComplete() {
+
+    }
+
+    @Override
+    public void showResult(Object o) {
+
+    }
+
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onFailed() {
+
+    }
+
+    @Override
+    public void onConnecting() {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onHistoryDetected(String str, PopWindowListener popWindowListener) {
+
+    }
+
+    @Override
+    public void onElecReceived(String ele) {
+
     }
 }
