@@ -25,12 +25,8 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Title = new Property(1, String.class, "title", false, "TITLE");
-        public final static Property Date = new Property(2, String.class, "date", false, "DATE");
-        public final static Property Location = new Property(3, String.class, "location", false, "LOCATION");
-        public final static Property Member = new Property(4, String.class, "member", false, "MEMBER");
-        public final static Property Manager = new Property(5, String.class, "manager", false, "MANAGER");
-        public final static Property ClassifyName = new Property(6, String.class, "classifyName", false, "CLASSIFY_NAME");
+        public final static Property ClassifyName = new Property(1, String.class, "classifyName", false, "CLASSIFY_NAME");
+        public final static Property ClassifyCode = new Property(2, String.class, "classifyCode", false, "CLASSIFY_CODE");
     }
 
     private DaoSession daoSession;
@@ -50,12 +46,8 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"NOTE_RECORD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"TITLE\" TEXT," + // 1: title
-                "\"DATE\" TEXT," + // 2: date
-                "\"LOCATION\" TEXT," + // 3: location
-                "\"MEMBER\" TEXT," + // 4: member
-                "\"MANAGER\" TEXT," + // 5: manager
-                "\"CLASSIFY_NAME\" TEXT);"); // 6: classifyName
+                "\"CLASSIFY_NAME\" TEXT," + // 1: classifyName
+                "\"CLASSIFY_CODE\" TEXT);"); // 2: classifyCode
     }
 
     /** Drops the underlying database table. */
@@ -73,34 +65,14 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
             stmt.bindLong(1, id);
         }
  
-        String title = entity.getTitle();
-        if (title != null) {
-            stmt.bindString(2, title);
-        }
- 
-        String date = entity.getDate();
-        if (date != null) {
-            stmt.bindString(3, date);
-        }
- 
-        String location = entity.getLocation();
-        if (location != null) {
-            stmt.bindString(4, location);
-        }
- 
-        String member = entity.getMember();
-        if (member != null) {
-            stmt.bindString(5, member);
-        }
- 
-        String manager = entity.getManager();
-        if (manager != null) {
-            stmt.bindString(6, manager);
-        }
- 
         String classifyName = entity.getClassifyName();
         if (classifyName != null) {
-            stmt.bindString(7, classifyName);
+            stmt.bindString(2, classifyName);
+        }
+ 
+        String classifyCode = entity.getClassifyCode();
+        if (classifyCode != null) {
+            stmt.bindString(3, classifyCode);
         }
     }
 
@@ -113,34 +85,14 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
             stmt.bindLong(1, id);
         }
  
-        String title = entity.getTitle();
-        if (title != null) {
-            stmt.bindString(2, title);
-        }
- 
-        String date = entity.getDate();
-        if (date != null) {
-            stmt.bindString(3, date);
-        }
- 
-        String location = entity.getLocation();
-        if (location != null) {
-            stmt.bindString(4, location);
-        }
- 
-        String member = entity.getMember();
-        if (member != null) {
-            stmt.bindString(5, member);
-        }
- 
-        String manager = entity.getManager();
-        if (manager != null) {
-            stmt.bindString(6, manager);
-        }
- 
         String classifyName = entity.getClassifyName();
         if (classifyName != null) {
-            stmt.bindString(7, classifyName);
+            stmt.bindString(2, classifyName);
+        }
+ 
+        String classifyCode = entity.getClassifyCode();
+        if (classifyCode != null) {
+            stmt.bindString(3, classifyCode);
         }
     }
 
@@ -159,12 +111,8 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
     public NoteRecord readEntity(Cursor cursor, int offset) {
         NoteRecord entity = new NoteRecord( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // title
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // date
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // location
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // member
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // manager
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // classifyName
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // classifyName
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // classifyCode
         );
         return entity;
     }
@@ -172,12 +120,8 @@ public class NoteRecordDao extends AbstractDao<NoteRecord, Long> {
     @Override
     public void readEntity(Cursor cursor, NoteRecord entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTitle(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDate(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setLocation(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setMember(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setManager(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setClassifyName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setClassifyName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setClassifyCode(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     @Override

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
@@ -55,6 +57,10 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.tvIndex.setText(notePageList.get(position).getPageIndex() + "");
         holder.tvDate.setText(DateUtils.formatLongDate(notePageList.get(position).getDate()));
+        Glide.with(context)
+                .load(notePageList.get(position).getThumbnailPath())
+                .transition(new DrawableTransitionOptions().crossFade(1000)) //淡入淡出1s
+                .into(holder.ivThumnbail);
     }
 
     @Override

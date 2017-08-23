@@ -21,6 +21,7 @@ public class DataCacheUtil {
     private float strokeWidth = 0; //线宽
     private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
     private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
+    private String picSDCardDirectory = "";
 
     private static class SingleHolder {
         private static final DataCacheUtil INSTANCE = new DataCacheUtil();
@@ -91,5 +92,13 @@ public class DataCacheUtil {
 
     public void clearActiveNotePageList() {
         activeNotePageList.clear();
+    }
+
+    public String getPicSDCardDirectory() {
+        return picSDCardDirectory;
+    }
+
+    public void setPicSDCardDirectory(String picSDCardDirectory) {
+        this.picSDCardDirectory = picSDCardDirectory;
     }
 }

@@ -1,12 +1,10 @@
 package com.newchinese.smartmeeting.contract;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.view.View;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
-import com.newchinese.smartmeeting.model.bean.NotePage;
-
-import java.util.List;
 
 /**
  * Description:   画板页Contract
@@ -29,5 +27,9 @@ public interface DrawingBoardContract {
         void readDataBasePoint(int pageIndex);
 
         void loadFirstStokeCache();
+
+        Bitmap viewToBitmap(android.view.View view);
+
+        void savePageThumbnail(Bitmap bitmap, int pageIndex);
     }
 }

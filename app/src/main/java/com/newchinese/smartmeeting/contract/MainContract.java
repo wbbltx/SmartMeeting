@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.app.Activity;
+
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 
@@ -12,9 +14,15 @@ import com.newchinese.smartmeeting.base.BaseView;
 public interface MainContract {
     interface View<E> extends BaseView<E> {
         void jumpDrawingBoard();
+
+        void showToast(String toastMsg);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
+        void requestPermissing(Activity activity);
+
+        void initListener();
+
         void checkjumpDrawingBoard(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
         void initNoteRecord();
@@ -23,6 +31,6 @@ public interface MainContract {
 
         void saveStrokeAndPoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
-        void initListener();
+        void createSDCardDirectory();
     }
 }

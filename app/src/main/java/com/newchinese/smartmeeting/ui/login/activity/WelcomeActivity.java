@@ -27,7 +27,6 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
 
     @Override
     protected void initStateAndData() {
-        mPresenter.requestPermissing(this);
         mPresenter.startTimer();
     }
 

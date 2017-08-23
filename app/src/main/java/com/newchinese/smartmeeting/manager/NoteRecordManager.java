@@ -28,16 +28,12 @@ public class NoteRecordManager {
     /**
      * 插入本
      */
-    public NoteRecord insertNoteRecord(NoteRecordDao noteRecordDao, String title, String date, String location,
-                                       String member, String manager, String classifyName) {
+    public NoteRecord insertNoteRecord(NoteRecordDao noteRecordDao, String classifyName,
+                                       String classifyCode) {
         NoteRecord noteRecord = new NoteRecord();
         noteRecord.setId(null);
-        noteRecord.setTitle(title);
-        noteRecord.setDate(date);
-        noteRecord.setLocation(location);
-        noteRecord.setMember(member);
-        noteRecord.setManager(manager);
         noteRecord.setClassifyName(classifyName);
+        noteRecord.setClassifyCode(classifyCode);
         noteRecordDao.insert(noteRecord);
         return noteRecord;
     }

@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,6 +58,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     ImageView ivMenuBtn;
     @BindView(R.id.rl_menu_container)
     RelativeLayout rlMenuContainer;
+    @BindView(R.id.rl_draw_view_container)
+    RelativeLayout rlDrawViewContainer;
     private CheckColorPopWin checkColorPopWin;
 
     private int pageIndex;
@@ -150,12 +153,16 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
      */
     @Subscribe
     public void onEvent(OnPageIndexChangedEvent event) {
-        NotePoint notePoint = event.getNotePoint();
+        final NotePoint notePoint = event.getNotePoint();
         int fromType = event.getFromType();
-        pageIndex = notePoint.getPageIndex();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //跳页时存上一页的缩略图
+                if (pageIndex != 0) {
+                    mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+                }
+                pageIndex = notePoint.getPageIndex();
                 setTitleText(pageIndex); //设置当前页数
                 if (drawViewMeeting != null) { //换页清空画布
                     drawViewMeeting.clearCanvars();
@@ -187,6 +194,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
      */
     @Override
     public void getFirstStrokeCachePoint(final NotePoint notePoint) {
+        pageIndex = notePoint.getPageIndex();
         drawViewMeeting.drawLine(notePoint);
     }
 
@@ -311,5 +319,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     private void hideAll() {
         hideMenu();
         hideStrokeColor();
+    }
+
+    @Override
+    protected void onDestroy() {
+        //销毁时截缩略图
+        if (pageIndex != 0)
+            mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+        super.onDestroy();
     }
 }

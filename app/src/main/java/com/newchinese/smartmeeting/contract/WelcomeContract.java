@@ -18,8 +18,6 @@ public interface WelcomeContract {
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-        void requestPermissing(Activity activity);
-
         void startTimer();
     }
 }

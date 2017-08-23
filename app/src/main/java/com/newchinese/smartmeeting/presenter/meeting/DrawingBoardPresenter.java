@@ -1,7 +1,10 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
@@ -19,6 +22,10 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,7 +89,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     public void scanBlueDevice() {
 
     }
-    
+
     /**
      * 加载第一笔缓存
      */
@@ -166,9 +173,80 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     }
 
     /**
+     * 保存缩略图到SD卡，并更新数据库页的缩略图路径
+     */
+    @Override
+    public void savePageThumbnail(Bitmap bitmap, final int pageIndex) {
+        //判断SD卡状态
+        if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+            String classifyName = activeNoteRecord.getClassifyName(); //分类名称
+            String picSDCardDirectory = dataCacheUtil.getPicSDCardDirectory(); //图片存储路径
+            String recordDirectory = picSDCardDirectory + "/" + activeNoteRecord.getClassifyCode(); //记录缩略图存储路径
+            //缩略图文件名称（分类记录名称+页码+时间戳），加时间戳防止重复
+            final String thumbnailFilePath = recordDirectory + "/" + classifyName + "-" + pageIndex + "-" + System.currentTimeMillis() + ".jpg";
+            Log.e("test_pic", "" + thumbnailFilePath);
+            File thumbnailFile = new File(thumbnailFilePath);
+            if (bitmap != null) {
+                try {
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(thumbnailFile));
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                    bitmap.recycle();
+                    bitmap = null;
+                    bos.flush();
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            //数据库存储缩略图路径，根据当前分类与页码查出当前NotePage，再更新缩略图路径
+            Runnable saveRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    NotePage currentNotePage = notePageDao.queryBuilder()
+                            .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                    NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                    currentNotePage.setThumbnailPath(thumbnailFilePath);
+                    notePageDao.update(currentNotePage);
+                }
+            };
+            singleThreadExecutor.execute(saveRunnable);
+        }
+    }
+
+    /**
+     * 截取view的视图返回Bitmap
+     */
+    @Override
+    public Bitmap viewToBitmap(View view) {
+        Bitmap bitmap = null;
+        view.clearFocus();
+        view.setPressed(false);
+        boolean willNotCache = view.willNotCacheDrawing();
+        view.setWillNotCacheDrawing(false);
+        int color = view.getDrawingCacheBackgroundColor();
+        view.setDrawingCacheBackgroundColor(0);
+        if (color != 0) {
+            view.destroyDrawingCache();
+        }
+        view.buildDrawingCache();
+        Bitmap cacheBitmap = view.getDrawingCache();
+        if (cacheBitmap == null) {
+            return null;
+        }
+        //可能OOM位置1
+        bitmap = Bitmap.createBitmap(cacheBitmap);
+        view.destroyDrawingCache();
+        view.setWillNotCacheDrawing(willNotCache);
+        view.setDrawingCacheBackgroundColor(color);
+        return bitmap;
+    }
+
+    /**
      * 中断线程池
      */
     public void shutDownExecutor() {
         singleThreadExecutor.shutdownNow();
     }
+
+
 }

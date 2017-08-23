@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.coolpensdk.listener.OnPointListener;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
@@ -60,8 +61,12 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
 
     @Override
     protected void initStateAndData() {
+        //6.0以上主动请求权限
+        mPresenter.requestPermissing(this);
         //初始化7张分类记录表
         mPresenter.initNoteRecord();
+        //初始化SD卡目录
+        mPresenter.createSDCardDirectory();
         //初始化书写SDK
         drawingboardAPI = DrawingboardAPI.getInstance();
         //初始化bar状态
@@ -170,6 +175,11 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     @Override
     public void jumpDrawingBoard() {
         startActivity(new Intent(this, DrawingBoardActivity.class));
+    }
+
+    @Override
+    public void showToast(String toastMsg) {
+        Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

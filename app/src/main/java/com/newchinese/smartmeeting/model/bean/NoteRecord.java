@@ -5,8 +5,10 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.newchinese.smartmeeting.database.DaoSession;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
@@ -20,32 +22,27 @@ import com.newchinese.smartmeeting.database.NoteRecordDao;
 public class NoteRecord {
     @Id(autoincrement = true)
     private Long id;
-    private String title; //会议标题
-    private String date; //会议日期
-    private String location; //会议地点
-    private String member; //参会人员
-    private String manager; //会议主持人
     private String classifyName; //分类
+    private String classifyCode; //分类code，用于读写缩略图
 
     @ToMany(referencedJoinProperty = "bookId") //记录与页一对多
     private List<NotePage> pageList;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1863175196)
     private transient NoteRecordDao myDao;
 
-    @Generated(hash = 976480735)
-    public NoteRecord(Long id, String title, String date, String location,
-            String member, String manager, String classifyName) {
+    @Generated(hash = 415565195)
+    public NoteRecord(Long id, String classifyName, String classifyCode) {
         this.id = id;
-        this.title = title;
-        this.date = date;
-        this.location = location;
-        this.member = member;
-        this.manager = manager;
         this.classifyName = classifyName;
+        this.classifyCode = classifyCode;
     }
 
     @Generated(hash = 38732380)
@@ -58,46 +55,6 @@ public class NoteRecord {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDate() {
-        return this.date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getMember() {
-        return this.member;
-    }
-
-    public void setMember(String member) {
-        this.member = member;
-    }
-
-    public String getManager() {
-        return this.manager;
-    }
-
-    public void setManager(String manager) {
-        this.manager = manager;
     }
 
     public String getClassifyName() {
@@ -130,7 +87,9 @@ public class NoteRecord {
         return pageList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 852283546)
     public synchronized void resetPageList() {
         pageList = null;
@@ -172,7 +131,9 @@ public class NoteRecord {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1219103832)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -183,12 +144,15 @@ public class NoteRecord {
     public String toString() {
         return "NoteRecord{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", date='" + date + '\'' +
-                ", location='" + location + '\'' +
-                ", member='" + member + '\'' +
-                ", manager='" + manager + '\'' +
                 ", classifyName='" + classifyName + '\'' +
                 '}';
+    }
+
+    public String getClassifyCode() {
+        return this.classifyCode;
+    }
+
+    public void setClassifyCode(String classifyCode) {
+        this.classifyCode = classifyCode;
     }
 }

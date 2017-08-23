@@ -11,14 +11,20 @@
         android:id="@+id/bar"
         layout="@layout/bar_base" />
 
-    <com.newchinese.coolpensdk.manager.DrawingBoardView
-        android:id="@+id/draw_view_meeting"
+    <RelativeLayout
+        android:id="@+id/rl_draw_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bar" />
+        android:background="@color/colorWhite"
+        android:layout_below="@+id/bar">
 
-    <include
-        layout="@layout/layout_draw_menu"/>
+        <com.newchinese.coolpensdk.manager.DrawingBoardView
+            android:id="@+id/draw_view_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <include layout="@layout/layout_draw_menu" />
 
     <ImageView
         android:id="@+id/iv_menu_btn"
