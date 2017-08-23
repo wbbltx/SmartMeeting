@@ -399,11 +399,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (pageIndex != 0)
             mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
-
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @Subscribe
