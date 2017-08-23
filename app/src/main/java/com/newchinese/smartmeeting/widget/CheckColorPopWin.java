@@ -2,17 +2,14 @@ package com.newchinese.smartmeeting.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.model.event.ColorEvent;
 import com.newchinese.smartmeeting.ui.meeting.adapter.HorizontalListViewAdapter;
@@ -30,10 +27,9 @@ import zhou.colorpalette.ColorSelectDialog;
  */
 public class CheckColorPopWin extends PopupWindow {
     private View view;
-    private Button btn_save, btn_cancel;
     private HorizontalListView hListView;
     private ColorSelectDialog colorSelectDialog;
-    
+
     private int lastColor;
     private int[] colors = Constant.colors;
     private Context mContext;
@@ -44,32 +40,13 @@ public class CheckColorPopWin extends PopupWindow {
         this.mContext = mContext;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.checkout_color, null);
         hListView = (HorizontalListView) view.findViewById(R.id.horizon_listview);
-        btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        // 取消按钮
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                // 销毁弹出框
-                dismiss();
-            }
-        });
-        btn_save.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                // 销毁弹出框
-                dismiss();
-            }
-        });
         // 设置外部可点击
         this.setOutsideTouchable(true);
         // mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
         this.view.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
-
                 int height = view.findViewById(R.id.pop_layout).getTop();
-
                 int y = (int) event.getY();
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (y < height) {

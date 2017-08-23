@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/simple_background"
-    android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity">
 
-    <include layout="@layout/bar_base" />
+    <include
+        android:id="@+id/bar"
+        layout="@layout/bar_base" />
+
+    <ImageView
+        android:id="@+id/iv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/bar"
+        android:src="@mipmap/empty_icon" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_draft_page_list"
+        android:id="@+id/rv_page_list"
         android:layout_width="match_parent"
-        android:padding="@dimen/simple_lr_padding"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/bar"
+        android:padding="@dimen/simple_lr_padding" />
+</RelativeLayout>

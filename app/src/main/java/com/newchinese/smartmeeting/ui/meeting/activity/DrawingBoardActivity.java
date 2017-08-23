@@ -58,6 +58,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
     @BindView(R.id.rl_menu_container)
     RelativeLayout rlMenuContainer;
     private CheckColorPopWin checkColorPopWin;
+
     private int pageIndex;
     private boolean isMenuBtnClicked = false;
     private float mPosX, mPosY, mCurPosX, mCurPosY;
@@ -87,6 +88,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
         if (intent.hasExtra(TAG_PAGE_INDEX)) {
             pageIndex = intent.getIntExtra("selectPageIndex", 0);
             setTitleText(pageIndex); //设置当前页数
+            //延时一会儿再加载数据库，防止View还未初始化完毕
             Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
@@ -94,6 +96,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 }
             });
         }
+        //初始化调色板窗口
         checkColorPopWin = new CheckColorPopWin(this);
     }
 
@@ -208,7 +211,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 mCurPosY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
-                if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 100)) {
+                if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 200)) {
                     hideAll();
                     activeNotePageList = dataCacheUtil.getActiveNotePageList();
                     //读下一页的数据库数据
@@ -216,11 +219,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                     if (position > 0 && position <= (activeNotePageList.size() - 1)) {
 //                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        pageIndex = activeNotePageList.get(position - 1).getPageIndex();
-                        setTitleText(pageIndex);
-                        mPresenter.readDataBasePoint(pageIndex);
+                        pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
+                        setTitleText(pageIndex); //更新标题
+                        mPresenter.readDataBasePoint(pageIndex); //读数据库
                     }
-                } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 100)) {
+                } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 200)) {
                     activeNotePageList = dataCacheUtil.getActiveNotePageList();
                     hideAll();
                     //读上一页的数据库数据
@@ -228,9 +231,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                     if (position >= 0 && position < (activeNotePageList.size() - 1)) {
 //                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        pageIndex = activeNotePageList.get(position + 1).getPageIndex();
-                        setTitleText(pageIndex);
-                        mPresenter.readDataBasePoint(pageIndex);
+                        pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
+                        setTitleText(pageIndex); //更新标题
+                        mPresenter.readDataBasePoint(pageIndex); //读数据库
                     }
                 }
                 break;
@@ -259,7 +262,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, St
                 break;
             case R.id.iv_stroke_color: //调色
                 hideMenu();
-                checkColorPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                showStrokeColor();
                 break;
             case R.id.iv_pen_stroke: //笔迹粗细
                 hideMenu();

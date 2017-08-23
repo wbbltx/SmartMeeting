@@ -48,15 +48,16 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void onPresenterDestroy() {
-        if (timer != null){
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
-        if (timerTask != null){
+        if (timerTask != null) {
             timerTask.cancel();
             timerTask = null;
         }
-
+        //清空活动记录所有页集合
+        DataCacheUtil.getInstance().clearActiveNotePageList();
     }
 
     @Override
@@ -77,13 +78,13 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
 
     @Override
     public void requestElectricity() {
-        XLog.d(TAG,"发送请求电量命令");
+        XLog.d(TAG, "发送请求电量命令");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OBTAIN_ELECTRICITY);
     }
 
     @Override
     public void startTimer() {
-        timer.schedule(timerTask,0,20000);
+        timer.schedule(timerTask, 0, 20000);
     }
 
     @Override

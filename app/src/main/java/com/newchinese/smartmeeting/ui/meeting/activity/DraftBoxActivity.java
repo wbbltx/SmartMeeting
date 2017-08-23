@@ -56,14 +56,16 @@ import butterknife.OnClick;
 public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
         DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener, OnItemClickedListener {
     private static final String TAG = "DraftBoxActivity";
+    @BindView(R.id.iv_empty)
+    ImageView ivEmpty; //返回
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
     TextView tvTitle; //标题
     @BindView(R.id.iv_pen)
     TextView ivPen; //笔图标
-    @BindView(R.id.rv_draft_page_list)
-    RecyclerView rvDraftPageList;
+    @BindView(R.id.rv_page_list)
+    RecyclerView rvPageList;
     private String classifyName; //分类名
     private static boolean isFirstTime = true;
 
@@ -86,9 +88,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     private void initView() {
         if (mPresenter.isConnected()) {
-            mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED,ivPen);
-        }else {
-            mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT,ivPen);
+            mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED, ivPen);
+        } else {
+            mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT, ivPen);
         }
     }
 
@@ -96,9 +98,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      * 初始化RecyclerView
      */
     private void initRecyclerView() {
-        rvDraftPageList.setHasFixedSize(true);
-        rvDraftPageList.setLayoutManager(new GridLayoutManager(this, 2));
-        rvDraftPageList.setItemAnimator(new DefaultItemAnimator());
+        rvPageList.setHasFixedSize(true);
+        rvPageList.setLayoutManager(new GridLayoutManager(this, 2));
+        rvPageList.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
@@ -121,8 +123,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
-        rvDraftPageList.setAdapter(adapter);
-
+        rvPageList.setAdapter(adapter);
         initView();
     }
 
@@ -149,9 +150,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus ) {
+        if (hasFocus) {
             initView();
-            if (isFirstTime){
+            if (isFirstTime) {
 //            XLog.d("haha", "onWindowFocusChanged被调用 ");
                 checkBle();
                 isFirstTime = false;
@@ -178,7 +179,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     mPresenter.scanBlueDevice();
                 }
             } else {
-                mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED,ivPen);
+                mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED, ivPen);
                 mPresenter.scanBlueDevice();
 //                mPresenter.requestElectricity();
             }
@@ -225,7 +226,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
             }
         } else {
-                scanResultDialog.show();
+            scanResultDialog.show();
         }
     }
 
@@ -297,11 +298,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onElecReceived(String s) {
         XLog.d(TAG, "接收到的电量：" + s);
-        ivPen.setText(s+"%");
+        ivPen.setText(s + "%");
     }
 
     /**
      * 设备列表的item点击事件
+     *
      * @param add
      */
     @Override
@@ -322,8 +324,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.e("test_greendao", "" + pageList.toString());
+                Log.i("test_greendao", "" + pageList.toString());
                 if (pageList != null && pageList.size() > 0) {
+                    ivEmpty.setVisibility(View.GONE);
                     adapter.setNotePageList(pageList);
                 }
             }
@@ -355,12 +358,5 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onLongClick(View view, int position) {
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //清空活动记录所有页集合
-        DataCacheUtil.getInstance().clearActiveNotePageList();
     }
 }
