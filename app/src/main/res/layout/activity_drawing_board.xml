@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_draw_base"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
@@ -16,28 +17,16 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/bar" />
 
-    <RelativeLayout
-        android:id="@+id/rl_top_message"
+    <include
+        layout="@layout/layout_draw_menu"/>
+
+    <ImageView
+        android:id="@+id/iv_menu_btn"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/bar"
-        android:background="@color/simple_background"
-        android:paddingLeft="@dimen/simple_lr_padding"
-        android:paddingRight="@dimen/simple_lr_padding">
-
-        <TextView
-            android:id="@+id/tv_top_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="17-08-15 14:30"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:padding="20dp"
+        android:src="@mipmap/draw_menu_close" />
 </RelativeLayout>

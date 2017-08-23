@@ -4,9 +4,12 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 import java.util.List;
 
@@ -41,5 +44,12 @@ public class App extends Application {
         DrawingboardAPI.getInstance().init(getApplicationContext(), APPKEY);
         //初始化GreenDao
         GreenDaoUtil.getInstance().initDataBase(getApplicationContext());
+        getLastColor();
+    }
+
+    //设置书写页色板最后一个颜色
+    private void getLastColor() {
+        int lastcolor = SharedPreUtils.getInteger(this, "lastcolor", -1);
+        if (lastcolor != -1) Constant.colors[5] = lastcolor;
     }
 }

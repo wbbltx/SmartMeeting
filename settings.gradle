@@ -1,1 +1,1 @@
-include ':app', ':coolpensdk'
+include ':app', ':coolpensdk', ':ColorPalette'

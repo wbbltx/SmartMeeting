@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
-            android:drawablePadding="-10dp"
+            android:drawablePadding="-13dp"
             android:drawableTop="@drawable/selector_bottom_record"
             android:gravity="center" />
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
-            android:drawablePadding="-10dp"
+            android:drawablePadding="-13dp"
             android:drawableTop="@drawable/selector_bottom_meeting"
             android:gravity="center" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@null"
-            android:drawablePadding="-10dp"
+            android:drawablePadding="-13dp"
             android:drawableTop="@drawable/selector_bottom_mine"
             android:gravity="center" />
     </RadioGroup>

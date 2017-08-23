@@ -17,6 +17,7 @@ public class DataCacheUtil {
     private NoteRecord activeNoteRecord; //当前活动本
     private NotePage activeNotePage; //当前活动页
     private int currentColor = Constant.colors[0]; //笔的颜色
+    private int currentColorPosition = 0; //当前选择笔色的index
     private float strokeWidth = 0; //线宽
     private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
     private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
@@ -54,6 +55,14 @@ public class DataCacheUtil {
 
     public void setCurrentColor(int currentColor) {
         this.currentColor = currentColor;
+    }
+
+    public int getCurrentColorPosition() {
+        return currentColorPosition;
+    }
+
+    public void setCurrentColorPosition(int currentColorPosition) {
+        this.currentColorPosition = currentColorPosition;
     }
 
     public float getStrokeWidth() {
