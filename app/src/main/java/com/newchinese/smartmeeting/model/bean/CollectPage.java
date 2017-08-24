@@ -21,17 +21,17 @@ public class CollectPage {
     private int pageIndex; //页码
     private long bookId; //记录表Id
     private long date; //时间
-    private String picPath; //缩略图文件路径
+    private String thumbnailPath; //缩略图文件路径
     @Convert(columnType = String.class, converter = StringConverterUtil.class)
     private List<String> screenPathList; //录屏文件路径，需将List转换为StringBuilder
-    @Generated(hash = 1131121656)
+    @Generated(hash = 1475832732)
     public CollectPage(Long id, int pageIndex, long bookId, long date,
-            String picPath, List<String> screenPathList) {
+            String thumbnailPath, List<String> screenPathList) {
         this.id = id;
         this.pageIndex = pageIndex;
         this.bookId = bookId;
         this.date = date;
-        this.picPath = picPath;
+        this.thumbnailPath = thumbnailPath;
         this.screenPathList = screenPathList;
     }
     @Generated(hash = 781769683)
@@ -61,16 +61,28 @@ public class CollectPage {
     public void setDate(long date) {
         this.date = date;
     }
-    public String getPicPath() {
-        return this.picPath;
+    public String getThumbnailPath() {
+        return this.thumbnailPath;
     }
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
     public List<String> getScreenPathList() {
         return this.screenPathList;
     }
     public void setScreenPathList(List<String> screenPathList) {
         this.screenPathList = screenPathList;
+    }
+
+    @Override
+    public String toString() {
+        return "CollectPage{" +
+                "id=" + id +
+                ", pageIndex=" + pageIndex +
+                ", bookId=" + bookId +
+                ", date=" + date +
+                ", thumbnailPath='" + thumbnailPath + '\'' +
+                ", screenPathList=" + screenPathList +
+                '}';
     }
 }

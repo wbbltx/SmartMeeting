@@ -73,7 +73,7 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
                 .transition(new DrawableTransitionOptions().crossFade(1000)) //淡入淡出1s
                 .into(holder.ivThumnbail);
         holder.rlIsSelected.setVisibility(View.GONE);
-        if (isSelectedList.size() != 0) {
+        if (isSelectedList.size() != 0 && isSelectedList.size() == notePageList.size()) {
             boolean isSelected = isSelectedList.get(position); //是否被选中
             if (isSelected) {
                 holder.rlIsSelected.setVisibility(View.VISIBLE);

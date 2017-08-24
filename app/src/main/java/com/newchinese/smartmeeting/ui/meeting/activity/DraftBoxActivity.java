@@ -43,6 +43,7 @@ import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
+import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,10 +69,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     ImageView ivEmpty; //空页面背景
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
+    @BindView(R.id.iv_right)
+    ImageView ivRight; //创建会议
     @BindView(R.id.tv_title)
     TextView tvTitle; //标题
     @BindView(R.id.tv_right)
-    TextView tvRight; //创建会议，全选/全不选
+    TextView tvRight; //全选/全不选
     @BindView(R.id.iv_pen)
     TextView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
@@ -79,6 +82,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
+    private CustomInputDialog.Builder builder;
+
     private boolean isEditMode = false;
     private String classifyName; //分类名
     private List<NotePage> notePageList = new ArrayList<>();
@@ -140,6 +145,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         classifyName = getIntent().getStringExtra("classify_name");
         tvTitle.setText(classifyName);
         ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
+        tvRight.setVisibility(View.GONE);
+        ivRight.setVisibility(View.GONE);
 
         scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
@@ -164,20 +171,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cancel: //取消
-                pwCreateRecord.dismiss();
-                isEditMode = false;
-                tvRight.setText("创建会议");
+                resetEditMode();
                 break;
             case R.id.tv_create: //生成记录
-                mPresenter.createSelectedRecords(notePageList, isSelectedList);
-                isEditMode = false;
-                tvRight.setText("创建会议");
-                pwCreateRecord.dismiss();
+                createDialog();
                 break;
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right})
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.iv_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -187,27 +189,64 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 checkBle();
                 break;
             case R.id.tv_right:
-                if (!isEditMode) { //不是编辑模式，生成或取消时置为false,text置为创建会议
-                    tvRight.setText("全选");
-                    isEditMode = true;
-                    //显示弹窗
-                    pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                } else { //编辑模式
-                    if ("全选".equals(tvRight.getText().toString())) { //点击全选
-                        for (int i = 0; i < isSelectedList.size(); i++) {
-                            isSelectedList.set(i, true);
-                        }
-                        tvRight.setText("全不选");
-                    } else { //点击全不选
-                        for (int i = 0; i < isSelectedList.size(); i++) {
-                            isSelectedList.set(i, false);
-                        }
-                        tvRight.setText("全选");
+                if ("全选".equals(tvRight.getText().toString())) { //点击全选
+                    for (int i = 0; i < isSelectedList.size(); i++) {
+                        isSelectedList.set(i, true);
                     }
-                    adapter.setIsSelectedList(isSelectedList);
+                    tvRight.setText("全不选");
+                } else { //点击全不选
+                    for (int i = 0; i < isSelectedList.size(); i++) {
+                        isSelectedList.set(i, false);
+                    }
+                    tvRight.setText("全选");
                 }
+                adapter.setIsSelectedList(isSelectedList);
+                break;
+            case R.id.iv_right:
+                isEditMode = true;
+                ivRight.setVisibility(View.GONE);
+                tvRight.setVisibility(View.VISIBLE);
+                pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
         }
+    }
+
+    /**
+     * 创建Dialog
+     */
+    private void createDialog() {
+        builder = new CustomInputDialog.Builder(this);
+        builder.setTitle("变更本次记录标题名称");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e("createDialog", "" + builder.getInputText());
+                mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
+                dialog.dismiss();
+                resetEditMode();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelableMethod(false);
+        builder.setInputText(classifyName + System.currentTimeMillis());
+        builder.createDoubleButton().show();
+    }
+
+    /**
+     * 重置为非编辑模式
+     */
+    private void resetEditMode() {
+        isEditMode = false;
+        ivRight.setVisibility(View.VISIBLE);
+        tvRight.setVisibility(View.GONE);
+        pwCreateRecord.dismiss();
+        for (int i = 0; i < isSelectedList.size(); i++) {
+            isSelectedList.set(i, false);
+        }
+        adapter.setIsSelectedList(isSelectedList);
     }
 
     @Override
@@ -409,16 +448,17 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             public void run() {
                 Log.i("test_greendao", "" + notePageList.toString());
                 if (notePageList != null && notePageList.size() > 0) {
-                    tvRight.setVisibility(View.VISIBLE);
-                    tvRight.setText("创建会议");
+                    ivRight.setVisibility(View.VISIBLE);
                     ivEmpty.setVisibility(View.GONE);
                     adapter.setNotePageList(notePageList);
                     //初始化是否被选择的集合
                     initIsSelectedStatus(notePageList);
                 } else {
-                    tvRight.setVisibility(View.GONE);
+                    ivRight.setVisibility(View.GONE);
                     ivEmpty.setVisibility(View.VISIBLE);
                 }
+                tvRight.setText("全选");
+                tvRight.setVisibility(View.GONE);
             }
         });
     }
@@ -440,8 +480,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         //加载数据库当前活动记录的所有页
         mPresenter.loadActivePageList();
         //置位非编辑模式
-        isEditMode = false;
-        pwCreateRecord.dismiss();
+        resetEditMode();
     }
 
     /**

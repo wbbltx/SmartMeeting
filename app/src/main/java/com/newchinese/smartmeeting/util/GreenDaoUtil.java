@@ -3,6 +3,8 @@ package com.newchinese.smartmeeting.util;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.newchinese.smartmeeting.database.CollectPageDao;
+import com.newchinese.smartmeeting.database.CollectRecordDao;
 import com.newchinese.smartmeeting.database.DaoMaster;
 import com.newchinese.smartmeeting.database.DaoSession;
 import com.newchinese.smartmeeting.database.NotePageDao;
@@ -26,6 +28,8 @@ public class GreenDaoUtil {
     private NotePageDao notePageDao;
     private NoteStrokeDao noteStrokeDao;
     private NotePointDao notePointDao;
+    private CollectRecordDao collectRecordDao;
+    private CollectPageDao collectPageDao;
 
     private static class SingleHolder {
         private static final GreenDaoUtil INSTANCE = new GreenDaoUtil();
@@ -51,6 +55,8 @@ public class GreenDaoUtil {
         notePageDao = daoSession.getNotePageDao();
         noteStrokeDao = daoSession.getNoteStrokeDao();
         notePointDao = daoSession.getNotePointDao();
+        collectRecordDao = daoSession.getCollectRecordDao();
+        collectPageDao = daoSession.getCollectPageDao();
     }
 
     /**
@@ -86,6 +92,14 @@ public class GreenDaoUtil {
      */
     public NotePointDao getNotePointDao() {
         return notePointDao;
+    }
+
+    public CollectRecordDao getCollectRecordDao() {
+        return collectRecordDao;
+    }
+
+    public CollectPageDao getCollectPageDao() {
+        return collectPageDao;
     }
 
     /**

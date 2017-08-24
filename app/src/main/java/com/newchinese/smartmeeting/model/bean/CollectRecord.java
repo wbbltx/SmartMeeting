@@ -5,8 +5,10 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.newchinese.smartmeeting.database.DaoSession;
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
@@ -20,32 +22,30 @@ import com.newchinese.smartmeeting.database.CollectRecordDao;
 public class CollectRecord {
     @Id(autoincrement = true)
     private Long id;
-    private String title; //会议标题
-    private String date; //会议日期
-    private String location; //会议地点
-    private String member; //参会人员
-    private String manager; //会议主持人
     private String classifyName; //分类
+    private String collectRecordName; //名字
+    private long collectDate; //收藏时间
 
     @ToMany(referencedJoinProperty = "bookId") //记录与页一对多
     private List<CollectPage> pageList;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1815077541)
     private transient CollectRecordDao myDao;
 
-    @Generated(hash = 1995623428)
-    public CollectRecord(Long id, String title, String date, String location,
-            String member, String manager, String classifyName) {
+    @Generated(hash = 591851038)
+    public CollectRecord(Long id, String classifyName, String collectRecordName,
+            long collectDate) {
         this.id = id;
-        this.title = title;
-        this.date = date;
-        this.location = location;
-        this.member = member;
-        this.manager = manager;
         this.classifyName = classifyName;
+        this.collectRecordName = collectRecordName;
+        this.collectDate = collectDate;
     }
 
     @Generated(hash = 2133593564)
@@ -58,46 +58,6 @@ public class CollectRecord {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDate() {
-        return this.date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getMember() {
-        return this.member;
-    }
-
-    public void setMember(String member) {
-        this.member = member;
-    }
-
-    public String getManager() {
-        return this.manager;
-    }
-
-    public void setManager(String manager) {
-        this.manager = manager;
     }
 
     public String getClassifyName() {
@@ -131,7 +91,9 @@ public class CollectRecord {
         return pageList;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 852283546)
     public synchronized void resetPageList() {
         pageList = null;
@@ -173,10 +135,38 @@ public class CollectRecord {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 759048126)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCollectRecordDao() : null;
+    }
+
+    public String getCollectRecordName() {
+        return this.collectRecordName;
+    }
+
+    public void setCollectRecordName(String collectRecordName) {
+        this.collectRecordName = collectRecordName;
+    }
+
+    public long getCollectDate() {
+        return this.collectDate;
+    }
+
+    public void setCollectDate(long collectDate) {
+        this.collectDate = collectDate;
+    }
+
+    @Override
+    public String toString() {
+        return "CollectRecord{" +
+                "id=" + id +
+                ", classifyName='" + classifyName + '\'' +
+                ", collectRecordName='" + collectRecordName + '\'' +
+                ", collectDate=" + collectDate +
+                '}';
     }
 }

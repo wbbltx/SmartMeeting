@@ -12,5 +12,8 @@
     <color name="simple_background">#f4f4f4</color>
 
     <color name="gray6">#666666</color>
+    <color name="gray3">#333333</color>
+    <color name="graye">#eeeeee</color>
+    <color name="graydc">#dcdcdc</color>
     <color name="black_alpha_55">#55000000</color>
 </resources>

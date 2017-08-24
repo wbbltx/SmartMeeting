@@ -34,7 +34,7 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
         public final static Property PageIndex = new Property(1, int.class, "pageIndex", false, "PAGE_INDEX");
         public final static Property BookId = new Property(2, long.class, "bookId", false, "BOOK_ID");
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
-        public final static Property PicPath = new Property(4, String.class, "picPath", false, "PIC_PATH");
+        public final static Property ThumbnailPath = new Property(4, String.class, "thumbnailPath", false, "THUMBNAIL_PATH");
         public final static Property ScreenPathList = new Property(5, String.class, "screenPathList", false, "SCREEN_PATH_LIST");
     }
 
@@ -57,7 +57,7 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
                 "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 1: pageIndex
                 "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
-                "\"PIC_PATH\" TEXT," + // 4: picPath
+                "\"THUMBNAIL_PATH\" TEXT," + // 4: thumbnailPath
                 "\"SCREEN_PATH_LIST\" TEXT);"); // 5: screenPathList
     }
 
@@ -79,9 +79,9 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
         stmt.bindLong(3, entity.getBookId());
         stmt.bindLong(4, entity.getDate());
  
-        String picPath = entity.getPicPath();
-        if (picPath != null) {
-            stmt.bindString(5, picPath);
+        String thumbnailPath = entity.getThumbnailPath();
+        if (thumbnailPath != null) {
+            stmt.bindString(5, thumbnailPath);
         }
  
         List screenPathList = entity.getScreenPathList();
@@ -102,9 +102,9 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
         stmt.bindLong(3, entity.getBookId());
         stmt.bindLong(4, entity.getDate());
  
-        String picPath = entity.getPicPath();
-        if (picPath != null) {
-            stmt.bindString(5, picPath);
+        String thumbnailPath = entity.getThumbnailPath();
+        if (thumbnailPath != null) {
+            stmt.bindString(5, thumbnailPath);
         }
  
         List screenPathList = entity.getScreenPathList();
@@ -125,7 +125,7 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
             cursor.getInt(offset + 1), // pageIndex
             cursor.getLong(offset + 2), // bookId
             cursor.getLong(offset + 3), // date
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // picPath
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // thumbnailPath
             cursor.isNull(offset + 5) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 5)) // screenPathList
         );
         return entity;
@@ -137,7 +137,7 @@ public class CollectPageDao extends AbstractDao<CollectPage, Long> {
         entity.setPageIndex(cursor.getInt(offset + 1));
         entity.setBookId(cursor.getLong(offset + 2));
         entity.setDate(cursor.getLong(offset + 3));
-        entity.setPicPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setThumbnailPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setScreenPathList(cursor.isNull(offset + 5) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 5)));
      }
     
