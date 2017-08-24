@@ -76,7 +76,7 @@ public class BluePopUpWindow extends PopupWindow implements View.OnClickListener
                 break;
 
             case R.id.open_bluetooth:
-                popWindowListener.onConfirm();
+                popWindowListener.onConfirm(0);
                 dismiss();
                 break;
         }

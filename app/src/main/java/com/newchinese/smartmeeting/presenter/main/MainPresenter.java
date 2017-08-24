@@ -285,4 +285,11 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
             mView.showToast("请安装SD卡");
         }
     }
+
+    @Override
+    public void saveRecordPage(int i) {
+        if (DataCacheUtil.getInstance().isRecording()) {
+            DataCacheUtil.getInstance().addPages(i);
+        }
+    }
 }

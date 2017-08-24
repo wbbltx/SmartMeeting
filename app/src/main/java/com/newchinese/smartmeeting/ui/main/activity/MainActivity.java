@@ -166,6 +166,8 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
 //        Log.e("test_point", "onPageIndexChanged：" + notePoint.toString());
         //存页
         mPresenter.savePage(notePoint);
+        //保存录屏期间翻的页
+        mPresenter.saveRecordPage(notePoint.getPageIndex());
         EventBus.getDefault().post(new OnPageIndexChangedEvent(fromType, notePoint));
     }
 

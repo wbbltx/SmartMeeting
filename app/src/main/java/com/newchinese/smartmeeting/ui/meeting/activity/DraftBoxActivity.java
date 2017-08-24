@@ -317,7 +317,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      * 点击确认打开蓝牙
      */
     @Override
-    public void onConfirm() {
+    public void onConfirm(int tag) {
         mPresenter.openBle();
     }
 

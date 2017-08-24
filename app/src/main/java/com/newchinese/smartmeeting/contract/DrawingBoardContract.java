@@ -1,6 +1,8 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.projection.MediaProjection;
 import android.view.View;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
@@ -39,6 +41,35 @@ public interface DrawingBoardContract {
 
 //        void connectDevice(String address);
 
+        /**
+         * 录屏保存到数据库
+         */
+        void saveRecord(String path);
+
         boolean isConnected();
+
+        /**
+         * 初始化录屏
+         */
+        void initRecord(Context context);
+        /**
+         * 是否正在录屏
+         */
+        boolean isRecording();
+
+        /**
+         * 停止录屏
+         */
+        void stopRecord();
+
+        /**
+         * 开始luping
+         */
+        void startRecord(Context context);
+
+        /**
+         *
+         */
+        void extra(MediaProjection mediaProjection);
     }
 }

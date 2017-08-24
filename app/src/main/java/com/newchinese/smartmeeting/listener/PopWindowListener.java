@@ -6,7 +6,7 @@ package com.newchinese.smartmeeting.listener;
 
 public interface PopWindowListener {
 
-    void onConfirm();
+    void onConfirm(int i);
 
     void onCancel();
 }

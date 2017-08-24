@@ -32,5 +32,7 @@ public interface MainContract {
         void saveStrokeAndPoint(final com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
         void createSDCardDirectory();
+
+        void saveRecordPage(int i);
     }
 }

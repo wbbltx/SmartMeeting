@@ -29,7 +29,7 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
     private static String TAG = "BleListener";
 
     @Override
-    public void onConfirm() {//确认读取存储数据
+    public void onConfirm(int tag) {//确认读取存储数据
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.READ_STORAGE_INFO);
     }
 

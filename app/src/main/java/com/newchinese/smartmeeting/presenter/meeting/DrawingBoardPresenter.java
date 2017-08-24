@@ -1,8 +1,15 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Environment;
+import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
@@ -15,25 +22,34 @@ import com.newchinese.smartmeeting.contract.DrawingBoardContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
+import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NotePoint;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.model.bean.NoteStroke;
+import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
+
+import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 
 /**
  * Description:   画板Presenter
@@ -42,6 +58,7 @@ import io.reactivex.functions.Consumer;
  */
 
 public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.View> implements DrawingBoardContract.Presenter {
+    private static final java.lang.String TAG = "DrawingBoardPresenter";
     private DataCacheUtil dataCacheUtil;
     private NoteRecord activeNoteRecord;
     private NotePage currentSelectPage;
@@ -51,6 +68,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private boolean isFirstLoad = true; //初次加载第一笔缓存标记
     private int pageIndex;
+    private RecordService recordService;
+    private List<String> strings = new ArrayList<>();
 
     @Override
     public void onPresenterCreated() {
@@ -81,10 +100,76 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         return BluetoothLe.getDefault().isBluetoothOpen();
     }
 
+    //将录屏路径存入数据库
+    @Override
+    public void saveRecord(final String path) {
+        Runnable saveRecordRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Set<Integer> pages = dataCacheUtil.getPages();
+                for (Integer page : pages) {
+                    XLog.d(TAG, "页数" + page);
+                    NotePage unique = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),NotePageDao.Properties.PageIndex.eq(page)).unique();
+//                    List<String> screenPathList = unique.getScreenPathList();
+//                    if (screenPathList != null) {
+//                        screenPathList.add(path);
+//                    }
+                    strings.add(path);
+                    unique.setScreenPathList(strings);
+                    notePageDao.update(unique);
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRecordRunnable);
+    }
+
     @Override
     public boolean isConnected() {
         return BluetoothLe.getDefault().getConnected();
     }
+
+    @Override
+    public void initRecord(Context context) {
+        Intent intent = new Intent(context, RecordService.class);
+        context.bindService(intent, connection, context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public boolean isRecording() {
+        return recordService.isRunning();
+    }
+
+    @Override
+    public void stopRecord() {
+        recordService.stopRecord();
+    }
+
+    @Override
+    public void startRecord(Context context) {
+//        Intent captureIntent = projectionManager.createScreenCaptureIntent();
+//        startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
+    }
+
+    @Override
+    public void extra(MediaProjection mediaProjection) {
+        recordService.setMediaProject(mediaProjection);
+        recordService.startRecord();
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DisplayMetrics metrics = new DisplayMetrics();
+//            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
+            recordService = binder.getRecordService();
+            recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
     /**
      * 加载第一笔缓存

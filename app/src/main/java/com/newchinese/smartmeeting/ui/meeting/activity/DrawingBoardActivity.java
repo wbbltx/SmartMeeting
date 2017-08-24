@@ -1,10 +1,22 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
+import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,8 +39,10 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardContract;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.model.event.DisconnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
@@ -38,6 +52,7 @@ import com.newchinese.smartmeeting.model.event.OpenBleEvent;
 import com.newchinese.smartmeeting.model.event.ScanEvent;
 import com.newchinese.smartmeeting.model.event.ScanResultEvent;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
+import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
@@ -47,6 +62,7 @@ import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -63,6 +79,7 @@ import io.reactivex.functions.Consumer;
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
         DrawingBoardContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
+    private static final java.lang.String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -89,6 +106,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private DataCacheUtil dataCacheUtil;
     private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
+    private MediaProjectionManager projectionManager;
+    private MediaProjection mediaProjection;
+    private RecordService recordService;
+    private List<String> recordLists;
+
+    private static final int RECORD_REQUEST_CODE = 101;
+    private static final int STORAGE_REQUEST_CODE = 102;
+    private static final int AUDIO_REQUEST_CODE = 103;
 
     @Override
     protected int getLayoutId() {
@@ -150,6 +175,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
         scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
+
+//       请求权限 录屏初始化 绑定服务
+        projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+        Intent recordIntent = new Intent(this, RecordService.class);
+        bindService(recordIntent, connection, BIND_AUTO_CREATE);
+
+        recordLists = new ArrayList<>();
     }
 
     private void initPenState() {
@@ -328,6 +360,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_screen: //录视频
                 hideMenu();
+                checkRecordState();
                 break;
             case R.id.iv_insert_pic: //图片
                 hideMenu();
@@ -371,6 +404,43 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
         hideStrokeWidth();
     }
+
+    private void checkRecordState() {
+        if (recordService.isRunning()) {
+            recordService.stopRecord();
+            String recordPath = recordService.getRecordPath();
+            mPresenter.saveRecord(recordPath);
+            XLog.d(TAG,"录屏路径："+recordPath);
+        } else {
+            Intent captureIntent = projectionManager.createScreenCaptureIntent();
+            startActivityForResult(captureIntent, 101);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 101 && resultCode == RESULT_OK) {
+            mediaProjection = projectionManager.getMediaProjection(resultCode, data);
+            recordService.setMediaProject(mediaProjection);
+            recordService.startRecord();
+            dataCacheUtil.addPages(pageIndex);
+        }
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            RecordService.RecordBinder binder = (RecordService.RecordBinder) service;
+            recordService = binder.getRecordService();
+            recordService.setConfig(metrics.widthPixels, metrics.heightPixels, metrics.densityDpi);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
     private void checkState() {
         boolean bluetoothOpen = mPresenter.isBluetoothOpen();
@@ -442,9 +512,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 是否打开蓝牙
      */
     @Override
-    public void onConfirm() {
+    public void onConfirm(int i) {
         //该类不操作蓝牙，发送消息到第二个activity 使其打开蓝牙
-        EventBus.getDefault().post(new OpenBleEvent());
+            EventBus.getDefault().post(new OpenBleEvent());
     }
 
     @Override
@@ -469,18 +539,27 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             ivPen.setText(value + "%");
     }
 
+    @Override
+    protected void onDestroy() {
+        if (pageIndex != 0)
+            mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+        EventBus.getDefault().unregister(this);
+        unbindService(connection);
+        super.onDestroy();
+    }
+
     @Subscribe
-    public void onEvent(CheckBlueStateEvent stateEvent) {
+    public void onEvent(CheckBlueStateEvent stateEvent){
         int flag = stateEvent.getFlag();
-        if (flag == 0) {
+        if (flag == 0){
             ivPen.setBackgroundResource(R.mipmap.pen_loading);
             ivPen.startAnimation(animation);
             ivPen.setText("");
-        } else if (flag == 1) {
+        }else if(flag == 1){
             ivPen.setBackgroundResource(R.mipmap.pen_succes);
             ivPen.clearAnimation();
             animation.cancel();
-        } else if (flag == -1) {
+        }else if(flag == -1){
             ivPen.setBackgroundResource(R.mipmap.pen_break);
             ivPen.setText("");
             ivPen.clearAnimation();
@@ -489,10 +568,29 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @Override
-    protected void onDestroy() {
-        if (pageIndex != 0)
-            mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if (recordService.isRunning()) {
+            showDialog("离开当前界面将退出录制功能");
+        }
+    }
+
+    private void showDialog(final String address) {
+        new AlertDialog.Builder(this)
+                .setTitle(address)
+                .setPositiveButton("离开", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        recordService.stopRecord();
+                        finish();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create().show();
     }
 }

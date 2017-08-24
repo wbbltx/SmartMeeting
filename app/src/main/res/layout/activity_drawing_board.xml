@@ -10,6 +10,28 @@
     <include
         android:id="@+id/bar"
         layout="@layout/bar_base" />
+    
+    <LinearLayout
+        android:layout_below="@id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="80px">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/simple_blue"
+            android:textSize="32px"
+            android:text="00:00:00"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_gravity="end"
+            android:textColor="@color/simple_blue"
+            android:text="保存"
+            android:textSize="32px"/>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_draw_view_container"

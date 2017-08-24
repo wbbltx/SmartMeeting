@@ -5,7 +5,9 @@ import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Description:   数据缓存工具类
@@ -23,6 +25,28 @@ public class DataCacheUtil {
     private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
     private String picSDCardDirectory = "";
     private int penState = 100;//记录笔的状态
+    private boolean isRecording;    //记录是否处于录制状态
+    private Set<Integer> pages = new HashSet<>();       //记录视频录制期间翻过的页
+
+    public boolean isRecording() {
+        return isRecording;
+    }
+
+    public void setRecording(boolean recording) {
+        isRecording = recording;
+    }
+
+    public Set<Integer> getPages() {
+        return pages;
+    }
+
+    public void setPages(Set<Integer> pages) {
+        this.pages = pages;
+    }
+
+    public void addPages(int i){
+        pages.add(i);
+    }
 
     public int getPenState() {
         return penState;

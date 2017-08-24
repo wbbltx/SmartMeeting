@@ -93,10 +93,10 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     @Override
     public void onHistoryDetected(String msg, final PopWindowListener listener) {
         //应该弹出询问框 读取或者删除存储数据
-        showDialog(msg, listener);
+        showDialog(msg, listener,1);
     }
 
-    public void showDialog(String msg, final PopWindowListener listener) {
+    public void showDialog(String msg, final PopWindowListener listener, final int tag) {
         if (!mAlertDialog.isShowing()) {
             return;
         }
@@ -108,7 +108,7 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if (listener != null) {
-                            listener.onConfirm();
+                            listener.onConfirm(tag);
                         }
                     }
                 })
@@ -122,11 +122,6 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                     }
                 })
                 .create() : mAlertDialog;
-//        if (!mAlertDialog.isShowing()) {
-//            mAlertDialog.show();
-//        } else {
-//            mAlertDialog.setMessage(msg);
-//        }
     }
 
 
