@@ -57,6 +57,8 @@ public interface DraftBoxContract {
         void connectDevice(String add);
 
         void loadActivePageList();
+        
+        void createSelectedRecords(List<NotePage> notePageList, List<Boolean> isSelectedList);
 
         void requestElectricity();
 

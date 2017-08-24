@@ -5,20 +5,21 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -27,10 +28,9 @@ import com.newchinese.smartmeeting.contract.DraftBoxContract;
 import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
-import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.bean.NotePage;
+import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
-import com.newchinese.smartmeeting.model.event.DisconnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OpenBleEvent;
 import com.newchinese.smartmeeting.model.event.ScanEvent;
@@ -48,6 +48,7 @@ import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,20 +60,29 @@ import butterknife.OnClick;
  * Date           2017/8/18 16:34
  */
 public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
-        DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener, OnItemClickedListener {
+        DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
+        OnItemClickedListener, View.OnClickListener {
     private static final String TAG = "DraftBoxActivity";
+    private static boolean isFirstTime = true;
     @BindView(R.id.iv_empty)
-    ImageView ivEmpty; //返回
+    ImageView ivEmpty; //空页面背景
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.tv_title)
     TextView tvTitle; //标题
+    @BindView(R.id.tv_right)
+    TextView tvRight; //创建会议，全选/全不选
     @BindView(R.id.iv_pen)
     TextView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
+    private View viewCreateRecord;
+    private TextView tvCancel, tvCreate;
+    private PopupWindow pwCreateRecord;
+    private boolean isEditMode = false;
     private String classifyName; //分类名
-    private static boolean isFirstTime = true;
+    private List<NotePage> notePageList = new ArrayList<>();
+    private List<Boolean> isSelectedList = new ArrayList<>();
 
     private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
@@ -88,7 +98,20 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
         root_view = (ViewGroup) findViewById(R.id.rl_parent);
-        initRecyclerView();
+        //初始化地图弹出窗口view
+        viewCreateRecord = LayoutInflater.from(this).inflate(R.layout.layout_create_record, null);
+        tvCancel = (TextView) viewCreateRecord.findViewById(R.id.tv_cancel);
+        tvCreate = (TextView) viewCreateRecord.findViewById(R.id.tv_create);
+        //初始化PopupWindow
+        pwCreateRecord = new PopupWindow(viewCreateRecord, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        pwCreateRecord.setAnimationStyle(R.style.popup_anim);// 淡入淡出动画
+        pwCreateRecord.setBackgroundDrawable(new BitmapDrawable());
+        pwCreateRecord.setOutsideTouchable(false);
+        //初始化RecyclerView
+        rvPageList.setHasFixedSize(true);
+        rvPageList.setLayoutManager(new GridLayoutManager(this, 2));
+        rvPageList.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void initView() {
@@ -105,15 +128,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
-    /**
-     * 初始化RecyclerView
-     */
-    private void initRecyclerView() {
-        rvPageList.setHasFixedSize(true);
-        rvPageList.setLayoutManager(new GridLayoutManager(this, 2));
-        rvPageList.setItemAnimator(new DefaultItemAnimator());
-    }
-
     @Override
     protected DraftBoxPresenter initPresenter() {
         return new DraftBoxPresenter();
@@ -122,11 +136,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
-        Intent intent = getIntent();
-        classifyName = intent.getStringExtra("classify_name");
 
+        classifyName = getIntent().getStringExtra("classify_name");
         tvTitle.setText(classifyName);
-//        ivBack.setImageResource(0);
         ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
 
         scanResultDialog = new ScanResultDialog(this);
@@ -135,18 +147,37 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
         rvPageList.setAdapter(adapter);
+        //初始化蓝牙图标状态
         initView();
     }
-
 
     @Override
     protected void initListener() {
         mPresenter.initListener();
         scanResultDialog.setOnDeviceItemClickListener(this);
         adapter.setOnItemClickedListener(this);
+        tvCancel.setOnClickListener(this);
+        tvCreate.setOnClickListener(this);
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_pen})
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cancel: //取消
+                pwCreateRecord.dismiss();
+                isEditMode = false;
+                tvRight.setText("创建会议");
+                break;
+            case R.id.tv_create: //生成记录
+                mPresenter.createSelectedRecords(notePageList, isSelectedList);
+                isEditMode = false;
+                tvRight.setText("创建会议");
+                pwCreateRecord.dismiss();
+                break;
+        }
+    }
+
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -155,16 +186,37 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             case R.id.iv_pen:
                 checkBle();
                 break;
+            case R.id.tv_right:
+                if (!isEditMode) { //不是编辑模式，生成或取消时置为false,text置为创建会议
+                    tvRight.setText("全选");
+                    isEditMode = true;
+                    //显示弹窗
+                    pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                } else { //编辑模式
+                    if ("全选".equals(tvRight.getText().toString())) { //点击全选
+                        for (int i = 0; i < isSelectedList.size(); i++) {
+                            isSelectedList.set(i, true);
+                        }
+                        tvRight.setText("全不选");
+                    } else { //点击全不选
+                        for (int i = 0; i < isSelectedList.size(); i++) {
+                            isSelectedList.set(i, false);
+                        }
+                        tvRight.setText("全选");
+                    }
+                    adapter.setIsSelectedList(isSelectedList);
+                }
+                break;
         }
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus ) {
+        if (hasFocus) {
             initView();
-            if (isFirstTime){
-            XLog.d(TAG,TAG+" onWindowFocusChanged");
+            if (isFirstTime) {
+                XLog.d(TAG, TAG + " onWindowFocusChanged");
                 checkBle();
                 isFirstTime = false;
             }
@@ -204,6 +256,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     /**
      * 每扫描到一个设备，调用该方法
+     *
      * @param s
      */
     @Override
@@ -275,7 +328,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onSuccess() {
-        XLog.d(TAG,TAG+" onSuccess");
+        XLog.d(TAG, TAG + " onSuccess");
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED);
@@ -306,7 +359,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onDisconnected() {
-        XLog.d(TAG,TAG+"中的onDisconnected被调用1");
+        XLog.d(TAG, TAG + "中的onDisconnected被调用1");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
         ivPen.setBackgroundResource(R.mipmap.pen_break);
@@ -321,7 +374,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (ivPen != null) {
             ivPen.setText(s + "%");
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
-            Log.d("hahaha", "收到电量信息 笔不为空:"+ivPen.getText());
+            Log.d("hahaha", "收到电量信息 笔不为空:" + ivPen.getText());
         }
     }
 
@@ -332,6 +385,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     /**
      * 设备列表的item点击事件
+     *
      * @param add
      */
     @Override
@@ -345,19 +399,39 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      * 获取到数据库当前活动记录的所有页
      */
     @Override
-    public void getActivePageList(final List<NotePage> pageList) {
+    public void getActivePageList(List<NotePage> pageList) {
+        notePageList.clear();
+        notePageList.addAll(pageList);
         //更新当前记录表所有页缓存
         DataCacheUtil.getInstance().setActiveNotePageList(pageList);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i("test_greendao", "" + pageList.toString());
-                if (pageList != null && pageList.size() > 0) {
+                Log.i("test_greendao", "" + notePageList.toString());
+                if (notePageList != null && notePageList.size() > 0) {
+                    tvRight.setVisibility(View.VISIBLE);
+                    tvRight.setText("创建会议");
                     ivEmpty.setVisibility(View.GONE);
-                    adapter.setNotePageList(pageList);
+                    adapter.setNotePageList(notePageList);
+                    //初始化是否被选择的集合
+                    initIsSelectedStatus(notePageList);
+                } else {
+                    tvRight.setVisibility(View.GONE);
+                    ivEmpty.setVisibility(View.VISIBLE);
                 }
             }
         });
+    }
+
+    /**
+     * 初始化是否被选择的boolean集合都为false未选择状态
+     */
+    private void initIsSelectedStatus(List<NotePage> pageList) {
+        isSelectedList = new ArrayList<>();
+        for (int i = 0; i < pageList.size(); i++) {
+            isSelectedList.add(false);
+        }
+        adapter.setIsSelectedList(isSelectedList);
     }
 
     @Override
@@ -365,6 +439,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         super.onResume();
         //加载数据库当前活动记录的所有页
         mPresenter.loadActivePageList();
+        //置位非编辑模式
+        isEditMode = false;
+        pwCreateRecord.dismiss();
     }
 
     /**
@@ -372,11 +449,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onClick(View view, int position) {
-        NotePage selectNotePage = adapter.getItem(position);
-        DataCacheUtil.getInstance().setActiveNotePage(selectNotePage); //更新活动页
-        Intent intent = new Intent(this, DrawingBoardActivity.class);
-        intent.putExtra(DrawingBoardActivity.TAG_PAGE_INDEX, selectNotePage.getPageIndex());
-        startActivity(intent);
+        if (!isEditMode) { //不是编辑状态点击则跳转详情
+            NotePage selectNotePage = adapter.getItem(position);
+            DataCacheUtil.getInstance().setActiveNotePage(selectNotePage); //更新活动页
+            Intent intent = new Intent(this, DrawingBoardActivity.class);
+            intent.putExtra(DrawingBoardActivity.TAG_PAGE_INDEX, selectNotePage.getPageIndex());
+            startActivity(intent);
+        } else { //编辑状态点击则为相反选中效果
+            isSelectedList.set(position, !adapter.getIsSelectedList().get(position));
+            adapter.setIsSelectedList(isSelectedList);
+        }
     }
 
     /**
@@ -388,12 +470,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     @Subscribe
-    public void onEvent(OpenBleEvent openBleEvent){
+    public void onEvent(OpenBleEvent openBleEvent) {
         mPresenter.openBle();
     }
 
     @Subscribe
-    public void onEvent(ScanEvent scanEvent){
+    public void onEvent(ScanEvent scanEvent) {
         mPresenter.scanBlueDevice();
     }
 }

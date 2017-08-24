@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -102,18 +103,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
-        strokeWidthView = LayoutInflater.from(this).inflate(R.layout.layout_stroke_width, null);
-        rgStrkoeWidth = (RadioGroup) strokeWidthView.findViewById(R.id.rg_pop_stroke_width);
-        initPopupWindow();
+        initStrokeWidthWindow();
     }
 
     /**
      * 初始化笔粗窗口
      */
-    private void initPopupWindow() {
+    private void initStrokeWidthWindow() {
+        strokeWidthView = LayoutInflater.from(this).inflate(R.layout.layout_stroke_width, null);
+        rgStrkoeWidth = (RadioGroup) strokeWidthView.findViewById(R.id.rg_pop_stroke_width);
+        ((RadioButton) rgStrkoeWidth.getChildAt(0)).setChecked(true);
         pwStrkoeWidth = new PopupWindow(strokeWidthView, RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        pwStrkoeWidth.setAnimationStyle(R.style.take_photo_anim);// 淡入淡出动画
+        pwStrkoeWidth.setAnimationStyle(R.style.popup_anim);// 淡入淡出动画
         pwStrkoeWidth.setBackgroundDrawable(new BitmapDrawable());
         pwStrkoeWidth.setOutsideTouchable(true);
     }

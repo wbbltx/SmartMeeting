@@ -212,7 +212,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 activeNotePage = notePageManager.getPageByIndex(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex());
                 if (activeNotePage == null) {
                     activeNotePage = notePageManager.insertNotePage(notePageDao, activeNoteRecord.getId(), notePoint.getPageIndex(),
-                            System.currentTimeMillis(), "", "", new ArrayList<String>()); //截图与录屏文件path都置空待手动设置更新
+                            System.currentTimeMillis(), "", "", null); //截图与录屏文件path都置空待手动设置更新
                     activeNotePageList.add(0, activeNotePage);
                     dataCacheUtil.setActiveNotePageList(activeNotePageList);
                 }

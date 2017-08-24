@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +31,7 @@ import butterknife.ButterKnife;
 public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdapter.MyViewHolder> {
     private Context context;
     private List<NotePage> notePageList = new ArrayList<>();
+    private List<Boolean> isSelectedList = new ArrayList<>();
     private LayoutInflater inflater;
     private OnItemClickedListener onItemClickedListener;
 
@@ -41,6 +43,15 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
     public void setNotePageList(List<NotePage> notePageList) {
         this.notePageList = notePageList;
         notifyDataSetChanged();
+    }
+
+    public void setIsSelectedList(List<Boolean> isSelectedList) {
+        this.isSelectedList = isSelectedList;
+        notifyDataSetChanged();
+    }
+
+    public List<Boolean> getIsSelectedList() {
+        return isSelectedList;
     }
 
     public void setOnItemClickedListener(OnItemClickedListener onItemClickedListener) {
@@ -61,6 +72,15 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
                 .load(notePageList.get(position).getThumbnailPath())
                 .transition(new DrawableTransitionOptions().crossFade(1000)) //淡入淡出1s
                 .into(holder.ivThumnbail);
+        holder.rlIsSelected.setVisibility(View.GONE);
+        if (isSelectedList.size() != 0) {
+            boolean isSelected = isSelectedList.get(position); //是否被选中
+            if (isSelected) {
+                holder.rlIsSelected.setVisibility(View.VISIBLE);
+            } else {
+                holder.rlIsSelected.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -79,6 +99,8 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
         TextView tvIndex;
         @BindView(R.id.tv_date)
         TextView tvDate;
+        @BindView(R.id.rl_is_selected)
+        RelativeLayout rlIsSelected;
 
         MyViewHolder(View itemView) {
             super(itemView);

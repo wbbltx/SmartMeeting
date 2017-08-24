@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,11 +37,14 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private Timer timer;
     private TimerTask timerTask;
+    private NoteRecord activeNoteRecord;
 
     @Override
     public void onPresenterCreated() {
         //初始化线程池
         singleThreadExecutor = Executors.newSingleThreadExecutor();
+        //活动记录
+        activeNoteRecord = DataCacheUtil.getInstance().getActiveNoteRecord();
     }
 
     @Override
@@ -75,13 +80,13 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
         timer = null;
         timerTask = null;
         timer = new Timer();
-        timerTask= new TimerTask() {
+        timerTask = new TimerTask() {
             @Override
             public void run() {
                 requestElectricity();
             }
         };
-        timer.schedule(timerTask,500,20000);
+        timer.schedule(timerTask, 500, 20000);
     }
 
     @Override
@@ -108,15 +113,42 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
         Runnable loadPageRunnable = new Runnable() {
             @Override
             public void run() {
-                NoteRecord activeRecord = DataCacheUtil.getInstance().getActiveNoteRecord();
                 NotePageDao notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
-                List<NotePage> notePageList = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeRecord.getId()))
+                List<NotePage> notePageList = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()))
                         .orderDesc(NotePageDao.Properties.Date).list();
                 mView.getActivePageList(notePageList);
             }
         };
         singleThreadExecutor.execute(loadPageRunnable);
     }
+
+    /**
+     * 生成记录
+     * 根据当前选择boolean列表，筛选出notePageList中被选择的NotePage
+     * 存入收藏表，删除选中的页
+     */
+    @Override
+    public void createSelectedRecords(final List<NotePage> notePageList, final List<Boolean> isSelectedList) {
+        Log.e("test_select", notePageList.size() + ",notePageList：" + notePageList);
+        Log.e("test_select", "isSelectedList：" + isSelectedList);
+        Runnable saveRecordsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePageDao notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
+                for (int i = 0; i < isSelectedList.size(); i++) {
+                    if (isSelectedList.get(i)) {
+                        Log.e("test_select", "selectedPage：" + notePageList.get(i).getPageIndex());
+                        NotePage selectPage = notePageList.get(i);
+                        notePageDao.delete(selectPage);
+                    }
+                }
+                //存完刷新页面
+                loadActivePageList();
+            }
+        };
+        singleThreadExecutor.execute(saveRecordsRunnable);
+    }
+
 
     @Override
     public void disConnect() {
@@ -141,7 +173,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     @Override
     public void updatePenState(int state) {
         int i = R.mipmap.pen_break;
-        XLog.d(TAG,"设置图标状态 "+state);
+        XLog.d(TAG, "设置图标状态 " + state);
         switch (state) {
             case BSTATE_CONNECTED:
                 i = R.mipmap.pen_succes;

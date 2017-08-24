@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.util;
 
 import org.greenrobot.greendao.converter.PropertyConverter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,8 +18,16 @@ public class StringConverterUtil implements PropertyConverter<List<String>, Stri
         if (databaseValue == null) {
             return null;
         } else {
-            List<String> list = Arrays.asList(databaseValue.split(","));
-            return list;
+            if (!",".equals(databaseValue)) {
+                String[] databaseValues = databaseValue.split(",");
+                List<String> list = new ArrayList<>();
+                for (String value : databaseValues) {
+                    list.add(value);
+                }
+                return list;
+            } else {
+                return null;
+            }
         }
     }
 

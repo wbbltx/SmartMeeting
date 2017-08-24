@@ -69,7 +69,7 @@ public class CheckColorPopWin extends PopupWindow {
         // 设置弹出窗体的背景
         this.setBackgroundDrawable(dw);
         // 设置弹出窗体显示时的动画，从底部向上弹出
-        this.setAnimationStyle(R.style.take_photo_anim);
+        this.setAnimationStyle(R.style.popup_anim);
         hListViewAdapter = new HorizontalListViewAdapter(mContext, null, null, colors);
         hListView.setAdapter(hListViewAdapter);
         hListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

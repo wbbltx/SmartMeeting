@@ -8,14 +8,15 @@
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:paddingLeft="@dimen/simple_lr_padding"
         android:paddingRight="@dimen/simple_lr_padding">
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="13dp"
+            android:layout_width="wrap_content"
             android:layout_height="21dp"
             android:layout_marginTop="7dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:src="@mipmap/bar_back" />
 
         <TextView
@@ -36,20 +37,18 @@
 
             <TextView
                 android:id="@+id/iv_pen"
-                android:gravity="center"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@mipmap/pen_break"
-                android:textColor="@color/colorWhite"
-                 />
+                android:gravity="center"
+                android:textColor="@color/colorWhite" />
 
             <TextView
-                android:id="@+id/tv_share"
+                android:id="@+id/tv_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"
-                android:text="分享"
                 android:textColor="@color/simple_title"
                 android:textSize="16sp"
                 android:visibility="gone" />
