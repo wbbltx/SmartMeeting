@@ -47,6 +47,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
@@ -70,6 +72,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
     private int pageIndex;
     private RecordService recordService;
     private List<String> strings = new ArrayList<>();
+    private long duration;
+    private Disposable subscribe;
 
     @Override
     public void onPresenterCreated() {
@@ -108,14 +112,14 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
             public void run() {
                 Set<Integer> pages = dataCacheUtil.getPages();
                 for (Integer page : pages) {
-                    XLog.d(TAG, "页数" + page);
-                    NotePage unique = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),NotePageDao.Properties.PageIndex.eq(page)).unique();
-//                    List<String> screenPathList = unique.getScreenPathList();
-//                    if (screenPathList != null) {
-//                        screenPathList.add(path);
-//                    }
-                    strings.add(path);
-                    unique.setScreenPathList(strings);
+                    NotePage unique = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()), NotePageDao.Properties.PageIndex.eq(page)).unique();
+                    List<String> screenPathList = unique.getScreenPathList();
+                    if (screenPathList == null) {
+                        screenPathList = new ArrayList<>();
+                    }
+                    screenPathList.add(path);
+                    XLog.d(TAG, "页数" + screenPathList.size());
+                    unique.setScreenPathList(screenPathList);
                     notePageDao.update(unique);
                 }
             }
@@ -139,21 +143,62 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         return recordService.isRunning();
     }
 
+    /**
+     * 停止录屏计时，并将时间初始化
+     */
     @Override
-    public void stopRecord() {
-        recordService.stopRecord();
+    public void stopRecordTimer() {
+        duration = 0;
+        subscribe.dispose();
     }
 
+    /**
+     * 开始录屏计时
+     */
     @Override
-    public void startRecord(Context context) {
-//        Intent captureIntent = projectionManager.createScreenCaptureIntent();
-//        startActivityForResult(captureIntent, RECORD_REQUEST_CODE);
+    public void startRecordTimer() {
+        subscribe = Flowable.interval(1, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        mView.setRecordTime(timeParse(++duration) + "");
+//
+                    }
+                })
+                .subscribe();
+        addSubscribe(subscribe);
+
     }
 
     @Override
     public void extra(MediaProjection mediaProjection) {
-        recordService.setMediaProject(mediaProjection);
-        recordService.startRecord();
+//        recordService.setMediaProject(mediaProjection);
+//        recordService.startRecord();
+    }
+
+    /**
+     * 查询当前页的录屏个数
+     * @param pageIndex
+     */
+    @Override
+    public void queryRecordCount(final int pageIndex) {
+        Runnable queryRecordCountRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (currentSelectPage != null) {
+                    NotePage notePage = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()), NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                    List<String> screenPathList = notePage.getScreenPathList();
+                    if (screenPathList == null) {
+                        mView.setRecordCount(0);
+                    } else {
+                        mView.setRecordCount(screenPathList.size());
+                    }
+                }
+            }
+        };
+        singleThreadExecutor.execute(queryRecordCountRunnable);
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -330,5 +375,19 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.Vi
         singleThreadExecutor.shutdownNow();
     }
 
-
+    public String timeParse(long duration) {
+        String time = "";
+        long minute = duration / 60;
+        long seconds = duration % 60;
+        long second = Math.round((float) seconds);
+        if (minute < 10) {
+            time += "0";
+        }
+        time += minute + ":";
+        if (second < 10) {
+            time += "0";
+        }
+        time += second;
+        return time;
+    }
 }

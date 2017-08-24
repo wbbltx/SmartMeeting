@@ -8,6 +8,8 @@ import android.view.View;
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 
+import io.reactivex.disposables.Disposable;
+
 /**
  * Description:   画板页Contract
  * author         xulei
@@ -23,6 +25,10 @@ public interface DrawingBoardContract {
         void clearCanvars();
 
         void setTitleText(int pageIndex);
+
+        void setRecordTime(String time);
+
+        void setRecordCount(int i);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
@@ -33,13 +39,8 @@ public interface DrawingBoardContract {
         Bitmap viewToBitmap(android.view.View view);
 
         void savePageThumbnail(Bitmap bitmap, int pageIndex);
-//        void scanBlueDevice();
 
         boolean isBluetoothOpen();
-
-//        void openBle();
-
-//        void connectDevice(String address);
 
         /**
          * 录屏保存到数据库
@@ -60,16 +61,18 @@ public interface DrawingBoardContract {
         /**
          * 停止录屏
          */
-        void stopRecord();
+        void stopRecordTimer();
 
         /**
          * 开始luping
          */
-        void startRecord(Context context);
+        void startRecordTimer();
 
         /**
-         *
+         * 待扩展
          */
         void extra(MediaProjection mediaProjection);
+
+        void queryRecordCount(int pageIndex);
     }
 }

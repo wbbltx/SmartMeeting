@@ -10,28 +10,8 @@
     <include
         android:id="@+id/bar"
         layout="@layout/bar_base" />
-    
-    <LinearLayout
-        android:layout_below="@id/bar"
-        android:layout_width="match_parent"
-        android:layout_height="80px">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textColor="@color/simple_blue"
-            android:textSize="32px"
-            android:text="00:00:00"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_gravity="end"
-            android:textColor="@color/simple_blue"
-            android:text="保存"
-            android:textSize="32px"/>
-    </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/rl_draw_view_container"
@@ -57,4 +37,61 @@
         android:clickable="true"
         android:padding="20dp"
         android:src="@mipmap/draw_menu_close" />
+
+    <RelativeLayout
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/record_number"/>
+
+        <TextView
+            android:id="@+id/record_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/simple_blue"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="5dp"
+            android:textSize="30px"
+            android:text="2"/>
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/record_bar"
+        android:background="@color/simple_line"
+        android:layout_below="@id/bar"
+        android:layout_width="match_parent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_height="80px">
+        <TextView
+            android:id="@+id/record_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/simple_blue"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textSize="32px"
+            android:text="00:00:00"/>
+
+        <TextView
+            android:id="@+id/save_record"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/simple_blue"
+            android:gravity="right"
+            android:layout_alignParentRight="true"
+            android:text="保存"
+            android:textSize="32px"/>
+    </RelativeLayout>
 </RelativeLayout>

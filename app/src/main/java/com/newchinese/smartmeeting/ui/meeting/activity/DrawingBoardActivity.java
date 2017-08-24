@@ -1,29 +1,23 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.IdRes;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -42,8 +36,6 @@ import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
-import com.newchinese.smartmeeting.model.event.ConnectEvent;
-import com.newchinese.smartmeeting.model.event.DisconnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
@@ -62,13 +54,15 @@ import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -94,6 +88,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     RelativeLayout rlMenuContainer;
     @BindView(R.id.rl_draw_view_container)
     RelativeLayout rlDrawViewContainer;
+    @BindView(R.id.record_bar)
+    RelativeLayout recordBar;
+    @BindView(R.id.save_record)
+    TextView saveRecord;
+    @BindView(R.id.record_time)
+    TextView recordTime;
+    @BindView(R.id.record_count)
+    TextView recordCount;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -109,11 +111,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
-    private List<String> recordLists;
 
     private static final int RECORD_REQUEST_CODE = 101;
     private static final int STORAGE_REQUEST_CODE = 102;
     private static final int AUDIO_REQUEST_CODE = 103;
+    private boolean startTimeDown;
 
     @Override
     protected int getLayoutId() {
@@ -163,6 +165,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 @Override
                 public void accept(Long aLong) throws Exception {
                     mPresenter.readDataBasePoint(pageIndex);
+                    mPresenter.queryRecordCount(pageIndex);
                 }
             });
         }
@@ -181,7 +184,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         Intent recordIntent = new Intent(this, RecordService.class);
         bindService(recordIntent, connection, BIND_AUTO_CREATE);
 
-        recordLists = new ArrayList<>();
+        recordTime.setText("00:00");
+//        Flowable.interval(1, TimeUnit.SECONDS)
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnNext(new Consumer<Long>() {
+//                    @Override
+//                    public void accept(Long aLong) throws Exception {
+//                        if (startTimeDown) {
+//                            recordTime.setText(mPresenter.timeParse(++duration) + "");
+//                        }
+//                    }
+//                })
+//                .subscribe();
     }
 
     private void initPenState() {
@@ -284,6 +299,23 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
     }
 
+    @Override
+    public void setRecordTime(String time) {
+        if (startTimeDown) {
+            recordTime.setText(time);
+        }
+    }
+
+    @Override
+    public void setRecordCount(final int i) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recordCount.setText(i + "");
+            }
+        });
+    }
+
     /**
      * 获取到第一笔缓存的点
      */
@@ -345,7 +377,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
-            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review})
+            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
@@ -376,6 +408,22 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             case R.id.iv_review: //笔记回放
                 hideMenu();
                 break;
+            case R.id.save_record://保存结束录屏
+                stopRecord();
+                break;
+        }
+    }
+
+    private void stopRecord() {
+        recordBar.setVisibility(View.GONE);
+        startTimeDown = false;
+        if (recordService.isRunning()) {
+            recordService.stopRecord();
+            String recordPath = recordService.getRecordPath();
+            mPresenter.stopRecordTimer();
+            mPresenter.saveRecord(recordPath);
+            recordTime.setText("00:00");
+            mPresenter.queryRecordCount(pageIndex);
         }
     }
 
@@ -406,15 +454,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     private void checkRecordState() {
-        if (recordService.isRunning()) {
-            recordService.stopRecord();
-            String recordPath = recordService.getRecordPath();
-            mPresenter.saveRecord(recordPath);
-            XLog.d(TAG,"录屏路径："+recordPath);
-        } else {
-            Intent captureIntent = projectionManager.createScreenCaptureIntent();
-            startActivityForResult(captureIntent, 101);
-        }
+        recordBar.setVisibility(View.VISIBLE);
+        mPresenter.startRecordTimer();
+        Intent captureIntent = projectionManager.createScreenCaptureIntent();
+        startActivityForResult(captureIntent, 101);
+//        }
     }
 
     @Override
@@ -423,6 +467,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             mediaProjection = projectionManager.getMediaProjection(resultCode, data);
             recordService.setMediaProject(mediaProjection);
             recordService.startRecord();
+            startTimeDown = true;
             dataCacheUtil.addPages(pageIndex);
         }
     }
@@ -514,7 +559,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onConfirm(int i) {
         //该类不操作蓝牙，发送消息到第二个activity 使其打开蓝牙
-            EventBus.getDefault().post(new OpenBleEvent());
+        EventBus.getDefault().post(new OpenBleEvent());
     }
 
     @Override
@@ -549,17 +594,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @Subscribe
-    public void onEvent(CheckBlueStateEvent stateEvent){
+    public void onEvent(CheckBlueStateEvent stateEvent) {
         int flag = stateEvent.getFlag();
-        if (flag == 0){
+        if (flag == 0) {
             ivPen.setBackgroundResource(R.mipmap.pen_loading);
             ivPen.startAnimation(animation);
             ivPen.setText("");
-        }else if(flag == 1){
+        } else if (flag == 1) {
             ivPen.setBackgroundResource(R.mipmap.pen_succes);
             ivPen.clearAnimation();
             animation.cancel();
-        }else if(flag == -1){
+        } else if (flag == -1) {
             ivPen.setBackgroundResource(R.mipmap.pen_break);
             ivPen.setText("");
             ivPen.clearAnimation();
@@ -581,7 +626,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 .setPositiveButton("离开", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        recordService.stopRecord();
+                        stopRecord();
                         finish();
                     }
                 })
