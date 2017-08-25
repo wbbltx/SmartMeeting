@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.media.projection.MediaProjection;
 import android.view.View;
 
+import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 
@@ -74,5 +75,10 @@ public interface DrawingBoardActContract {
         void extra(MediaProjection mediaProjection);
 
         void queryRecordCount(int pageIndex);
+
+        /**
+         * 记录回放
+         */
+        void playBack(DrawingBoardView drawingBoardView);
     }
 }

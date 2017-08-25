@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.util.DisplayMetrics;
@@ -18,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -29,6 +32,7 @@ import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
@@ -46,6 +50,8 @@ import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.DateUtils;
+import com.newchinese.smartmeeting.util.PlayBackUtil;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -54,6 +60,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -92,6 +100,16 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView recordTime;
     @BindView(R.id.record_count)
     TextView recordCount;
+    @BindView(R.id.play_back_start)
+    ImageView playBackStart;
+    @BindView(R.id.play_back_bar)
+    LinearLayout playBackBar;
+    @BindView(R.id.play_back_start_time)
+    TextView playBackCurTime;
+    @BindView(R.id.play_back_progressbar)
+    ProgressBar playBackProgressBar;
+    @BindView(R.id.play_back_end_time)
+    TextView playBackEndTime;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -108,10 +126,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private MediaProjection mediaProjection;
     private RecordService recordService;
 
-    private static final int RECORD_REQUEST_CODE = 101;
-    private static final int STORAGE_REQUEST_CODE = 102;
-    private static final int AUDIO_REQUEST_CODE = 103;
     private boolean startTimeDown;
+    private int playStatus = 0;//0未播放，1播放中, 2暂停
+    private MyTimerTask timerTask;
+    private Timer timer;
+    private PlayBackUtil netUtil2;
+    private Handler handler = new Handler();
+    private int progress;
 
     @Override
     protected int getLayoutId() {
@@ -181,18 +202,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         bindService(recordIntent, connection, BIND_AUTO_CREATE);
 
         recordTime.setText("00:00");
-//        Flowable.interval(1, TimeUnit.SECONDS)
-//                .subscribeOn(AndroidSchedulers.mainThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnNext(new Consumer<Long>() {
-//                    @Override
-//                    public void accept(Long aLong) throws Exception {
-//                        if (startTimeDown) {
-//                            recordTime.setText(mPresenter.timeParse(++duration) + "");
-//                        }
-//                    }
-//                })
-//                .subscribe();
+        netUtil2 = PlayBackUtil.getInstance();
     }
 
     private void initPenState() {
@@ -373,7 +383,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
-            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record})
+            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record,R.id.play_back_start})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
@@ -403,9 +413,41 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_review: //笔记回放
                 hideMenu();
+                mPresenter.playBack(drawViewMeeting);
+                playBackStart.setVisibility(View.VISIBLE);
+                playBackBar.setVisibility(View.VISIBLE);
                 break;
             case R.id.save_record://保存结束录屏
                 stopRecord();
+                break;
+            case R.id.play_back_start:
+                playBack();
+                break;
+        }
+    }
+
+    private void playBack() {
+        switch (playStatus){
+            case 0://未播放
+                clearCanvars();
+                playBackStart.setVisibility(View.INVISIBLE);
+//                mPresenter.playBack(drawViewMeeting);
+                playStatus = 1;
+                playBackProgressBar.setMax(dataCacheUtil.getProgressMax());
+                playBackProgressBar.setProgress(0);
+                playBackEndTime.setText(DateUtils.getCheckTimeBySeconds(dataCacheUtil.getProgressMax() * 10 / 1000, "0:00:00"));
+                timerTask = new MyTimerTask();
+                timer = new Timer(true);
+                timer.schedule(timerTask, 1000, 10);
+                break;
+
+            case 1://播放中
+
+                playStatus = 2;
+                break;
+
+            case 2://暂停
+                playStatus = 1;
                 break;
         }
     }
@@ -610,9 +652,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         if (recordService.isRunning()) {
             showDialog("离开当前界面将退出录制功能");
+        }else {
+            super.onBackPressed();
         }
     }
 
@@ -633,5 +676,29 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     }
                 })
                 .create().show();
+    }
+
+    private class MyTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            progress++;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    playBackProgressBar.setProgress(progress);
+                    playBackCurTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+                    if (progress >= dataCacheUtil.getProgressMax()) {
+                        progress = 0;
+                        playBackCurTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+                        playBackStart.setVisibility(View.GONE);
+                        playBackBar.setVisibility(View.GONE);
+                        playStatus = 0;
+                        timer.cancel();
+                    }
+                }
+            });
+            playStatus = 0;
+            handler.postDelayed(PlayBackUtil.getInstance(), 1);
+        }
     }
 }
