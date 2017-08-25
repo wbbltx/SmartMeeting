@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.util;
 
 import com.newchinese.smartmeeting.app.Constant;
+import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 
@@ -16,17 +17,18 @@ import java.util.Set;
  */
 
 public class DataCacheUtil {
-    private NoteRecord activeNoteRecord; //当前活动本
-    private NotePage activeNotePage; //当前活动页
+    private int penState = 100;//记录笔的状态
     private int currentColor = Constant.colors[0]; //笔的颜色
     private int currentColorPosition = 0; //当前选择笔色的index
     private float strokeWidth = 0; //线宽
-    private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
-    private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
-    private String picSDCardDirectory = "";
-    private int penState = 100;//记录笔的状态
     private boolean isRecording;    //记录是否处于录制状态
+    private String picSDCardDirectory = "";
+    private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
     private Set<Integer> pages = new HashSet<>();       //记录视频录制期间翻过的页
+    private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
+    private NotePage activeNotePage; //当前活动页
+    private NoteRecord activeNoteRecord; //当前活动记录
+    private CollectRecord activeCollectRecord; //当前活动收藏记录
 
     public boolean isRecording() {
         return isRecording;
@@ -44,7 +46,7 @@ public class DataCacheUtil {
         this.pages = pages;
     }
 
-    public void addPages(int i){
+    public void addPages(int i) {
         pages.add(i);
     }
 
@@ -73,6 +75,14 @@ public class DataCacheUtil {
 
     public void setActiveNoteRecord(NoteRecord activeNoteRecord) {
         this.activeNoteRecord = activeNoteRecord;
+    }
+
+    public CollectRecord getActiveCollectRecord() {
+        return activeCollectRecord;
+    }
+
+    public void setActiveCollectRecord(CollectRecord activeCollectRecord) {
+        this.activeCollectRecord = activeCollectRecord;
     }
 
     public NotePage getActiveNotePage() {

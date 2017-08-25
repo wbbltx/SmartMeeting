@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,9 @@ import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
+import com.newchinese.smartmeeting.ui.record.activity.CollectPageListActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +108,8 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      */
     @Override
     public void onClick(View view, int position) {
-
+        DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
+        startActivity(new Intent(mActivity, CollectPageListActivity.class));
     }
 
     /**

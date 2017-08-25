@@ -1,13 +1,5 @@
 package com.newchinese.smartmeeting.base;
 
-import android.view.View;
-
-import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.log.XLog;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
