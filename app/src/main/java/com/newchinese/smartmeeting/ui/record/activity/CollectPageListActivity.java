@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.record.activity;
 
+import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -77,6 +78,7 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     public void getAllCollectPageData(List<CollectPage> collectPages) {
         collectPageList.clear();
         collectPageList.addAll(collectPages);
+        DataCacheUtil.getInstance().setActiveCollectPageList(collectPageList);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -95,7 +97,9 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
      */
     @Override
     public void onClick(View view, int position) {
-
+        Intent intent = new Intent(this, CollectPageDetailActivity.class);
+        intent.putExtra("selectPosition", position);
+        startActivity(intent);
     }
 
     /**

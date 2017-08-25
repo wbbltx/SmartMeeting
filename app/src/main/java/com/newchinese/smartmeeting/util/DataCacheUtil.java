@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.util;
 
 import com.newchinese.smartmeeting.app.Constant;
+import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
@@ -25,7 +26,8 @@ public class DataCacheUtil {
     private String picSDCardDirectory = "";
     private String chosenClassifyName = Constant.CLASSIFY_NAME_OTHER; //选择的分类
     private Set<Integer> pages = new HashSet<>();       //记录视频录制期间翻过的页
-    private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动和记录表中当前所有页
+    private List<NotePage> activeNotePageList = new ArrayList<>(); //缓存活动记录表中当前所有页
+    private List<CollectPage> activeCollectPageList = new ArrayList<>(); //缓存活动记录表中当前所有收藏页
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
     private CollectRecord activeCollectRecord; //当前活动收藏记录
@@ -38,6 +40,7 @@ public class DataCacheUtil {
     public void setProgressMax(int progressMax) {
         this.progressMax = progressMax;
     }
+
     public boolean isRecording() {
         return isRecording;
     }
@@ -143,6 +146,18 @@ public class DataCacheUtil {
 
     public void clearActiveNotePageList() {
         activeNotePageList.clear();
+    }
+
+    public List<CollectPage> getActiveCollectPageList() {
+        return activeCollectPageList;
+    }
+
+    public void setActiveCollectPageList(List<CollectPage> collectPageList) {
+        this.activeCollectPageList = collectPageList;
+    }
+
+    public void clearActiveCollectPageList() {
+        activeCollectPageList.clear();
     }
 
     public String getPicSDCardDirectory() {

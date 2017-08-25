@@ -16,9 +16,13 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd-HH:mm");
         return sdf.format(longDate);
     }
-
     public static String formatLongDate2(long longDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
+        return sdf.format(longDate);
+    }
+
+    public static String formatLongDate3(long longDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm");
         return sdf.format(longDate);
     }
 

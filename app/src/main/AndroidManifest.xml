@@ -52,6 +52,7 @@
             android:name=".ui.meeting.activity.DrawingBoardActivity"
             android:launchMode="singleTask" />
         <activity android:name=".ui.record.activity.CollectPageListActivity" />
+        <activity android:name=".ui.record.activity.CollectPageDetailActivity"></activity>
     </application>
 
 </manifest>
