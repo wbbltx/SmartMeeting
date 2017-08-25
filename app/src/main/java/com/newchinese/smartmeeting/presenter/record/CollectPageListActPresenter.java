@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.presenter.record;
 
+import android.util.Log;
+
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.CollectPageListActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
@@ -35,7 +37,7 @@ public class CollectPageListActPresenter extends BasePresenter<CollectPageListAc
 
     @Override
     public void onPresenterDestroy() {
-
+        singleThreadExecutor.shutdownNow();
     }
 
     /**
@@ -48,6 +50,7 @@ public class CollectPageListActPresenter extends BasePresenter<CollectPageListAc
             public void run() {
                 List<CollectPage> collectPages = collectRecordDao.queryBuilder()
                         .where(CollectPageDao.Properties.BookId.eq(activeCollectRecord.getId())).list();
+                Log.e("test_greendao", collectPages.size() + "," + collectPages.toString());
                 mView.getAllCollectPageData(collectPages);
             }
         };

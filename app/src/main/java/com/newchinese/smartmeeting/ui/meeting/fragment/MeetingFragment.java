@@ -126,6 +126,6 @@ public class MeetingFragment extends BaseSimpleFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        singleThreadExecutor.shutdown();
+        singleThreadExecutor.shutdownNow();
     }
 }

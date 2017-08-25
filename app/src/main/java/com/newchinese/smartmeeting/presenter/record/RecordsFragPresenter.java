@@ -34,7 +34,7 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
 
     @Override
     public void onPresenterDestroy() {
-
+        singleThreadExecutor.shutdownNow();
     }
 
     @Override

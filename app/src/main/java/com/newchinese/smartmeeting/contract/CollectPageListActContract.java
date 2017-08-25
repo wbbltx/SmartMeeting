@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public interface CollectPageListActContract {
-    interface View extends BaseView {
+    interface View<E> extends BaseView<E> {
         void getAllCollectPageData(List<CollectPage> collectPages);
     }
 
