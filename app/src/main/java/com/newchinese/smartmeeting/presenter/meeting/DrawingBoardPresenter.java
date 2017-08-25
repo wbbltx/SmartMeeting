@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
+import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
@@ -29,6 +30,7 @@ import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.PlayBackUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 
 import java.io.BufferedOutputStream;
@@ -68,6 +70,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     private List<String> strings = new ArrayList<>();
     private long duration;
     private Disposable subscribe;
+    private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
+    private int progressMax;
 
     @Override
     public void onPresenterCreated() {
@@ -174,6 +178,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
 
     /**
      * 查询当前页的录屏个数
+     *
      * @param pageIndex
      */
     @Override
@@ -193,6 +198,45 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             }
         };
         singleThreadExecutor.execute(queryRecordCountRunnable);
+    }
+
+    /**
+     * 笔记回放
+     */
+    @Override
+    public void playBack(final DrawingBoardView drawingBoardView) {
+//        mView.clearCanvars(); //清屏防止有上一页缓存
+        progressMax = 0;
+        playBackList = new ArrayList<>();
+        Runnable playBackRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (currentSelectPage != null) { //防止当前页为空
+                    List<NoteStroke> noteStrokeListData = noteStrokeDao.queryBuilder()
+                            .where(NoteStrokeDao.Properties.PageId.eq(currentSelectPage.getId())).list();
+                    if (noteStrokeListData != null && noteStrokeListData.size() > 0) { //线集合不为空
+                        for (NoteStroke noteStroke : noteStrokeListData) {
+                            List<NotePoint> notePointListData = notePointDao.queryBuilder()
+                                    .where(NotePointDao.Properties.StrokeId.eq(noteStroke.getId())).list();
+                            if (notePointListData != null && notePointListData.size() > 0) { //点集合不为空
+                                for (NotePoint notePoint : notePointListData) {
+                                    //将所有点存入集合，
+                                    com.newchinese.coolpensdk.entity.NotePoint sdkPoint =
+                                            new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
+                                                    notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
+                                                    notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
+                                    progressMax++;
+                                    playBackList.add(sdkPoint);
+                                }
+                            } else Log.e("test_greendao", "currentNotePointListData当前点集合为空");
+                        }
+                        dataCacheUtil.setProgressMax(progressMax);
+                    } else Log.e("test_greendao", "currentNoteStrokeListData当前线集合为空");
+                } else Log.e("test_greendao", "activeNotePage当前页为空");
+                PlayBackUtil.getInstance().addAllNewsBrief(null, playBackList, drawingBoardView);
+            }
+        };
+        singleThreadExecutor.execute(playBackRunnable);
     }
 
     private ServiceConnection connection = new ServiceConnection() {

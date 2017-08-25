@@ -29,7 +29,15 @@ public class DataCacheUtil {
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
     private CollectRecord activeCollectRecord; //当前活动收藏记录
+    private int progressMax;
 
+    public int getProgressMax() {
+        return progressMax;
+    }
+
+    public void setProgressMax(int progressMax) {
+        this.progressMax = progressMax;
+    }
     public boolean isRecording() {
         return isRecording;
     }

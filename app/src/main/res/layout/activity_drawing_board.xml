@@ -11,14 +11,12 @@
         android:id="@+id/bar"
         layout="@layout/bar_base" />
 
-
-
     <RelativeLayout
         android:id="@+id/rl_draw_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_below="@+id/bar">
+        android:layout_below="@+id/bar"
+        android:background="@color/colorWhite">
 
         <com.newchinese.coolpensdk.manager.DrawingBoardView
             android:id="@+id/draw_view_meeting"
@@ -39,59 +37,75 @@
         android:src="@mipmap/draw_menu_close" />
 
     <RelativeLayout
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="40dp">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/record_number"/>
+            android:src="@mipmap/record_number" />
 
         <TextView
             android:id="@+id/record_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/simple_blue"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
-            android:textSize="30px"
-            android:text="2"/>
+            android:text="2"
+            android:textColor="@color/simple_blue"
+            android:textSize="30px" />
 
     </RelativeLayout>
 
 
-
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/record_bar"
-        android:background="@color/simple_line"
-        android:layout_below="@id/bar"
         android:layout_width="match_parent"
+        android:layout_height="80px"
+        android:layout_below="@id/bar"
+        android:background="@color/simple_line"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_height="80px">
+        android:visibility="gone">
+
         <TextView
             android:id="@+id/record_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/simple_blue"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:textSize="32px"
-            android:text="00:00:00"/>
+            android:text="00:00:00"
+            android:textColor="@color/simple_blue"
+            android:textSize="32px" />
 
         <TextView
             android:id="@+id/save_record"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_height="wrap_content"
-            android:textColor="@color/simple_blue"
-            android:gravity="right"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right"
             android:text="保存"
-            android:textSize="32px"/>
+            android:textColor="@color/simple_blue"
+            android:textSize="32px" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/play_back_start"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/play_back_start"/>
+
+    <include layout="@layout/play_back_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        />
 </RelativeLayout>

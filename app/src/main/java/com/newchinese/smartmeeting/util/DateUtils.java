@@ -273,4 +273,72 @@ public class DateUtils {
 //		}
         return sb.toString();
     }
+
+    public static String getCheckTimeBySeconds(int progress, String startTime) {
+
+        String return_h = "", return_m = "", return_s = "";
+
+        String[] st = startTime.split(":");
+
+        int st_h = Integer.valueOf(st[0]);
+
+        int st_m = Integer.valueOf(st[1]);
+        int st_s = Integer.valueOf(st[2]);
+
+        int h = progress / 3600;
+
+        int m = (progress % 3600) / 60;
+
+        int s = progress % 60;
+
+        if ((s + st_s) >= 60) {
+
+            int tmpSecond = (s + st_s) % 60;
+
+            m = m + 1;
+
+            if (tmpSecond >= 10) {
+                return_s = tmpSecond + "";
+            } else {
+                return_s = "0" + (tmpSecond);
+            }
+
+        } else {
+            if ((s + st_s) >= 10) {
+                return_s = s + st_s + "";
+            } else {
+                return_s = "0" + (s + st_s);
+            }
+
+        }
+
+        if ((m + st_m) >= 60) {
+
+            int tmpMin = (m + st_m) % 60;
+
+            h = h + 1;
+
+            if (tmpMin >= 10) {
+                return_m = tmpMin + "";
+            } else {
+                return_m = "0" + (tmpMin);
+            }
+
+        } else {
+            if ((m + st_m) >= 10) {
+                return_m = (m + st_m) + "";
+            } else {
+                return_m = "0" + (m + st_m);
+            }
+
+        }
+
+        if ((st_h + h) < 10) {
+            return_h = "0" + (st_h + h);
+        } else {
+            return_h = st_h + h + "";
+        }
+
+        return return_h + ":" + return_m + ":" + return_s;
+    }
 }
