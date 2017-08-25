@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
-import com.newchinese.smartmeeting.contract.WelcomeContract;
+import com.newchinese.smartmeeting.contract.WelcomeActContract;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 
@@ -14,7 +14,7 @@ import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
  * author         xulei
  * Date           2017/8/18 13:22
  */
-public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implements WelcomeContract.View<View> {
+public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implements WelcomeActContract.View<View> {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_welcome;

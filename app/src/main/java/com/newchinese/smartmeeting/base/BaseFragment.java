@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.newchinese.smartmeeting.listener.PopWindowListener;
@@ -16,15 +17,20 @@ public abstract class BaseFragment<T extends BasePresenter> extends BaseSimpleFr
     protected T mPresenter;
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onFragViewCreated() {
         mPresenter = initPresenter();
-        if (mPresenter != null) mPresenter.attachView(this);
+        if (mPresenter != null) {
+            mPresenter.attachView(this);
+            mPresenter.onPresenterCreated();
+        }
     }
 
     @Override
     public void onDestroyView() {
-        if (mPresenter != null) mPresenter.detachView();
+        if (mPresenter != null) {
+            mPresenter.detachView();
+            mPresenter.onPresenterDestroy();
+        }
         super.onDestroyView();
     }
 

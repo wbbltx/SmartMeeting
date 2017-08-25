@@ -16,12 +16,14 @@ import java.util.List;
  * Date           2017/8/18
  */
 
-public interface DraftBoxContract {
+public interface DraftBoxActContract {
     interface View<E> extends BaseView<E> {
         void getActivePageList(List<NotePage> pageList);
 
         void setState(int state);
-
+        
+        void showToast(String toastContent);
+        
 //        void onScanComplete();
 //
 //        void showResult(E e);

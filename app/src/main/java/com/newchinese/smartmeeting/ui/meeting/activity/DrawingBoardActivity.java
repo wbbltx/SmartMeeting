@@ -31,9 +31,8 @@ import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
-import com.newchinese.smartmeeting.contract.DrawingBoardContract;
+import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
-import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
@@ -55,14 +54,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -71,7 +67,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final java.lang.String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)

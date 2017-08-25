@@ -12,12 +12,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!--SD卡权限-->
+    <!-- SD卡权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <!--录屏权限-->
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 录屏权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".app.App"
@@ -41,16 +41,17 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
-        <service android:name=".ui.meeting.service.RecordService"/>
+        <service android:name=".ui.meeting.service.RecordService" />
 
         <activity
             android:name=".ui.meeting.activity.DraftBoxActivity"
             android:launchMode="singleTask" />
         <activity android:name=".ui.login.activity.LoginActivity" />
-        <activity android:name=".ui.login.activity.RegisterActivity"></activity>
+        <activity android:name=".ui.login.activity.RegisterActivity" />
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".ui.record.activity.CollectPageListActivity" />
     </application>
 
 </manifest>

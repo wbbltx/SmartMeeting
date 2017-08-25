@@ -11,7 +11,7 @@ import com.newchinese.smartmeeting.base.BaseView;
  * Date           2017/8/18
  */
 
-public interface MainContract {
+public interface MainActContract {
     interface View<E> extends BaseView<E> {
         void jumpDrawingBoard();
 

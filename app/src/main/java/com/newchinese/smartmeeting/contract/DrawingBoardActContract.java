@@ -16,7 +16,7 @@ import io.reactivex.disposables.Disposable;
  * Date           2017/8/18
  */
 
-public interface DrawingBoardContract {
+public interface DrawingBoardActContract {
     interface View<E> extends BaseView<E> {
         void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor, float strokeWidth);
 

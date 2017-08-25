@@ -1,12 +1,26 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
-import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
-import com.newchinese.smartmeeting.contract.RecordsContract;
+import com.newchinese.smartmeeting.contract.RecordsFragContract;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
+import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -14,20 +28,18 @@ import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
  * author         xulei
  * Date           2017/8/17 17:30
  */
-public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsContract.View {
-    private static final String TITLE = "title";
-
-    private String title;
+public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View,
+        OnItemClickedListener {
+    @BindView(R.id.et_search_content)
+    EditText etSearchContent;
+    @BindView(R.id.iv_search)
+    ImageView ivSearch;
+    @BindView(R.id.rv_record_list)
+    RecyclerView rvRecordList;
+    private CollectRecordsRecyAdapter adapter;
+    private List<CollectRecord> collectRecordList = new ArrayList<>();
 
     public RecordsFragment() {
-    }
-
-    public static RecordsFragment newInstance(String title) {
-        RecordsFragment fragment = new RecordsFragment();
-        Bundle args = new Bundle();
-        args.putString(TITLE, title);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -36,25 +48,72 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     }
 
     @Override
-    protected void onFragViewCreated() {
+    protected RecordsFragPresenter initPresenter() {
+        return new RecordsFragPresenter();
+    }
 
+    @Override
+    protected void onFragViewCreated() {
+        super.onFragViewCreated();
+        //初始化RecyclerView
+        rvRecordList.setHasFixedSize(true);
+        rvRecordList.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
+        rvRecordList.setItemAnimator(new DefaultItemAnimator());
+        adapter = new CollectRecordsRecyAdapter(mContext);
+        rvRecordList.setAdapter(adapter);
     }
 
     @Override
     protected void initStateAndData() {
-        if (getArguments() != null) {
-            title = getArguments().getString(TITLE);
-        }
+        mPresenter.loadAllCollectRecordData();
     }
 
     @Override
     protected void initListener() {
+        adapter.setOnItemClickedListener(this);
+    }
+
+
+    @OnClick(R.id.iv_search)
+    public void onViewClicked() {
+    }
+
+    /**
+     * 获取到所有CollectRecord集合
+     */
+    @Override
+    public void getAllCollectRecordData(List<CollectRecord> collectRecords) {
+        collectRecordList.clear();
+        collectRecordList.addAll(collectRecords);
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.setCollectRecordList(collectRecordList);
+            }
+        });
+    }
+
+    /**
+     * 刷新数据
+     */
+    public void refreshData() {
+        mPresenter.loadAllCollectRecordData();
+    }
+
+    /**
+     * 列表点击事件
+     */
+    @Override
+    public void onClick(View view, int position) {
 
     }
 
+    /**
+     * 列表长点击事件
+     */
     @Override
-    protected RecordsFragPresenter initPresenter() {
-        return new RecordsFragPresenter();
+    public void onLongClick(View view, int position) {
+
     }
 
     @Override

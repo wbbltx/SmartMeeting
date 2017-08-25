@@ -11,11 +11,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.constants.PointType;
-import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
-import com.newchinese.smartmeeting.contract.MainContract;
+import com.newchinese.smartmeeting.contract.MainActContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
@@ -27,14 +26,12 @@ import com.newchinese.smartmeeting.manager.NoteStrokeManager;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.model.bean.NoteStroke;
-import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +42,7 @@ import java.util.concurrent.Executors;
  * Date           2017/8/19
  */
 
-public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
+public class MainPresenter extends BasePresenter<MainActContract.View> implements MainActContract.Presenter {
     private NoteRecordDao noteRecordDao;
     private NotePageDao notePageDao;
     private NoteStrokeDao noteStrokeDao;

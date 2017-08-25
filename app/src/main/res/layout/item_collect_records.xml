@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="14dp"
+        android:paddingRight="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="14dp">
+
+        <ImageView
+            android:id="@+id/iv_classify"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/record_work" />
+
+        <TextView
+            android:id="@+id/tv_record_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="关于智会议的使用方法"
+            android:textColor="@color/gray3"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="今天"
+            android:textColor="@color/gray6"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignBottom="@+id/layout1"
+        android:layout_marginStart="54dp"
+        android:background="@color/simple_line" />
+</RelativeLayout>

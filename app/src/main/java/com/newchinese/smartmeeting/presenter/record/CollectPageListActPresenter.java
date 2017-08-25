@@ -16,12 +16,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Description:
+ * Description:   收藏页列表Activity的Presenter
  * author         xulei
- * Date           2017/8/18
+ * Date           2017/8/25
  */
 
-public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View> implements RecordsFragContract.Presenter {
+public class CollectPageListActPresenter extends BasePresenter<RecordsFragContract.View> implements RecordsFragContract.Presenter {
     private CollectRecordDao collectRecordDao;
     private CollectRecordManager collectRecordManager;
     private ExecutorService singleThreadExecutor; //单核心线程线程池

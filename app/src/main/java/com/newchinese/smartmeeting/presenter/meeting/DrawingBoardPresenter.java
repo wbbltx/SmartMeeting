@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
@@ -18,12 +17,11 @@ import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
-import com.newchinese.smartmeeting.contract.DrawingBoardContract;
+import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
 import com.newchinese.smartmeeting.log.XLog;
-import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NotePoint;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
@@ -32,8 +30,6 @@ import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
-
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -51,15 +47,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
-import static android.content.Context.MEDIA_PROJECTION_SERVICE;
-
 /**
  * Description:   画板Presenter
  * author         xulei
  * Date           2017/8/18
  */
 
-public class DrawingBoardPresenter extends BasePresenter<DrawingBoardContract.View> implements DrawingBoardContract.Presenter {
+public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract.View> implements DrawingBoardActContract.Presenter {
     private static final java.lang.String TAG = "DrawingBoardPresenter";
     private DataCacheUtil dataCacheUtil;
     private NoteRecord activeNoteRecord;

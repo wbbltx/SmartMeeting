@@ -12,8 +12,13 @@ import java.util.Locale;
 @SuppressLint("SimpleDateFormat")
 public class DateUtils {
 
-    public static String formatLongDate(long longDate) {
+    public static String formatLongDate1(long longDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd-HH:mm");
+        return sdf.format(longDate);
+    }
+
+    public static String formatLongDate2(long longDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
         return sdf.format(longDate);
     }
 

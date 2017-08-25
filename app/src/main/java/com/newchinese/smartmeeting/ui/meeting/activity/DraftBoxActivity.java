@@ -19,12 +19,13 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BasePresenter;
-import com.newchinese.smartmeeting.contract.DraftBoxContract;
+import com.newchinese.smartmeeting.contract.DraftBoxActContract;
 import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
@@ -61,7 +62,7 @@ import butterknife.OnClick;
  * Date           2017/8/18 16:34
  */
 public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
-        DraftBoxContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
+        DraftBoxActContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
         OnItemClickedListener, View.OnClickListener {
     private static final String TAG = "DraftBoxActivity";
     private static boolean isFirstTime = true;
@@ -420,6 +421,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void setState(int id) {
         ivPen.setBackgroundResource(id);
+    }
+
+    @Override
+    public void showToast(final String toastContent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(DraftBoxActivity.this, toastContent, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

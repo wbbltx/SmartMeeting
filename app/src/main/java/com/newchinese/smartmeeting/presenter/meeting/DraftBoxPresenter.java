@@ -1,21 +1,17 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BasePresenter;
-import com.newchinese.smartmeeting.contract.DraftBoxContract;
+import com.newchinese.smartmeeting.contract.DraftBoxActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.manager.CollectPageManager;
 import com.newchinese.smartmeeting.manager.CollectRecordManager;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
@@ -23,7 +19,6 @@ import com.newchinese.smartmeeting.ui.main.BleListener;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
-import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +33,7 @@ import java.util.concurrent.Executors;
  * Date           2017/8/18
  */
 
-public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> implements DraftBoxContract.Presenter {
+public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> implements DraftBoxActContract.Presenter {
     private static final String TAG = "DraftBoxPresenter";
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private Timer timer;
@@ -50,6 +45,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
     private String classifyName;
     private CollectRecordManager collectRecordManager;
     private CollectPageManager collectPageManager;
+    private List<Boolean> isSelectedList;
+    private List<NotePage> notePageList;
 
     @Override
     public void onPresenterCreated() {
@@ -64,6 +61,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
         activeNoteRecord = DataCacheUtil.getInstance().getActiveNoteRecord();
         //当前分类
         classifyName = activeNoteRecord.getClassifyName();
+        isSelectedList = new ArrayList<>();
+        notePageList = new ArrayList<>();
     }
 
     @Override
@@ -147,18 +146,22 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
      * 存入收藏表，删除选中的页
      */
     @Override
-    public void createSelectedRecords(final List<NotePage> notePageList, final List<Boolean> isSelectedList,
+    public void createSelectedRecords(final List<NotePage> notePages, List<Boolean> isSelecteds,
                                       final String recordName) {
-        Log.e("test_select", notePageList.size() + ",notePageList：" + notePageList);
-        Log.e("test_select", "isSelectedList：" + isSelectedList);
-        Log.e("test_select", "recordName：" + recordName);
+        Log.i("test_select", notePages.size() + ",notePages：" + notePages);
+        Log.i("test_select", "isSelecteds：" + isSelecteds);
+        Log.i("test_select", "recordName：" + recordName);
+        isSelectedList.clear();
+        isSelectedList.addAll(isSelecteds);
+        notePageList.clear();
+        notePageList.addAll(notePages);
         Runnable saveRecordsRunnable = new Runnable() {
             @Override
             public void run() {
                 CollectRecord collectRecord = collectRecordManager.insertCollectRecord(collectRecordDao, classifyName, recordName);
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     if (isSelectedList.get(i)) {
-                        Log.e("test_select", "selectedPage：" + notePageList.get(i).getPageIndex());
+                        Log.i("test_select", "selectedPage：" + notePageList.get(i).getPageIndex());
                         //存收藏页
                         NotePage selectPage = notePageList.get(i);
                         collectPageManager.insertCollectPage(collectPageDao, collectRecord.getId(),
@@ -168,15 +171,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxContract.View> impl
                         notePageDao.delete(selectPage);
                     }
                 }
+                mView.showToast("生成记录成功");
                 //存完刷新页面
                 loadActivePageList();
-//                List<CollectRecord> collectRecords = collectRecordManager.getCollectRecords(collectRecordDao, classifyName);
-//                Log.e("test_greendao", collectRecords.size() + "," + collectRecords.toString());
-//                for (CollectRecord record : collectRecords) {
-//                    List<CollectPage> collectPages = collectPageDao.queryBuilder().list();
-//                    Log.e("test_greendao", collectPages.size() + "," + collectPages.toString());
-//
-//                }
             }
         };
         singleThreadExecutor.execute(saveRecordsRunnable);

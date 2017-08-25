@@ -1,6 +1,5 @@
 package com.newchinese.smartmeeting.ui.meeting.adapter;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.contract.MainContract;
 
 import java.util.ArrayList;
 import java.util.List;

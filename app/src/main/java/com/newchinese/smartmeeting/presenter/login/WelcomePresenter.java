@@ -1,20 +1,8 @@
 package com.newchinese.smartmeeting.presenter.login;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-
 import com.newchinese.smartmeeting.base.BasePresenter;
-import com.newchinese.smartmeeting.contract.MainContract;
-import com.newchinese.smartmeeting.contract.WelcomeContract;
+import com.newchinese.smartmeeting.contract.WelcomeActContract;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -27,7 +15,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/19
  */
 
-public class WelcomePresenter extends BasePresenter<WelcomeContract.View> implements WelcomeContract.Presenter {
+public class WelcomePresenter extends BasePresenter<WelcomeActContract.View> implements WelcomeActContract.Presenter {
     private static final int TIME_COUNT = 2000;
 
     /**

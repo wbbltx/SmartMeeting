@@ -16,7 +16,7 @@ import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
-import com.newchinese.smartmeeting.contract.MainContract;
+import com.newchinese.smartmeeting.contract.MainActContract;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
@@ -35,7 +35,7 @@ import butterknife.BindView;
  * author         xulei
  * Date           2017/8/17 17:05
  */
-public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> implements MainContract.View<BluetoothDevice>,
+public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> implements MainActContract.View<BluetoothDevice>,
         RadioGroup.OnCheckedChangeListener, OnPointListener {
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         //初始化Radio和Fragment状态
         ((RadioButton) rgMain.getChildAt(1)).setChecked(true);
         fragmentManager = getSupportFragmentManager();
-        recordsFragment = RecordsFragment.newInstance("记录");
+        recordsFragment = new RecordsFragment();
         meetingFragemnt = new MeetingFragment();
         mineFragment = MineFragment.newInstance("我的");
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
@@ -187,5 +187,9 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     @Override
     protected void onResume() {
         super.onResume();
+        //刷新记录数据
+        if (recordsFragment != null && recordsFragment.isAdded()) {
+            ((RecordsFragment) recordsFragment).refreshData();
+        }
     }
 }
