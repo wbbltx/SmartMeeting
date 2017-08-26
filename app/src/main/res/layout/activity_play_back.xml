@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.newchinese.smartmeeting.ui.meeting.activity.PlayBackActivity">
+    <include
+        android:id="@+id/bar"
+        layout="@layout/bar_base" />
+
+    <com.newchinese.coolpensdk.manager.DrawingBoardView
+        android:id="@+id/play_back_drawview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/record_play_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/play_back_start"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/record_play" />
+
+        <ProgressBar
+            android:id="@+id/play_back_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/play_back_start"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            />
+
+        <TextView
+            android:id="@+id/play_back_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="9dp"
+            android:layout_alignLeft="@id/play_back_seekbar"
+            android:text="00:00:00"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/play_back_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/play_back_seekbar"
+            android:layout_alignBottom="@id/play_back_start_time"
+            android:text="00:00:00"
+            android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:paddingLeft="15dp"-->
+        <!--android:paddingRight="15dp"-->
+        <!--android:layout_alignParentBottom="true">-->
+        <!--<TextView-->
+            <!--android:id="@+id/play_back_start_time"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:text="00:00:00"/>-->
+
+        <!--<com.xw.repo.BubbleSeekBar-->
+            <!--android:id="@+id/play_back_seekbar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_toRightOf="@id/play_back_start_time"-->
+            <!--android:layout_toLeftOf="@id/play_back_end_time"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--app:bsb_second_track_color="@color/colorPrimaryDark"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/play_back_end_time"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:text="00:00:00"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/play_back_start"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@mipmap/play_back_start"/>-->
+
+
+</RelativeLayout>

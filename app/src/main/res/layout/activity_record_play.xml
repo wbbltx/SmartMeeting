@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.newchinese.smartmeeting.ui.meeting.activity.RecordPlayActivity">
+
+    <VideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:paddingLeft="15dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:layout_alignParentBottom="true">-->
+    <!--<TextView-->
+    <!--android:id="@+id/play_back_start_time"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:text="00:00:00"/>-->
+
+    <!--<com.xw.repo.BubbleSeekBar-->
+    <!--android:id="@+id/play_back_seekbar"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_toRightOf="@id/play_back_start_time"-->
+    <!--android:layout_toLeftOf="@id/play_back_end_time"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--app:bsb_second_track_color="@color/colorPrimaryDark"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/play_back_end_time"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:text="00:00:00"/>-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/play_back_start"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@mipmap/play_back_start"/>-->
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/record_play_bar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_alignParentBottom="true">-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/record_play"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginLeft="15dp"-->
+            <!--android:src="@mipmap/record_play" />-->
+
+        <!--<com.xw.repo.BubbleSeekBar-->
+            <!--android:id="@+id/record_play_seekbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="13dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_toRightOf="@id/record_play"-->
+            <!--app:bsb_second_track_color="@color/colorPrimaryDark"-->
+            <!--app:bsb_track_color="@color/colorPrimaryDark"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/record_play_starttime"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="9dp"-->
+            <!--android:layout_alignLeft="@id/record_play_seekbar"-->
+            <!--android:layout_toRightOf="@id/record_play"-->
+            <!--android:text="00:00:00"-->
+            <!--android:textSize="12sp"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/record_play_endtime"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignRight="@id/record_play_seekbar"-->
+            <!--android:layout_alignBottom="@id/record_play_starttime"-->
+            <!--android:text="00:00:00"-->
+            <!--android:textSize="12sp"/>-->
+    <!--</RelativeLayout>-->
+
+</LinearLayout>
