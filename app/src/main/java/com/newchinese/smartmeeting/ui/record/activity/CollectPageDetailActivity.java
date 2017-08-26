@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.ui.record.adapter.CollectPageDetailVpAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 
@@ -17,9 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Description:   收藏页详情Activity
+ * author         xulei
+ * Date           2017/8/26 10:43
+ */
 public class CollectPageDetailActivity extends BaseSimpleActivity {
     @BindView(R.id.iv_back)
     ImageView ivBack;
@@ -32,6 +37,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
     private int selectPosition = 0;
     private CollectPage currentPage;
     private List<CollectPage> collectPageList = new ArrayList<>(); //活动收藏记录表中当前所有收藏页
+    private CollectPageDetailVpAdapter adapter;
 
     @Override
     protected int getLayoutId() {
@@ -51,12 +57,30 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
         if (collectPageList.size() > 0 && selectPosition < (collectPageList.size())) {
             currentPage = collectPageList.get(selectPosition);
             setTitle(currentPage.getPageIndex(), currentPage.getDate());
+            adapter = new CollectPageDetailVpAdapter(getSupportFragmentManager(), collectPageList);
+            vpThumnbail.setAdapter(adapter);
+            vpThumnbail.setCurrentItem(selectPosition);
         }
     }
 
     @Override
     protected void initListener() {
-        
+        vpThumnbail.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(collectPageList.get(position).getPageIndex(), collectPageList.get(position).getDate());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     /**
