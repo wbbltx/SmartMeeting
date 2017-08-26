@@ -42,6 +42,7 @@ import com.newchinese.smartmeeting.ui.meeting.adapter.DraftPageRecyAdapter;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
@@ -175,7 +176,18 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 resetEditMode();
                 break;
             case R.id.tv_create: //生成记录
-                createDialog();
+                //先判断是否未选择
+                boolean isSelectEmpty = true;
+                for (Boolean isSelected : isSelectedList) {
+                    if (isSelected) {
+                        isSelectEmpty = false;
+                    }
+                }
+                if (!isSelectEmpty) {
+                    createDialog();
+                } else {
+                    Toast.makeText(this, "请选择要生成的会议记录页", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -220,10 +232,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         builder.setTitle("变更本次记录标题名称");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.e("createDialog", "" + builder.getInputText());
-                mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
-                dialog.dismiss();
-                resetEditMode();
+                Log.i("createDialog", "" + builder.getInputText());
+                if (builder.getInputText().isEmpty()) {
+                    Toast.makeText(DraftBoxActivity.this, "请输入记录标题名称", Toast.LENGTH_SHORT).show();
+                } else {
+                    mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
+                    dialog.dismiss();
+                    resetEditMode();
+                }
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -232,7 +248,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             }
         });
         builder.setCancelableMethod(false);
-        builder.setInputText(classifyName + System.currentTimeMillis());
+        builder.setInputText(classifyName + DateUtils.formatLongDate3(System.currentTimeMillis()));
         builder.createDoubleButton().show();
     }
 
