@@ -192,8 +192,13 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     if (screenPathList == null) {
                         mView.setRecordCount(0);
                     } else {
-                        mView.setRecordCount(screenPathList.size());
-                        dataCacheUtil.setRecordPathList(screenPathList);
+                        //没有视频文件，集合有可能不为空，在这种情况下会默认有一个""的元素，是的界面显示异常
+                        if (screenPathList.size() == 1 && screenPathList.get(0)==""){
+                            mView.setRecordCount(0);
+                        }else {
+                            mView.setRecordCount(screenPathList.size());
+                            dataCacheUtil.setRecordPathList(screenPathList);
+                        }
                     }
                 }
             }

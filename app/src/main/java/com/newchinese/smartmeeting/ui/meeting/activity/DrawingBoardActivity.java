@@ -83,7 +83,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
-    TextView ivPen;
+    ImageView ivPen;
     @BindView(R.id.draw_view_meeting)
     DrawingBoardView drawViewMeeting;
     @BindView(R.id.iv_menu_btn)
@@ -102,14 +102,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView recordCount;
     @BindView(R.id.rl_record_count)
     RelativeLayout rlRecordCount;
-    @BindView(R.id.play_back_bar)
-    LinearLayout playBackBar;
-    @BindView(R.id.play_back_start_time)
-    TextView playBackCurTime;
-    @BindView(R.id.play_back_progressbar)
-    ProgressBar playBackProgressBar;
-    @BindView(R.id.play_back_end_time)
-    TextView playBackEndTime;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -599,8 +591,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Subscribe
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
-        if (ivPen != null)
-            ivPen.setText(value + "%");
+//        if (ivPen != null)
+//            ivPen.setText(value + "%");
     }
 
     @Override
@@ -618,14 +610,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (flag == 0) {
             ivPen.setBackgroundResource(R.mipmap.pen_loading);
             ivPen.startAnimation(animation);
-            ivPen.setText("");
+//            ivPen.setText("");
         } else if (flag == 1) {
             ivPen.setBackgroundResource(R.mipmap.pen_succes);
             ivPen.clearAnimation();
             animation.cancel();
         } else if (flag == -1) {
             ivPen.setBackgroundResource(R.mipmap.pen_break);
-            ivPen.setText("");
+//            ivPen.setText("");
             ivPen.clearAnimation();
             animation.cancel();
         }

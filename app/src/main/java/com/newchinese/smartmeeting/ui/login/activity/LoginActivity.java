@@ -20,7 +20,7 @@ public class LoginActivity extends BaseSimpleActivity {
     ImageView iv_back;
 
     @BindView(R.id.iv_pen)
-    TextView iv_pen;
+    ImageView iv_pen;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
