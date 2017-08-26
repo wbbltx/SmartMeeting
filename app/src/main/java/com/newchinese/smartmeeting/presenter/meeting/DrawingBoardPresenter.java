@@ -193,6 +193,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                         mView.setRecordCount(0);
                     } else {
                         mView.setRecordCount(screenPathList.size());
+                        dataCacheUtil.setRecordPathList(screenPathList);
                     }
                 }
             }
@@ -205,7 +206,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      */
     @Override
     public void playBack(final DrawingBoardView drawingBoardView) {
-//        mView.clearCanvars(); //清屏防止有上一页缓存
         progressMax = 0;
         playBackList = new ArrayList<>();
         Runnable playBackRunnable = new Runnable() {

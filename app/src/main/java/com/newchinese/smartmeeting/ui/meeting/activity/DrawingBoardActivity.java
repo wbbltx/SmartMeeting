@@ -100,8 +100,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView recordTime;
     @BindView(R.id.record_count)
     TextView recordCount;
-    @BindView(R.id.play_back_start)
-    ImageView playBackStart;
+    @BindView(R.id.rl_record_count)
+    RelativeLayout rlRecordCount;
     @BindView(R.id.play_back_bar)
     LinearLayout playBackBar;
     @BindView(R.id.play_back_start_time)
@@ -128,7 +128,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     private boolean startTimeDown;
     private int playStatus = 0;//0未播放，1播放中, 2暂停
-    private MyTimerTask timerTask;
+    //    private MyTimerTask timerTask;
     private Timer timer;
     private PlayBackUtil netUtil2;
     private Handler handler = new Handler();
@@ -317,7 +317,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                recordCount.setText(i + "");
+                if (i == 0) {
+                    rlRecordCount.setVisibility(View.GONE);
+                } else {
+                    rlRecordCount.setVisibility(View.VISIBLE);
+                    recordCount.setText(i + "");
+                }
             }
         });
     }
@@ -383,7 +388,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
-            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record,R.id.play_back_start})
+            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.rl_record_count})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
@@ -413,41 +418,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_review: //笔记回放
                 hideMenu();
-                mPresenter.playBack(drawViewMeeting);
-                playBackStart.setVisibility(View.VISIBLE);
-                playBackBar.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(DrawingBoardActivity.this, PlayBackActivity.class);
+                intent.putExtra(TAG_PAGE_INDEX, pageIndex);
+                startActivity(intent);
                 break;
             case R.id.save_record://保存结束录屏
                 stopRecord();
                 break;
-            case R.id.play_back_start:
-                playBack();
-                break;
-        }
-    }
-
-    private void playBack() {
-        switch (playStatus){
-            case 0://未播放
-                clearCanvars();
-                playBackStart.setVisibility(View.INVISIBLE);
-//                mPresenter.playBack(drawViewMeeting);
-                playStatus = 1;
-                playBackProgressBar.setMax(dataCacheUtil.getProgressMax());
-                playBackProgressBar.setProgress(0);
-                playBackEndTime.setText(DateUtils.getCheckTimeBySeconds(dataCacheUtil.getProgressMax() * 10 / 1000, "0:00:00"));
-                timerTask = new MyTimerTask();
-                timer = new Timer(true);
-                timer.schedule(timerTask, 1000, 10);
-                break;
-
-            case 1://播放中
-
-                playStatus = 2;
-                break;
-
-            case 2://暂停
-                playStatus = 1;
+            case R.id.rl_record_count://录屏图标
+                Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
+                intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
+                startActivity(intent1);
                 break;
         }
     }
@@ -654,7 +635,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onBackPressed() {
         if (recordService.isRunning()) {
             showDialog("离开当前界面将退出录制功能");
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -676,29 +657,5 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     }
                 })
                 .create().show();
-    }
-
-    private class MyTimerTask extends TimerTask {
-        @Override
-        public void run() {
-            progress++;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    playBackProgressBar.setProgress(progress);
-                    playBackCurTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
-                    if (progress >= dataCacheUtil.getProgressMax()) {
-                        progress = 0;
-                        playBackCurTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
-                        playBackStart.setVisibility(View.GONE);
-                        playBackBar.setVisibility(View.GONE);
-                        playStatus = 0;
-                        timer.cancel();
-                    }
-                }
-            });
-            playStatus = 0;
-            handler.postDelayed(PlayBackUtil.getInstance(), 1);
-        }
     }
 }

@@ -37,6 +37,7 @@
         android:src="@mipmap/draw_menu_close" />
 
     <RelativeLayout
+        android:id="@+id/rl_record_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -55,7 +56,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
-            android:text="2"
+            android:text=""
             android:textColor="@color/simple_blue"
             android:textSize="30px" />
 
@@ -94,14 +95,15 @@
             android:textSize="32px" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/play_back_start"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/play_back_start"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/play_back_start"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@mipmap/play_back_start"/>-->
 
+    <!--笔记回放的时间栏-->
     <include layout="@layout/play_back_layout"
         android:visibility="gone"
         android:layout_width="match_parent"

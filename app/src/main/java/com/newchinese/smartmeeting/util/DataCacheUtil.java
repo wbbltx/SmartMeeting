@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.util;
 
+import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
@@ -31,7 +32,25 @@ public class DataCacheUtil {
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
     private CollectRecord activeCollectRecord; //当前活动收藏记录
-    private int progressMax;
+    private int progressMax;//笔记回放max
+    private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;//笔记回放点的缓存
+    private List<String> recordPathList;  //当页的录屏文件路径集合
+
+    public List<String> getRecordPathList() {
+        return recordPathList;
+    }
+
+    public void setRecordPathList(List<String> recordPathList) {
+        this.recordPathList = recordPathList;
+    }
+
+    public ArrayList<NotePoint> getPlayBackList() {
+        return playBackList;
+    }
+
+    public void setPlayBackList(ArrayList<NotePoint> playBackList) {
+        this.playBackList = playBackList;
+    }
 
     public int getProgressMax() {
         return progressMax;

@@ -54,6 +54,9 @@
         <activity android:name=".ui.record.activity.CollectPageListActivity" />
         <activity android:name=".ui.record.activity.CollectPageDetailActivity" />
         <activity android:name=".ui.record.activity.CollectRecordFilterActivity"></activity>
+        <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
+        <activity android:name=".ui.meeting.activity.PlayBackActivity" />
+        <activity android:name=".ui.meeting.activity.RecordLibActivity"></activity>
     </application>
 
 </manifest>
