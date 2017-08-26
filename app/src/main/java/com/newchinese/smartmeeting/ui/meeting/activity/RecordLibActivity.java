@@ -43,7 +43,7 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
     @BindView(R.id.tv_right)
     TextView tvRight;
     @BindView(R.id.iv_pen)
-    TextView ivPen;
+    ImageView ivPen;
     @BindView(R.id.tv_cancel)
     TextView tvCancel;
     @BindView(R.id.tv_create)
@@ -189,6 +189,7 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
             adapter.setIsSelectedList(isSelectedList);
         }else {
             Intent intent = new Intent(this,RecordPlayActivity.class);
+            intent.putExtra("recordPath",adapter.getItem(position));
             startActivity(intent);
         }
     }

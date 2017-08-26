@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:visibility="gone"
         android:layout_marginBottom="40dp">
 
         <ImageView
@@ -55,10 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:paddingLeft="5dp"
-            android:text=""
+            android:paddingLeft="10dp"
+            android:text="2"
             android:textColor="@color/simple_blue"
-            android:textSize="30px" />
+            android:textSize="15sp" />
 
     </RelativeLayout>
 
@@ -104,10 +105,10 @@
         <!--android:src="@mipmap/play_back_start"/>-->
 
     <!--笔记回放的时间栏-->
-    <include layout="@layout/play_back_layout"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        />
+    <!--<include layout="@layout/play_back_layout"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--/>-->
 </RelativeLayout>

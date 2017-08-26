@@ -1,15 +1,20 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.ui.meeting.activity.RecordPlayActivity;
 
 import butterknife.BindView;
 
@@ -18,10 +23,14 @@ import butterknife.BindView;
  * author         xulei
  * Date           2017/8/26 10:16
  */
-public class CollectPageDetailFragment extends BaseSimpleFragment {
+public class CollectPageDetailFragment extends BaseSimpleFragment implements View.OnClickListener {
     private static final String COLLECT_PAGE = "collectPage";
     @BindView(R.id.iv_thumnbail)
     ImageView ivThumnbail;
+    @BindView(R.id.rl_record_count)
+    RelativeLayout rlRecordCount;
+    @BindView(R.id.record_count)
+    TextView recordCount;
     private CollectPage collectPage;
 
     public CollectPageDetailFragment() {
@@ -61,6 +70,16 @@ public class CollectPageDetailFragment extends BaseSimpleFragment {
 
     @Override
     protected void initListener() {
+        rlRecordCount.setOnClickListener(this);
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.rl_record_count:
+                Intent intent = new Intent(getActivity(), RecordPlayActivity.class);
+
+                break;
+        }
     }
 }

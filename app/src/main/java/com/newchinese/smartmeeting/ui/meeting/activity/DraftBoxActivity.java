@@ -78,7 +78,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @BindView(R.id.tv_right)
     TextView tvRight; //全选/全不选
     @BindView(R.id.iv_pen)
-    TextView ivPen; //笔图标
+    ImageView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
     private View viewCreateRecord;
@@ -123,13 +123,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     private void initView() {
         if (mPresenter.isConnected()) {
-//            mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED);
-            ivPen.setBackgroundResource(R.mipmap.pen_succes);
+            ivPen.setImageResource(R.mipmap.pen_normal_power);
             ivPen.clearAnimation();
             animation.cancel();
         } else {
-//            mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
-            ivPen.setBackgroundResource(R.mipmap.pen_break);
+            ivPen.setImageResource(R.mipmap.pen_disconnect);
             ivPen.clearAnimation();
             animation.cancel();
         }
@@ -399,7 +397,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
         ivPen.setBackgroundResource(R.mipmap.pen_break);
-        ivPen.setText("");
+//        ivPen.setText("");
         animation.cancel();
         ivPen.clearAnimation();
     }
@@ -410,7 +408,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 //        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTING);
         ivPen.setBackgroundResource(R.mipmap.pen_loading);
         ivPen.startAnimation(animation);
-        ivPen.setText("");
+//        ivPen.setText("");
     }
 
     @Override
@@ -422,15 +420,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         animation.cancel();
         mPresenter.stopTimer();
         ivPen.clearAnimation();
-        ivPen.setText("");
+//        ivPen.setText("");
     }
 
     @Override
     public void onElecReceived(String s) {
         if (ivPen != null) {
-            ivPen.setText(s + "%");
+//            ivPen.setText(s + "%");
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
-            Log.d("hahaha", "收到电量信息 笔不为空:" + ivPen.getText());
+//            Log.d("hahaha", "收到电量信息 笔不为空:" + ivPen.getText());
         }
     }
 
