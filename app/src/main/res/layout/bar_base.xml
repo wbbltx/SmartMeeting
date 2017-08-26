@@ -13,8 +13,8 @@
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
-            android:layout_height="21dp"
-            android:layout_marginTop="7dp"
+            android:layout_height="28dp"
+            android:paddingTop="7dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:src="@mipmap/bar_back" />

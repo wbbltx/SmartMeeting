@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorWhite"
-    tools:context="com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment">
+    android:orientation="vertical"
+    tools:context="com.newchinese.smartmeeting.ui.record.activity.CollectRecordFilterActivity">
+
+    <include layout="@layout/bar_base" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_meeting_classify"
+        android:id="@+id/rv_collect_record_filter"
         android:layout_width="match_parent"
-        android:paddingLeft="2.5dp"
-        android:paddingRight="2.5dp"
         android:layout_height="match_parent" />
 </LinearLayout>

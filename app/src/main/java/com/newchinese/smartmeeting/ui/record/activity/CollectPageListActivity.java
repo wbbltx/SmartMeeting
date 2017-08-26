@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.record.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,15 +55,21 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     }
 
     @Override
+    protected void onViewCreated(Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
+        //初始化RecyclerView
+        rvCollectPageList.setHasFixedSize(true);
+        rvCollectPageList.setLayoutManager(new GridLayoutManager(this, 2));
+        rvCollectPageList.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    @Override
     protected void initStateAndData() {
         activeRecord = DataCacheUtil.getInstance().getActiveCollectRecord();
         //设置bar数据
         ivPen.setVisibility(View.GONE);
         tvTitle.setText(activeRecord.getCollectRecordName());
-        //初始化RecyclerView
-        rvCollectPageList.setHasFixedSize(true);
-        rvCollectPageList.setLayoutManager(new GridLayoutManager(this, 2));
-        rvCollectPageList.setItemAnimator(new DefaultItemAnimator());
+        //初始化适配器
         adapter = new CollectPagesRecyAdapter(this);
         rvCollectPageList.setAdapter(adapter);
         //加载数据库数据

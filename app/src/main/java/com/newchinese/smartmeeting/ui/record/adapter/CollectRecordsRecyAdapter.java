@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.record.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.ui.record.activity.CollectRecordFilterActivity;
 import com.newchinese.smartmeeting.util.DateUtils;
 
 import java.util.ArrayList;
@@ -27,12 +29,14 @@ import butterknife.ButterKnife;
 
 public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecordsRecyAdapter.MyViewHolder> {
     private Context context;
+    private String whichEntry; //records,filter
     private List<CollectRecord> collectRecordList = new ArrayList<>();
     private LayoutInflater inflater;
     private OnItemClickedListener onItemClickedListener;
 
-    public CollectRecordsRecyAdapter(Context context) {
+    public CollectRecordsRecyAdapter(Context context, String whichEntry) {
         this.context = context;
+        this.whichEntry = whichEntry;
         inflater = LayoutInflater.from(context);
     }
 
@@ -53,7 +57,7 @@ public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecor
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        CollectRecord collectRecord = collectRecordList.get(position);
+        final CollectRecord collectRecord = collectRecordList.get(position);
         holder.tvRecordName.setText(collectRecord.getCollectRecordName());
         int picResource = 0;
         switch (collectRecord.getClassifyName()) {
@@ -81,6 +85,16 @@ public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecor
         }
         holder.ivClassify.setImageResource(picResource);
         holder.tvDate.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));
+        if ("records".equals(whichEntry)) {
+            holder.ivClassify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CollectRecordFilterActivity.class);
+                    intent.putExtra("classifyName", collectRecord.getClassifyName());
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -114,6 +128,7 @@ public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecor
                     return false;
                 }
             });
+
         }
     }
 }

@@ -64,12 +64,12 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
         rvRecordList.setHasFixedSize(true);
         rvRecordList.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
         rvRecordList.setItemAnimator(new DefaultItemAnimator());
-        adapter = new CollectRecordsRecyAdapter(mContext);
-        rvRecordList.setAdapter(adapter);
     }
 
     @Override
     protected void initStateAndData() {
+        adapter = new CollectRecordsRecyAdapter(mContext, "records");
+        rvRecordList.setAdapter(adapter);
         mPresenter.loadAllCollectRecordData();
     }
 
