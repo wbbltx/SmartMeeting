@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -74,11 +76,35 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     @Override
     protected void initListener() {
         adapter.setOnItemClickedListener(this);
+        //搜索输入框内容改变监听
+        etSearchContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() == 0) {
+                    mPresenter.loadAllCollectRecordData();
+                } else {
+                    mPresenter.searchCollectRecordByName(s.toString());
+                }
+            }
+        });
     }
 
 
     @OnClick(R.id.iv_search)
     public void onViewClicked() {
+        if (!etSearchContent.getText().toString().isEmpty()) {
+            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
+        }
     }
 
     /**
@@ -100,7 +126,11 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      * 刷新数据
      */
     public void refreshData() {
-        mPresenter.loadAllCollectRecordData();
+        if (etSearchContent.getText().toString().length() == 0) {
+            mPresenter.loadAllCollectRecordData();
+        } else {
+            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
+        }
     }
 
     /**

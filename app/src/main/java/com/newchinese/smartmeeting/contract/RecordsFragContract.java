@@ -19,5 +19,7 @@ public interface RecordsFragContract {
 
     interface Presenter extends BaseSimplePresenter<View> {
         void loadAllCollectRecordData();
+        
+        void searchCollectRecordByName(String name);
     }
 }

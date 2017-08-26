@@ -10,6 +10,7 @@ import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,9 +24,11 @@ import java.util.concurrent.Executors;
 public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View> implements RecordsFragContract.Presenter {
     private CollectRecordDao collectRecordDao;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
+    private List<CollectRecord> searchCollectRecordList;
 
     @Override
     public void onPresenterCreated() {
+        searchCollectRecordList = new ArrayList<>();
         //初始化数据库工具类
         collectRecordDao = GreenDaoUtil.getInstance().getCollectRecordDao();
         //初始化线程池
@@ -37,6 +40,9 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
         singleThreadExecutor.shutdownNow();
     }
 
+    /**
+     * 查询出所有收藏记录
+     */
     @Override
     public void loadAllCollectRecordData() {
         Runnable loadRunnable = new Runnable() {
@@ -46,13 +52,33 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
                         .orderDesc(CollectRecordDao.Properties.CollectDate).list();
                 Log.i("test_greendao", collectRecords.size() + "," + collectRecords.toString());
                 mView.getAllCollectRecordData(collectRecords);
-                for (CollectRecord record : collectRecords) {
-                    List<CollectPage> collectPages = GreenDaoUtil.getInstance().getCollectPageDao().queryBuilder()
-                            .where(CollectPageDao.Properties.BookId.eq(record.getId())).list();
-                    Log.i("test_greendao", collectPages.size() + "," + collectPages.toString());
-                }
             }
         };
         singleThreadExecutor.execute(loadRunnable);
     }
+
+    /**
+     * 根据关键字name匹配查询
+     */
+    @Override
+    public void searchCollectRecordByName(final String name) {
+        searchCollectRecordList.clear();
+        Runnable loadRunnable = new Runnable() {
+            @Override
+            public void run() {
+                List<CollectRecord> collectRecords = collectRecordDao.queryBuilder()
+                        .orderDesc(CollectRecordDao.Properties.CollectDate).list();
+                Log.e("test_greendao", collectRecords.size() + "," + collectRecords.toString());
+                for (CollectRecord collectRecord : collectRecords) {
+                    if (collectRecord.getCollectRecordName().contains(name)) {
+                        searchCollectRecordList.add(collectRecord);
+                    }
+                }
+                mView.getAllCollectRecordData(searchCollectRecordList);
+            }
+        };
+        singleThreadExecutor.execute(loadRunnable);
+    }
+
+
 }
