@@ -15,21 +15,28 @@ import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.MainActContract;
+import com.newchinese.smartmeeting.database.CollectPageDao;
+import com.newchinese.smartmeeting.database.CollectRecordDao;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
+import com.newchinese.smartmeeting.manager.CollectPageManager;
+import com.newchinese.smartmeeting.manager.CollectRecordManager;
 import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.manager.NotePointManager;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.manager.NoteStrokeManager;
+import com.newchinese.smartmeeting.model.bean.CollectRecord;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
 import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 import java.io.File;
 import java.util.List;
@@ -47,6 +54,8 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     private NotePageDao notePageDao;
     private NoteStrokeDao noteStrokeDao;
     private NotePointDao notePointDao;
+    private CollectRecordDao collectRecordDao;
+    private CollectPageDao collectPageDao;
     private NoteRecordManager noteRecordManager;
     private NotePageManager notePageManager;
     private NoteStrokeManager noteStrokeManager;
@@ -78,10 +87,13 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
 
     @Override
     public void onPresenterCreated() {
-        noteRecordDao = GreenDaoUtil.getInstance().getNoteRecordDao();
-        notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
-        noteStrokeDao = GreenDaoUtil.getInstance().getNoteStrokeDao();
-        notePointDao = GreenDaoUtil.getInstance().getNotePointDao();
+        GreenDaoUtil greenDaoUtil = GreenDaoUtil.getInstance();
+        noteRecordDao = greenDaoUtil.getNoteRecordDao();
+        notePageDao = greenDaoUtil.getNotePageDao();
+        noteStrokeDao = greenDaoUtil.getNoteStrokeDao();
+        notePointDao = greenDaoUtil.getNotePointDao();
+        collectRecordDao = greenDaoUtil.getCollectRecordDao();
+        collectPageDao = greenDaoUtil.getCollectPageDao();
         noteRecordManager = NoteRecordManager.getInstance();
         notePageManager = NotePageManager.getInstance();
         noteStrokeManager = NoteStrokeManager.getInstance();
@@ -164,35 +176,55 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                 }
                 NoteRecord otherRecord = noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_OTHER);
                 dataCacheUtil.setActiveNoteRecord(otherRecord);
+                //判断是否过0点了，收藏与删除
+                collectAndClearAllRecord();
             }
         };
         singleThreadExecutor.execute(insertRecordRunnable);
+
     }
 
     /**
      * 获取当前时间与缓存时间对比不是一天
-     */
-    private void requestZeroStatus() {
-        if (true) {
-            collectAndClearAllRecord();
-        }
-    }
-
-    /**
      * 过了则收藏所有记录表内缩略图，清空7张记录表内数据。
      */
     private void collectAndClearAllRecord() {
-        // TODO: 2017/8/21 收藏
-        //清空页线点
-        Runnable deleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                notePageDao.deleteAll();
-                noteStrokeDao.deleteAll();
-                notePointDao.deleteAll();
-            }
-        };
-        singleThreadExecutor.execute(deleteRunnable);
+//        String cacheDayNum = SharedPreUtils.getString(Constant.DAY_NUM);
+        String cacheDayNum = "17-08-27";
+        String currentDayNum = DateUtils.formatLongDate4(System.currentTimeMillis());
+        Log.e("test_collect", "cacheDayNum：" + cacheDayNum + ",currentDayNum：" + currentDayNum);
+        if (!"".equals(cacheDayNum) && !cacheDayNum.equals(currentDayNum)) {
+            //收藏现有的并清空页线点
+            Runnable deleteRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    //收藏现有的所有记录页
+                    List<NoteRecord> noteRecords = noteRecordDao.queryBuilder().list();
+                    //遍历所有记录表
+                    for (NoteRecord noteRecord : noteRecords) {
+                        CollectRecord collectRecord = CollectRecordManager.getInstance()
+                                .insertCollectRecord(collectRecordDao, noteRecord.getClassifyName(),
+                                        noteRecord.getClassifyName() + DateUtils.formatLongDate3(System.currentTimeMillis()));
+                        List<NotePage> notePages = notePageDao.queryBuilder()
+                                .where(NotePageDao.Properties.BookId.eq(noteRecord.getId())).list();
+                        //遍历所有页
+                        for (NotePage notePage : notePages) {
+                            //存收藏页
+                            CollectPageManager.getInstance().insertCollectPage(collectPageDao,
+                                    collectRecord.getId(), notePage.getPageIndex(), notePage.getDate(),
+                                    notePage.getThumbnailPath(), notePage.getScreenPathList());
+                        }
+                    }
+                    //删除现有的所有点线页
+                    notePageDao.deleteAll();
+                    noteStrokeDao.deleteAll();
+                    notePointDao.deleteAll();
+                }
+            };
+            singleThreadExecutor.execute(deleteRunnable);
+        }
+        //存当前日期
+        SharedPreUtils.setString(Constant.DAY_NUM, currentDayNum);
     }
 
     /**

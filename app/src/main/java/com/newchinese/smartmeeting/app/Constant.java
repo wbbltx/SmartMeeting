@@ -40,4 +40,6 @@ public class Constant {
     public static final String[] SD_DIRECTORY_RECORD_LIST = {SD_DIRECTORY_WORK, SD_DIRECTORY_PROJECT,
             SD_DIRECTORY_STUDY, SD_DIRECTORY_EXPLORE, SD_DIRECTORY_REPORT, SD_DIRECTORY_REVIEW,
             SD_DIRECTORY_OTHER}; //记录目录集合
+    //存当天日期的tag
+    public static final String DAY_NUM = "day_num";
 }
