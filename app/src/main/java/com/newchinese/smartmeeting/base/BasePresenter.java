@@ -12,11 +12,6 @@ public abstract class BasePresenter<T extends BaseView> implements BaseSimplePre
     private static final String TAG = "BasePresenter";
     protected T mView;
     protected CompositeDisposable mCompositeDisposable;
-    public static final int BSTATE_DISCONNECT = 0;
-    public static final int BSTATE_CONNECTED = 1;
-    public static final int BSTATE_CONNECTING = 2;
-    public static final int BSTATE_SCANNING = 3;
-//    protected static String BSTATE_DISCONNECT;
 
     @Override
     public void attachView(T view) {

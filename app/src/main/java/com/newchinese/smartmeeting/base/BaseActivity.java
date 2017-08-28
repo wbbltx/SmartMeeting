@@ -28,13 +28,13 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     protected T mPresenter;
     private AlertDialog.Builder mBuilder;
     private AlertDialog mAlertDialog;
-    public Animation animation;
+//    public Animation animation;
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         //初始化Presenter
         mPresenter = initPresenter();
-        animation = AnimationUtils.loadAnimation(this, R.anim.pen_loading);
+//        animation = AnimationUtils.loadAnimation(this, R.anim.pen_loading);
         //给Presenter绑定View
         if (mPresenter != null) {
             mPresenter.attachView(this);

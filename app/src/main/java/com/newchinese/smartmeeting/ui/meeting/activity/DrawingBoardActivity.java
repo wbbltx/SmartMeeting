@@ -46,6 +46,7 @@ import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OpenBleEvent;
 import com.newchinese.smartmeeting.model.event.ScanEvent;
 import com.newchinese.smartmeeting.model.event.ScanResultEvent;
+import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
@@ -182,7 +183,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         checkColorPopWin = new CheckColorPopWin(this);
 
         //初始化笔状态
-        ivPen.setAnimation(animation);
         initPenState();
 
         scanResultDialog = new ScanResultDialog(this);
@@ -200,13 +200,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private void initPenState() {
         int penState = dataCacheUtil.getPenState();
         if (penState == BluCommonUtils.PEN_CONNECTED) {
-            ivPen.setBackgroundResource(R.mipmap.pen_succes);
-            ivPen.clearAnimation();
-            animation.cancel();
-        } else {
-            ivPen.setBackgroundResource(R.mipmap.pen_break);
-            ivPen.clearAnimation();
-            animation.cancel();
+            ivPen.setImageResource(R.mipmap.pen_normal_power);
+        } else if (penState == BluCommonUtils.PEN_DISCONNECTED){
+            ivPen.setImageResource(R.mipmap.pen_disconnect);
+        }else if (penState == BluCommonUtils.PEN_CONNECTING){
+            ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
 
@@ -591,8 +589,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Subscribe
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
-//        if (ivPen != null)
-//            ivPen.setText(value + "%");
+        int i = Integer.parseInt(value);
+        if (i <= 30){
+            ivPen.setImageResource(R.mipmap.pen_low_power);
+        }
     }
 
     @Override
@@ -608,18 +608,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(CheckBlueStateEvent stateEvent) {
         int flag = stateEvent.getFlag();
         if (flag == 0) {
-            ivPen.setBackgroundResource(R.mipmap.pen_loading);
-            ivPen.startAnimation(animation);
-//            ivPen.setText("");
+            ivPen.setImageResource(R.mipmap.weilianjie);
         } else if (flag == 1) {
-            ivPen.setBackgroundResource(R.mipmap.pen_succes);
-            ivPen.clearAnimation();
-            animation.cancel();
+            ivPen.setImageResource(R.mipmap.pen_normal_power);
         } else if (flag == -1) {
-            ivPen.setBackgroundResource(R.mipmap.pen_break);
-//            ivPen.setText("");
-            ivPen.clearAnimation();
-            animation.cancel();
+            ivPen.setImageResource(R.mipmap.pen_disconnect);
         }
     }
 

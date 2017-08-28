@@ -47,6 +47,11 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     private CollectPageManager collectPageManager;
     private List<Boolean> isSelectedList;
     private List<NotePage> notePageList;
+    public static final int BSTATE_DISCONNECT = 0;
+    public static final int BSTATE_CONNECTED_LOW = 4;
+    public static final int BSTATE_CONNECTED_NORMAL = 1;
+    public static final int BSTATE_CONNECTING = 2;
+    public static final int BSTATE_SCANNING = 3;
 
     @Override
     public void onPresenterCreated() {
@@ -105,13 +110,13 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 requestElectricity();
             }
         };
-        timer.schedule(timerTask, 500, 20000);
+        timer.schedule(timerTask, 500, 30000);
     }
 
     @Override
     public void stopTimer() {
-//        timerTask.cancel();
-//        timer.cancel();
+        timerTask.cancel();
+        timer.cancel();
     }
 
     @Override
@@ -203,23 +208,27 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
 
     @Override
     public void updatePenState(int state) {
-        int i = R.mipmap.pen_break;
+        int i = R.mipmap.pen_disconnect;
         XLog.d(TAG, "设置图标状态 " + state);
         switch (state) {
-            case BSTATE_CONNECTED:
-                i = R.mipmap.pen_succes;
+            case BSTATE_CONNECTED_LOW:
+                i = R.mipmap.pen_low_power;
                 break;
-
+            case BSTATE_CONNECTED_NORMAL:
+                i = R.mipmap.pen_normal_power;
+                break;
             case BSTATE_CONNECTING:
             case BSTATE_SCANNING:
-                i = R.mipmap.pen_loading;
+                i = R.mipmap.weilianjie;
                 break;
 
             case BSTATE_DISCONNECT:
-                i = R.mipmap.pen_break;
+                i = R.mipmap.pen_disconnect;
                 break;
         }
-        mView.setState(i);
+        if (mView != null) {//当在main界面的时候 如果处于连接状态，还会发送电量信息，当电量小于30，笔的状态会设置相应的图标，但此时该界面是没有笔图标控件的，会导致空指针，需进行判空
+            mView.setState(i);
+        }
     }
 
 }

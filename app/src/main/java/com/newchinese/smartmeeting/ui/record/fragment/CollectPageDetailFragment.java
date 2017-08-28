@@ -16,6 +16,8 @@ import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.ui.meeting.activity.RecordPlayActivity;
 
+import java.util.List;
+
 import butterknife.BindView;
 
 /**
@@ -60,6 +62,12 @@ public class CollectPageDetailFragment extends BaseSimpleFragment implements Vie
             collectPage = (CollectPage) getArguments().getSerializable(COLLECT_PAGE);
             Log.i("test_page", "" + collectPage.toString());
             if (collectPage != null) {
+                List<String> screenPathList = collectPage.getScreenPathList();
+                if (screenPathList != null && screenPathList.size()!=0 && screenPathList.get(0)!=""){
+                    setCount(screenPathList.size());
+                    Log.i("test_page", "screenPathList的长度是：" + screenPathList.size());
+                }
+
                 Glide.with(mContext)
                         .load(collectPage.getThumbnailPath())
                         .transition(new DrawableTransitionOptions().crossFade(500)) //淡入淡出1s
@@ -81,5 +89,10 @@ public class CollectPageDetailFragment extends BaseSimpleFragment implements Vie
 
                 break;
         }
+    }
+
+    private void setCount(int count){
+        rlRecordCount.setVisibility(View.VISIBLE);
+        recordCount.setText(count+"");
     }
 }

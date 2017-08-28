@@ -46,6 +46,7 @@ import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
+import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -95,6 +96,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private BluePopUpWindow bluePopUpWindow;
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
+    private FirstTimeHintDialog.Builder hintbuilder;
 
     @Override
     protected int getLayoutId() {
@@ -124,12 +126,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void initView() {
         if (mPresenter.isConnected()) {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
-            ivPen.clearAnimation();
-            animation.cancel();
         } else {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
-            ivPen.clearAnimation();
-            animation.cancel();
         }
     }
 
@@ -144,7 +142,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
         classifyName = getIntent().getStringExtra("classify_name");
         tvTitle.setText(classifyName);
-        ivPen.setBackgroundColor(Color.parseColor("#a6a6a6"));
         tvRight.setVisibility(View.GONE);
         ivRight.setVisibility(View.GONE);
 
@@ -250,6 +247,19 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         builder.createDoubleButton().show();
     }
 
+    private void createHintDialog() {
+        hintbuilder = new FirstTimeHintDialog.Builder(this);
+        hintbuilder.setPositiveButton(new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.scanBlueDevice();
+                CustomizedToast.showShort(DraftBoxActivity.this, "扫描蓝牙笔");
+                dialog.dismiss();
+            }
+        });
+        hintbuilder.setCancelableMethod(false);
+        hintbuilder.createDoubleButton().show();
+    }
+
     /**
      * 重置为非编辑模式
      */
@@ -296,10 +306,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (!bluetoothOpen) {
             bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
         } else {
-            XLog.d("haha", "连接状态" + mPresenter.isConnected());
-            mPresenter.scanBlueDevice();
-            mPresenter.updatePenState(BasePresenter.BSTATE_SCANNING);
-            ivPen.startAnimation(animation);
+            if (mPresenter.isConnected()) {
+                XLog.d("haha", "连接状态" + mPresenter.isConnected());
+                mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
+            } else {
+                mPresenter.scanBlueDevice();
+                mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
+            }
         }
     }
 
@@ -368,11 +381,17 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     /**
-     * 点击确认打开蓝牙
+     * 点击确认打开蓝牙 同时弹出使用提示框
      */
     @Override
     public void onConfirm(int tag) {
         mPresenter.openBle();
+        boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
+        if (b) {//第一次启动应用，弹出如何使用对话框
+            createHintDialog();
+        } else {//不是第一次启动该应用，不弹出，直接打开蓝牙
+            mPresenter.openBle();
+        }
     }
 
     @Override
@@ -385,56 +404,47 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         XLog.d(TAG, TAG + " onSuccess");
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
-//        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTED);
-        ivPen.setBackgroundResource(R.mipmap.pen_succes);
-        ivPen.clearAnimation();
-        animation.cancel();
+        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
+//        ivPen.setBackgroundResource(R.mipmap.pen_normal_power);
+//        开启定时任务获取电量
         mPresenter.startTimer();
     }
 
     @Override
     public void onFailed() {
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
-//        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
-        ivPen.setBackgroundResource(R.mipmap.pen_break);
-//        ivPen.setText("");
-        animation.cancel();
-        ivPen.clearAnimation();
+        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
+//        ivPen.setBackgroundResource(R.mipmap.pen_disconnect);
     }
 
     @Override
     public void onConnecting() {
         EventBus.getDefault().post(new CheckBlueStateEvent(0));
-//        mPresenter.updatePenState(BasePresenter.BSTATE_CONNECTING);
-        ivPen.setBackgroundResource(R.mipmap.pen_loading);
-        ivPen.startAnimation(animation);
-//        ivPen.setText("");
+        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTING);
+//        ivPen.setBackgroundResource(R.mipmap.pen_loading);
     }
 
     @Override
     public void onDisconnected() {
         XLog.d(TAG, TAG + "中的onDisconnected被调用1");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
-//        mPresenter.updatePenState(BasePresenter.BSTATE_DISCONNECT);
-        ivPen.setBackgroundResource(R.mipmap.pen_break);
-        animation.cancel();
+        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
+//        ivPen.setBackgroundResource(R.mipmap.pen_disconnect);
         mPresenter.stopTimer();
-        ivPen.clearAnimation();
-//        ivPen.setText("");
     }
 
     @Override
     public void onElecReceived(String s) {
-        if (ivPen != null) {
-//            ivPen.setText(s + "%");
+        int i = Integer.parseInt(s);
+        if (i <= 30) {//默认图标是电量正常，只有小于30才进行设置
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
-//            Log.d("hahaha", "收到电量信息 笔不为空:" + ivPen.getText());
+            mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
         }
     }
 
     @Override
     public void setState(int id) {
-        ivPen.setBackgroundResource(id);
+        ivPen.setImageResource(id);
     }
 
     @Override

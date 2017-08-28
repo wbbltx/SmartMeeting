@@ -40,7 +40,7 @@
                 android:id="@+id/iv_pen"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/pen_break"
+                android:src="@mipmap/pen_disconnect"
                 android:gravity="center"
                 android:textColor="@color/colorWhite" />
 

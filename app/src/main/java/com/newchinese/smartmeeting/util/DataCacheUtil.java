@@ -19,7 +19,7 @@ import java.util.Set;
  */
 
 public class DataCacheUtil {
-    private int penState = 100;//记录笔的状态
+    private int penState = BluCommonUtils.PEN_DISCONNECTED;//记录笔的状态 默认断开连接
     private int currentColor = Constant.colors[0]; //笔的颜色
     private int currentColorPosition = 0; //当前选择笔色的index
     private float strokeWidth = 0; //线宽

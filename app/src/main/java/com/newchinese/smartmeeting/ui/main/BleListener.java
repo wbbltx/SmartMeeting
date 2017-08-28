@@ -66,9 +66,12 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
     @Override
     public void onConnected() {
         XLog.d(TAG,TAG+" 已连接");
-        //连接成功以后将临时变量中的地址放入sp中 同时询问有没有存储数据
-        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTED);
+        //连接成功将临时变量中的地址放入sp中 同时询问有没有存储数据
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
+//        设置已经连接成功过
+        SharedPreUtils.setBoolean(App.getAppliction(),BluCommonUtils.IS_FIRST_LAUNCH,false);
+//        设置当前蓝牙的连接状态
+        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTED);
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
         mView.onSuccess();
     }
@@ -89,6 +92,7 @@ public class BleListener implements OnBleScanListener,OnConnectListener,OnKeyLis
 
     @Override
     public void isConnecting() {
+        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTING);
         mView.onConnecting();
         XLog.d(TAG,TAG+" 连接中...");
     }
