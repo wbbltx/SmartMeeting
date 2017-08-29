@@ -53,6 +53,7 @@ import com.newchinese.smartmeeting.model.event.ScanResultEvent;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
@@ -511,11 +512,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     private void checkRecordState() {
-        recordBar.setVisibility(View.VISIBLE);
-        mPresenter.startRecordTimer();
-        Intent captureIntent = projectionManager.createScreenCaptureIntent();
-        startActivityForResult(captureIntent, 101);
-//        }
+        if (!recordService.isRunning()) {
+            recordBar.setVisibility(View.VISIBLE);
+            mPresenter.startRecordTimer();
+            Intent captureIntent = projectionManager.createScreenCaptureIntent();
+            startActivityForResult(captureIntent, 101);
+            CustomizedToast.showShort(this,"正在录屏");
+        }
     }
 
     @Override
@@ -715,6 +718,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         XLog.d(TAG, TAG + " onCancel");
     }
 
+    /**
+     * 接收到扫描结束时间
+     * @param scanResultEvent
+     */
     @Subscribe
     public void onEvent(ScanResultEvent scanResultEvent) {
         int flag = scanResultEvent.getFlag();
@@ -725,33 +732,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
+    /**
+     * 接收到添加设备事件
+     * @param addDeviceEvent
+     */
     @Subscribe
     public void onEvent(AddDeviceEvent addDeviceEvent) {
         scanResultDialog.addDevice(addDeviceEvent.getBluetoothDevice());
     }
 
-//    private void onComplete() {
-//        int count = scanResultDialog.getCount();
-//        List<BluetoothDevice> devices = scanResultDialog.getDevices();
-//        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
-//        if (count == 0) {//如果没有搜索到笔，提示
-//            CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
-//        } else {
-//            for (BluetoothDevice device : devices) {
-//                XLog.d(TAG, "连接的所有设备：" + device.getAddress());
-//                if (device.getAddress().equals(address)) {
-//                    EventBus.getDefault().post(new ConnectEvent(address, 0));
-//                    return;
-//                }
-//            }
-//            if (count == 1) {
-//                showDialog(devices.get(0).getAddress());
-//            } else {
-//                scanResultDialog.show();
-//            }
-//        }
-//    }
-
+    /**
+     * 接收到电量事件
+     * @param receivedEvent
+     */
     @Subscribe
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
@@ -773,6 +766,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         super.onDestroy();
     }
 
+    /**
+     * 接收到更新图标事件
+     * @param stateEvent
+     */
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
         int flag = stateEvent.getFlag();

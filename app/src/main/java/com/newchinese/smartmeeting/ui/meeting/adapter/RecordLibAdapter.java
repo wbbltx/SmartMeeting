@@ -63,9 +63,17 @@ public class RecordLibAdapter extends RecyclerView.Adapter<RecordLibAdapter.MyVi
         return new MyViewHolder(view);
     }
 
+    private String getTitle(String string){
+        String[] split = string.split("/");
+        if (split != null){
+            return split[split.length-1];
+        }
+        return null;
+    }
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.recordLibTitle.setText(DataCacheUtil.getInstance().getRecordPathList().get(position));
+        holder.recordLibTitle.setText(getTitle(DataCacheUtil.getInstance().getRecordPathList().get(position)));
 //        holder.tvDate.setText(DateUtils.formatLongDate1(notePageList.get(position).getDate()));
 //        Glide.with(context)
 //                .load(notePageList.get(position).getThumbnailPath())

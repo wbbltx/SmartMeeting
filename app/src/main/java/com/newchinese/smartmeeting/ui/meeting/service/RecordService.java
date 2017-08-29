@@ -141,7 +141,7 @@ public class RecordService extends Service {
 
     public String getsaveDirectory() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "SmartingMeeting" + "/";
+            String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "SmartMeeting" + "/" + "records" +"/";
 
             File file = new File(rootDir);
             if (!file.exists()) {
