@@ -481,8 +481,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             }
         }, 500);
         //置位非编辑模式
-        resetEditMode();
-
+        isEditMode = false;
+        tvRight.setVisibility(View.GONE);
+        pwCreateRecord.dismiss();
+        for (int i = 0; i < isSelectedList.size(); i++) {
+            isSelectedList.set(i, false);
+        }
+        adapter.setIsSelectedList(isSelectedList);
         if (scanResultDialog.isShowing()){
             scanResultDialog.dismiss();
         }

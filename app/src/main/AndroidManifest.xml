@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 录屏权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--拍照权限-->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".app.App"

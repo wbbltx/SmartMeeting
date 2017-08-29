@@ -74,8 +74,8 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.WAKE_LOCK,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA
     };
 
     /**
