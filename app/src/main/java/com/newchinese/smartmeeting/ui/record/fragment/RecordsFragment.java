@@ -150,43 +150,43 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
 
     }
 
-    @Override
-    public void onScanComplete() {
+//    @Override
+//    public void onScanComplete() {
+//
+//    }
+//
+//    @Override
+//    public void showResult(Object o) {
+//
+//    }
 
-    }
+//    @Override
+//    public void onSuccess() {
+//
+//    }
+//
+//    @Override
+//    public void onFailed() {
+//
+//    }
+//
+//    @Override
+//    public void onConnecting() {
+//
+//    }
+//
+//    @Override
+//    public void onDisconnected() {
+//
+//    }
 
-    @Override
-    public void showResult(Object o) {
+//    @Override
+//    public void onHistoryDetected(String str, PopWindowListener popWindowListener) {
+//
+//    }
 
-    }
-
-    @Override
-    public void onSuccess() {
-
-    }
-
-    @Override
-    public void onFailed() {
-
-    }
-
-    @Override
-    public void onConnecting() {
-
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onHistoryDetected(String str, PopWindowListener popWindowListener) {
-
-    }
-
-    @Override
-    public void onElecReceived(String ele) {
-
-    }
+//    @Override
+//    public void onElecReceived(String ele) {
+//
+//    }
 }

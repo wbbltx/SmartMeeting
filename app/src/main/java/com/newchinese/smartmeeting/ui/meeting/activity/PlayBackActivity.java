@@ -47,6 +47,8 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
             ImageView playBackStart;
     @BindView(R.id.tv_title)//标题
             TextView tvTitle;
+    @BindView(R.id.iv_pen)
+    ImageView ivPen;
     private int selectPageIndex;
     private DataCacheUtil dataCacheUtil;
     private int playStatus = 0;//0未播放，1播放中, 2暂停
@@ -73,7 +75,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
             Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
-                    mPresenter.readData(playBackDrawview,selectPageIndex);
+                    mPresenter.readData(playBackDrawview, selectPageIndex);
                 }
             });
         }
@@ -96,10 +98,11 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
 
     @Override
     public void setTitleText(int pageIndex) {
-        tvTitle.setText("录屏，第"+pageIndex+"页");
+        ivPen.setVisibility(View.GONE);
+        tvTitle.setText("录屏，第" + pageIndex + "页");
     }
 
-    @OnClick({R.id.play_back_start,R.id.iv_back})
+    @OnClick({R.id.play_back_start, R.id.iv_back})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
@@ -112,7 +115,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     }
 
     private void playBack() {
-        switch (playStatus){
+        switch (playStatus) {
             case 0://未播放
                 clearCanvars();
                 drawingPointList = new ArrayList<>();
