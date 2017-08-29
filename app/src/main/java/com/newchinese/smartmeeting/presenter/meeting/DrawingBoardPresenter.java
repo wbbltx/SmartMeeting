@@ -429,7 +429,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                                 insertBitmap.getHeight() / SCALE);
                     }
                     insertImagePath = saveInsertImageToSD(insertBitmap);
-                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 25);
+                    insertImageWidth = insertBitmap.getWidth();
+                    insertImageHeight = insertBitmap.getHeight();
+                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 120);
                     mView.setInsertViewMatrix(matrix);
                     float imageMatrixValue[] = new float[9];
                     matrix.getValues(imageMatrixValue);
@@ -461,7 +463,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImagePath = saveInsertImageToSD(insertBitmap);
                     file.delete();
                     //将处理过的图片显示在界面上
-                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 25);
+                    insertImageWidth = insertBitmap.getWidth();
+                    insertImageHeight = insertBitmap.getHeight();
+                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 120);
                     mView.setInsertViewMatrix(matrix);
                     float imageMatrixValue[] = new float[9];
                     matrix.getValues(imageMatrixValue);
