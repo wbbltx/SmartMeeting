@@ -37,14 +37,20 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
     }
 
     @Override
-    public void login(LoginData data, boolean quick) {
+    public void login(final LoginData data, boolean quick) {
         Flowable<BaseResult<LoginData>> observable;
         if (quick) {
             observable = mServices.loginQuict(data);
         } else {
             observable = mServices.login(data);
         }
-        invokeRequest(quick ? NetUrl.QUICK_LOGIN : NetUrl.LOGIN_NORMAL, true, observable);
+        invokeRequest(quick ? NetUrl.QUICK_LOGIN : NetUrl.LOGIN_NORMAL, true, observable.map(new Function<BaseResult<LoginData>, BaseResult<LoginData>>() {
+            @Override
+            public BaseResult<LoginData> apply(@NonNull BaseResult<LoginData> result) throws Exception {
+                result.data.setTel(data.getTel());
+                return result;
+            }
+        }));
     }
 
 
