@@ -14,8 +14,7 @@ import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 
 /**
- * Description:
- * author         xulei
+ * Description:   弹出是否开启蓝牙的框
  * Date           2017/8/18
  */
 
