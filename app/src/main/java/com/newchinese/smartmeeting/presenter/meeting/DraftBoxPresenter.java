@@ -107,10 +107,10 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                requestElectricity();
+//                requestElectricity();
             }
         };
-        timer.schedule(timerTask, 500, 30000);
+        timer.schedule(timerTask, 2000, 30000);
     }
 
     @Override
@@ -204,6 +204,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         BluetoothLe.getDefault().setOnConnectListener(BleListener.getDefault().init(mView));
         BluetoothLe.getDefault().setOnKeyListener(BleListener.getDefault().init(mView));
         BluetoothLe.getDefault().setOnElectricityRequestListener(BleListener.getDefault().init(mView));
+        BluetoothLe.getDefault().setOnLeNotificationListener(BleListener.getDefault().init(mView));
     }
 
     @Override

@@ -8,5 +8,5 @@ public interface PopWindowListener {
 
     void onConfirm(int i);
 
-    void onCancel();
+    void onCancel(int i);
 }

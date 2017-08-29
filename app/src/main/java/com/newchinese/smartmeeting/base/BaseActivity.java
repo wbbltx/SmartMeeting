@@ -3,18 +3,20 @@ package com.newchinese.smartmeeting.base;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.graphics.drawable.Animatable2Compat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
-import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.widget.ScanResultDialog;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 
 /**
@@ -28,10 +30,12 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     protected T mPresenter;
     private AlertDialog.Builder mBuilder;
     private AlertDialog mAlertDialog;
+    protected ScanResultDialog scanResultDialog;
 //    public Animation animation;
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
+        scanResultDialog = new ScanResultDialog(this);
         //初始化Presenter
         mPresenter = initPresenter();
 //        animation = AnimationUtils.loadAnimation(this, R.anim.pen_loading);
@@ -55,59 +59,92 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
 
     @Override
     public void onScanComplete() {
-
     }
 
     @Override
     public void showResult(E e) {
+    }
 
+    protected void showDialog(final String address) {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("是否连接新笔" + address)
+                .setPositiveButton("连接", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EventBus.getDefault().post(new ConnectEvent(address, 0));
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create().show();
+    }
+
+    protected void onComplete() {
+        XLog.d(TAG, TAG + " onComplete");
+        int count = scanResultDialog.getCount();
+        List<BluetoothDevice> devices = scanResultDialog.getDevices();
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+        if (count == 0) {//如果没有搜索到笔，提示
+            CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
+        } else {
+            for (BluetoothDevice device : devices) {
+                XLog.d(TAG, "连接的所有设备：" + device.getAddress());
+                if (device.getAddress().equals(address)) {
+                    EventBus.getDefault().post(new ConnectEvent(address, 0));
+                    return;
+                }
+            }
+            if (count == 1) {
+                showDialog(devices.get(0).getAddress());
+            } else {
+                scanResultDialog.show();
+            }
+        }
     }
 
     @Override
     public void onSuccess() {//设置图标的状态为连接
-        XLog.d(TAG,TAG+" onSuccess");
-//        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
+        XLog.d(TAG, TAG + " onSuccess");
     }
 
     @Override
     public void onFailed() {//设置图标的状态为断开
-        XLog.d(TAG,TAG+" onFailed");
+        XLog.d(TAG, TAG + " onFailed");
     }
 
     @Override
     public void onConnecting() {//设置图标的状态为正在连接
-        XLog.d(TAG,TAG+" onConnecting");
+        XLog.d(TAG, TAG + " onConnecting");
     }
 
     @Override
     public void onDisconnected() {//设置图标的状态为断开
-        XLog.d(TAG,TAG+" onDisconnected");
+        XLog.d(TAG, TAG + " onDisconnected");
     }
 
     @Override
     public void onElecReceived(String ele) {
-        XLog.d(TAG,TAG+" onElecReceived");
+        XLog.d(TAG, TAG + " onElecReceived");
     }
+
+
 
     @Override
     public void onHistoryDetected(String msg, final PopWindowListener listener) {
         //应该弹出询问框 读取或者删除存储数据
-        showDialog(msg, listener,1);
-    }
-
-    public void showDialog(String msg, final PopWindowListener listener, final int tag) {
-        if (!mAlertDialog.isShowing()) {
-            return;
-        }
-        mBuilder = mBuilder == null ? new AlertDialog.Builder(this) : mBuilder;
-        mAlertDialog = mAlertDialog == null ? mBuilder.setTitle("提示：")
-                .setMessage(msg)
+        XLog.d(TAG, TAG + " onHistoryDetected");
+        new AlertDialog.Builder(this)
+                .setTitle("是否读取历史数据")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if (listener != null) {
-                            listener.onConfirm(tag);
+                            listener.onConfirm(1);
                         }
                     }
                 })
@@ -116,12 +153,11 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if (listener != null) {
-                            listener.onCancel();
+                            listener.onCancel(1);
                         }
                     }
                 })
-                .create() : mAlertDialog;
+                .create().show();
     }
-
 
 }

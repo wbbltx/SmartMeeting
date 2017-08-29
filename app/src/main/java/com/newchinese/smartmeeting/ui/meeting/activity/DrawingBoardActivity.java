@@ -37,8 +37,11 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
+import com.newchinese.smartmeeting.model.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
@@ -50,9 +53,11 @@ import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.PlayBackUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -113,19 +118,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private List<NotePage> activeNotePageList;
     private DataCacheUtil dataCacheUtil;
-    private ScanResultDialog scanResultDialog;
+//    private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
 
     private boolean startTimeDown;
-    private int playStatus = 0;//0未播放，1播放中, 2暂停
-    //    private MyTimerTask timerTask;
-    private Timer timer;
-    private PlayBackUtil netUtil2;
     private Handler handler = new Handler();
-    private int progress;
 
     @Override
     protected int getLayoutId() {
@@ -185,7 +185,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         //初始化笔状态
         initPenState();
 
-        scanResultDialog = new ScanResultDialog(this);
+//        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
 
 //       请求权限 录屏初始化 绑定服务
@@ -194,7 +194,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         bindService(recordIntent, connection, BIND_AUTO_CREATE);
 
         recordTime.setText("00:00");
-        netUtil2 = PlayBackUtil.getInstance();
     }
 
     private void initPenState() {
@@ -568,23 +567,51 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onConfirm(int i) {
         //该类不操作蓝牙，发送消息到第二个activity 使其打开蓝牙
+        XLog.d(TAG, TAG + " onConfirm");
         EventBus.getDefault().post(new OpenBleEvent());
     }
 
     @Override
-    public void onCancel() {
-
+    public void onCancel(int i) {
+        XLog.d(TAG, TAG + " onCancel");
     }
 
     @Subscribe
     public void onEvent(ScanResultEvent scanResultEvent) {
         int flag = scanResultEvent.getFlag();
         if (flag == 0) {//如果是断开状态进行的搜索，应该判断
-
+            onComplete();
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
             scanResultDialog.show();
         }
     }
+
+    @Subscribe
+    public void onEvent(AddDeviceEvent addDeviceEvent) {
+        scanResultDialog.addDevice(addDeviceEvent.getBluetoothDevice());
+    }
+
+//    private void onComplete() {
+//        int count = scanResultDialog.getCount();
+//        List<BluetoothDevice> devices = scanResultDialog.getDevices();
+//        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+//        if (count == 0) {//如果没有搜索到笔，提示
+//            CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
+//        } else {
+//            for (BluetoothDevice device : devices) {
+//                XLog.d(TAG, "连接的所有设备：" + device.getAddress());
+//                if (device.getAddress().equals(address)) {
+//                    EventBus.getDefault().post(new ConnectEvent(address, 0));
+//                    return;
+//                }
+//            }
+//            if (count == 1) {
+//                showDialog(devices.get(0).getAddress());
+//            } else {
+//                scanResultDialog.show();
+//            }
+//        }
+//    }
 
     @Subscribe
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
@@ -619,13 +646,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onBackPressed() {
         if (recordService.isRunning()) {
-            showDialog("离开当前界面将退出录制功能");
+            showDialog1("离开当前界面将退出录制功能");
         } else {
             super.onBackPressed();
         }
     }
 
-    private void showDialog(final String address) {
+    private void showDialog1(final String address) {
         new AlertDialog.Builder(this)
                 .setTitle(address)
                 .setPositiveButton("离开", new DialogInterface.OnClickListener() {

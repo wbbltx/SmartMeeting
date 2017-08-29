@@ -59,7 +59,7 @@ public class BluetoothLe {
      */
     public static final int OPEN_WRITE_CHANNEL = 1;
     /**
-     * 打开存储通道
+     * 读取存储信息
      */
     public static final int READ_STORAGE_INFO = 2;
     /**
@@ -265,6 +265,7 @@ public class BluetoothLe {
         } else {
             message = instructInfo;
         }
+        Log.i(TAG, "sendBleInstruct " + instructInfo);
         byte[] connKey = BytesUtils.HexString2Bytes(message);
         writeCharacteristic(connKey);
     }
