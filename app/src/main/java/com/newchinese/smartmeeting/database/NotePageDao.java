@@ -35,8 +35,12 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
         public final static Property BookId = new Property(2, long.class, "bookId", false, "BOOK_ID");
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
         public final static Property InsertPicPath = new Property(4, String.class, "insertPicPath", false, "INSERT_PIC_PATH");
-        public final static Property ThumbnailPath = new Property(5, String.class, "thumbnailPath", false, "THUMBNAIL_PATH");
-        public final static Property ScreenPathList = new Property(6, String.class, "screenPathList", false, "SCREEN_PATH_LIST");
+        public final static Property X = new Property(5, float.class, "X", false, "X");
+        public final static Property Y = new Property(6, float.class, "Y", false, "Y");
+        public final static Property Height = new Property(7, float.class, "height", false, "HEIGHT");
+        public final static Property Width = new Property(8, float.class, "width", false, "WIDTH");
+        public final static Property ThumbnailPath = new Property(9, String.class, "thumbnailPath", false, "THUMBNAIL_PATH");
+        public final static Property ScreenPathList = new Property(10, String.class, "screenPathList", false, "SCREEN_PATH_LIST");
     }
 
     private DaoSession daoSession;
@@ -62,8 +66,12 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
                 "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
                 "\"INSERT_PIC_PATH\" TEXT," + // 4: insertPicPath
-                "\"THUMBNAIL_PATH\" TEXT," + // 5: thumbnailPath
-                "\"SCREEN_PATH_LIST\" TEXT);"); // 6: screenPathList
+                "\"X\" REAL NOT NULL ," + // 5: X
+                "\"Y\" REAL NOT NULL ," + // 6: Y
+                "\"HEIGHT\" REAL NOT NULL ," + // 7: height
+                "\"WIDTH\" REAL NOT NULL ," + // 8: width
+                "\"THUMBNAIL_PATH\" TEXT," + // 9: thumbnailPath
+                "\"SCREEN_PATH_LIST\" TEXT);"); // 10: screenPathList
     }
 
     /** Drops the underlying database table. */
@@ -88,15 +96,19 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
         if (insertPicPath != null) {
             stmt.bindString(5, insertPicPath);
         }
+        stmt.bindDouble(6, entity.getX());
+        stmt.bindDouble(7, entity.getY());
+        stmt.bindDouble(8, entity.getHeight());
+        stmt.bindDouble(9, entity.getWidth());
  
         String thumbnailPath = entity.getThumbnailPath();
         if (thumbnailPath != null) {
-            stmt.bindString(6, thumbnailPath);
+            stmt.bindString(10, thumbnailPath);
         }
  
         List screenPathList = entity.getScreenPathList();
         if (screenPathList != null) {
-            stmt.bindString(7, screenPathListConverter.convertToDatabaseValue(screenPathList));
+            stmt.bindString(11, screenPathListConverter.convertToDatabaseValue(screenPathList));
         }
     }
 
@@ -116,15 +128,19 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
         if (insertPicPath != null) {
             stmt.bindString(5, insertPicPath);
         }
+        stmt.bindDouble(6, entity.getX());
+        stmt.bindDouble(7, entity.getY());
+        stmt.bindDouble(8, entity.getHeight());
+        stmt.bindDouble(9, entity.getWidth());
  
         String thumbnailPath = entity.getThumbnailPath();
         if (thumbnailPath != null) {
-            stmt.bindString(6, thumbnailPath);
+            stmt.bindString(10, thumbnailPath);
         }
  
         List screenPathList = entity.getScreenPathList();
         if (screenPathList != null) {
-            stmt.bindString(7, screenPathListConverter.convertToDatabaseValue(screenPathList));
+            stmt.bindString(11, screenPathListConverter.convertToDatabaseValue(screenPathList));
         }
     }
 
@@ -147,8 +163,12 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
             cursor.getLong(offset + 2), // bookId
             cursor.getLong(offset + 3), // date
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // insertPicPath
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // thumbnailPath
-            cursor.isNull(offset + 6) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 6)) // screenPathList
+            cursor.getFloat(offset + 5), // X
+            cursor.getFloat(offset + 6), // Y
+            cursor.getFloat(offset + 7), // height
+            cursor.getFloat(offset + 8), // width
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // thumbnailPath
+            cursor.isNull(offset + 10) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 10)) // screenPathList
         );
         return entity;
     }
@@ -160,8 +180,12 @@ public class NotePageDao extends AbstractDao<NotePage, Long> {
         entity.setBookId(cursor.getLong(offset + 2));
         entity.setDate(cursor.getLong(offset + 3));
         entity.setInsertPicPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setThumbnailPath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setScreenPathList(cursor.isNull(offset + 6) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 6)));
+        entity.setX(cursor.getFloat(offset + 5));
+        entity.setY(cursor.getFloat(offset + 6));
+        entity.setHeight(cursor.getFloat(offset + 7));
+        entity.setWidth(cursor.getFloat(offset + 8));
+        entity.setThumbnailPath(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setScreenPathList(cursor.isNull(offset + 10) ? null : screenPathListConverter.convertToEntityProperty(cursor.getString(offset + 10)));
      }
     
     @Override

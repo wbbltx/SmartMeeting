@@ -1,12 +1,11 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
-import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxActContract;
 import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
@@ -48,7 +46,6 @@ import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
-import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -93,7 +90,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private List<NotePage> notePageList = new ArrayList<>();
     private List<Boolean> isSelectedList = new ArrayList<>();
 
-//    private ScanResultDialog scanResultDialog;
+    //    private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
@@ -125,7 +122,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void initView() {
-        if (scanResultDialog.isShowing()){
+        if (scanResultDialog.isShowing()) {
             scanResultDialog.dismiss();
         }
         if (mPresenter.isConnected()) {
@@ -296,7 +293,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onScanComplete() {
-        XLog.d(TAG,TAG+" onScanComplete");
+        XLog.d(TAG, TAG + " onScanComplete");
         if (mPresenter.isConnected()) {
             scanResultDialog.show();
             EventBus.getDefault().post(new ScanResultEvent(1));
@@ -313,7 +310,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void showResult(BluetoothDevice s) {
-        XLog.d(TAG,TAG+" onScanComplete");
+        XLog.d(TAG, TAG + " onScanComplete");
         scanResultDialog.addDevice(s);
         EventBus.getDefault().post(new AddDeviceEvent(s));
     }
@@ -352,13 +349,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onConfirm(int tag) {
         XLog.d(TAG, TAG + " onConfirm");
+        mPresenter.openBle();
+        boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
+        if (b) {//第一次启动应用，弹出如何使用对话框
+            createHintDialog();
+        } else {//不是第一次启动该应用，不弹出，直接打开蓝牙
             mPresenter.openBle();
-            boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
-            if (b) {//第一次启动应用，弹出如何使用对话框
-                createHintDialog();
-            } else {//不是第一次启动该应用，不弹出，直接打开蓝牙
-                mPresenter.openBle();
-            }
+        }
     }
 
     @Override
@@ -479,8 +476,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onResume() {
         super.onResume();
-        //加载数据库当前活动记录的所有页
-        mPresenter.loadActivePageList();
+        //加载数据库当前活动记录的所有页，延迟500ms加载是为了让back时的截图截一会儿才能加载出来
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPresenter.loadActivePageList();
+            }
+        }, 500);
         //置位非编辑模式
         resetEditMode();
     }

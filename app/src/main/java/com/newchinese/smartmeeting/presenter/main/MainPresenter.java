@@ -189,10 +189,9 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
      * 过了则收藏所有记录表内缩略图，清空7张记录表内数据。
      */
     private void collectAndClearAllRecord() {
-//        String cacheDayNum = SharedPreUtils.getString(Constant.DAY_NUM);
-        String cacheDayNum = "17-08-27";
+        String cacheDayNum = SharedPreUtils.getString(Constant.DAY_NUM);
         String currentDayNum = DateUtils.formatLongDate4(System.currentTimeMillis());
-        Log.e("test_collect", "cacheDayNum：" + cacheDayNum + ",currentDayNum：" + currentDayNum);
+        Log.i("test_collect", "cacheDayNum：" + cacheDayNum + ",currentDayNum：" + currentDayNum);
         if (!"".equals(cacheDayNum) && !cacheDayNum.equals(currentDayNum)) {
             //收藏现有的并清空页线点
             Runnable deleteRunnable = new Runnable() {
@@ -202,17 +201,19 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                     List<NoteRecord> noteRecords = noteRecordDao.queryBuilder().list();
                     //遍历所有记录表
                     for (NoteRecord noteRecord : noteRecords) {
-                        CollectRecord collectRecord = CollectRecordManager.getInstance()
-                                .insertCollectRecord(collectRecordDao, noteRecord.getClassifyName(),
-                                        noteRecord.getClassifyName() + DateUtils.formatLongDate3(System.currentTimeMillis()));
                         List<NotePage> notePages = notePageDao.queryBuilder()
                                 .where(NotePageDao.Properties.BookId.eq(noteRecord.getId())).list();
-                        //遍历所有页
-                        for (NotePage notePage : notePages) {
-                            //存收藏页
-                            CollectPageManager.getInstance().insertCollectPage(collectPageDao,
-                                    collectRecord.getId(), notePage.getPageIndex(), notePage.getDate(),
-                                    notePage.getThumbnailPath(), notePage.getScreenPathList());
+                        if (notePages.size() > 0) {
+                            CollectRecord collectRecord = CollectRecordManager.getInstance()
+                                    .insertCollectRecord(collectRecordDao, noteRecord.getClassifyName(),
+                                            noteRecord.getClassifyName() + DateUtils.formatLongDate3(System.currentTimeMillis()));
+                            //遍历所有页
+                            for (NotePage notePage : notePages) {
+                                //存收藏页
+                                CollectPageManager.getInstance().insertCollectPage(collectPageDao,
+                                        collectRecord.getId(), notePage.getPageIndex(), notePage.getDate(),
+                                        notePage.getThumbnailPath(), notePage.getScreenPathList());
+                            }
                         }
                     }
                     //删除现有的所有点线页
@@ -301,6 +302,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
             if (!picFile.exists()) {
                 picFile.mkdir();
             }
+            dataCacheUtil.setPicSDCardDirectory(picPath);
             //创建三级记录目录
             String[] recordDirectoryList = Constant.SD_DIRECTORY_RECORD_LIST;
             for (String recordDirectory : recordDirectoryList) {
@@ -310,7 +312,12 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                     recordFile.mkdir();
                 }
             }
-            dataCacheUtil.setPicSDCardDirectory(picPath);
+            //创建插入图片目录
+            String insertPath = picPath + "/" + Constant.SD_DIRECTORY_INSERT;
+            File insertFile = new File(insertPath);
+            if (!insertFile.exists()) {
+                insertFile.mkdir();
+            }
         } else {
             mView.showToast("请安装SD卡");
         }

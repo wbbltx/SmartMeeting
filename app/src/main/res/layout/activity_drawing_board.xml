@@ -18,10 +18,48 @@
         android:layout_below="@+id/bar"
         android:background="@color/colorWhite">
 
+        <ImageView
+            android:id="@+id/iv_insert_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="matrix" />
+
         <com.newchinese.coolpensdk.manager.DrawingBoardView
             android:id="@+id/draw_view_meeting"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_insert_operate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_image_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35dp"
+                android:src="@mipmap/image_delete" />
+
+            <ImageView
+                android:id="@+id/iv_image_cancle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35dp"
+                android:src="@mipmap/image_cancel" />
+
+            <ImageView
+                android:id="@+id/iv_image_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/image_confirm" />
+        </LinearLayout>
     </RelativeLayout>
 
     <include layout="@layout/layout_draw_menu" />
@@ -42,8 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="40dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -97,18 +135,18 @@
     </RelativeLayout>
 
     <!--<ImageView-->
-        <!--android:id="@+id/play_back_start"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@mipmap/play_back_start"/>-->
+    <!--android:id="@+id/play_back_start"-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@mipmap/play_back_start"/>-->
 
     <!--笔记回放的时间栏-->
     <!--<include layout="@layout/play_back_layout"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--/>-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--/>-->
 </RelativeLayout>

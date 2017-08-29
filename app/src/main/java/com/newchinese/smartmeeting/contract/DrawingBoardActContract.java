@@ -1,8 +1,12 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.projection.MediaProjection;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
@@ -30,6 +34,16 @@ public interface DrawingBoardActContract {
         void setRecordTime(String time);
 
         void setRecordCount(int i);
+
+        void setInsertViewBitmap(Bitmap insertBitmap);
+
+        void setInsertViewMatrix(Matrix matrix);
+
+        void hideTakePhotoWindow();
+
+        void openEditInsertImage();
+
+        void closeEditInsertImage();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
@@ -40,6 +54,18 @@ public interface DrawingBoardActContract {
         Bitmap viewToBitmap(android.view.View view);
 
         void savePageThumbnail(Bitmap bitmap, int pageIndex);
+
+        void saveInsertImageToData(int pageIndex, Matrix imageMatrix);
+
+        void readInsertImageFromData(int pageIndex);
+
+        void deleteInsertImageToData(int pageIndex);
+
+        void isCurrentPageHasInsertImage(int pageIndex);
+
+        String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data);
+
+        void loadCacheMatrix();
 
         boolean isBluetoothOpen();
 
@@ -54,6 +80,7 @@ public interface DrawingBoardActContract {
          * 初始化录屏
          */
         void initRecord(Context context);
+
         /**
          * 是否正在录屏
          */

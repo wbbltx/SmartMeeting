@@ -1,13 +1,18 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.projection.MediaProjection;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -30,15 +35,19 @@ import com.newchinese.smartmeeting.model.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.ImageUtil;
 import com.newchinese.smartmeeting.util.PlayBackUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,6 +66,18 @@ import io.reactivex.functions.Consumer;
 
 public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract.View> implements DrawingBoardActContract.Presenter {
     private static final java.lang.String TAG = "DrawingBoardPresenter";
+    private static final int SCALE = 3;
+    private int pageIndex;
+    private int progressMax;
+    private long duration;
+    private boolean isFirstLoad = true; //初次加载第一笔缓存标记
+    private float insertImageX; //插入图片宽
+    private float insertImageY; //插入图片高
+    private float insertImageWidth;
+    private float insertImageHeight;
+    private String insertImagePath; //插入图片的路径
+    private Disposable subscribe;
+    private Bitmap insertBitmap;
     private DataCacheUtil dataCacheUtil;
     private NoteRecord activeNoteRecord;
     private NotePage currentSelectPage;
@@ -64,14 +85,10 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     private NoteStrokeDao noteStrokeDao;
     private NotePointDao notePointDao;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
-    private boolean isFirstLoad = true; //初次加载第一笔缓存标记
-    private int pageIndex;
     private RecordService recordService;
     private List<String> strings = new ArrayList<>();
-    private long duration;
-    private Disposable subscribe;
+    private Matrix cacheMatrix;
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
-    private int progressMax;
 
     @Override
     public void onPresenterCreated() {
@@ -193,9 +210,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                         mView.setRecordCount(0);
                     } else {
                         //没有视频文件，集合有可能不为空，在这种情况下会默认有一个""的元素，是的界面显示异常
-                        if (screenPathList.size() == 1 && screenPathList.get(0)==""){
+                        if (screenPathList.size() == 1 && screenPathList.get(0) == "") {
                             mView.setRecordCount(0);
-                        }else {
+                        } else {
                             mView.setRecordCount(screenPathList.size());
                             dataCacheUtil.setRecordPathList(screenPathList);
                         }
@@ -381,6 +398,266 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             };
             singleThreadExecutor.execute(saveRunnable);
         }
+    }
+
+    /**
+     * 操作插入图片，计算，配置
+     */
+    @Override
+    public String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data) {
+        insertImagePath = "";
+        float matrixValue[] = new float[9];
+        matrix.getValues(matrixValue);
+        matrixValue[2] = matrixValue[5] = 0;
+        matrixValue[0] = matrixValue[4] = 1;
+        matrix.setValues(matrixValue);
+        DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+        int w_screen = dm.widthPixels;
+        int h_screen = dm.heightPixels;
+        switch (requestCode) {
+            case Constant.SELECT_PIC_KITKAT: //选图片返回
+                if (data != null) {
+                    if (insertBitmap != null && !insertBitmap.isRecycled()) {
+                        insertBitmap.recycle();
+                        insertBitmap = null;
+                        System.gc();
+                    }
+                    Uri mCurrentImageFile = Uri.parse(data.getData().toString());
+                    insertBitmap = BitmapFactory.decodeFile(ImageUtil.changeUriToPath(activity, mCurrentImageFile));
+                    if (insertBitmap.getWidth() > w_screen / SCALE || insertBitmap.getHeight() > h_screen / SCALE) {
+                        insertBitmap = ImageUtil.zoomBitmap(insertBitmap, insertBitmap.getWidth() / SCALE,
+                                insertBitmap.getHeight() / SCALE);
+                    }
+                    insertImagePath = saveInsertImageToSD(insertBitmap);
+                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 25);
+                    mView.setInsertViewMatrix(matrix);
+                    float imageMatrixValue[] = new float[9];
+                    matrix.getValues(imageMatrixValue);
+                    insertImageX = imageMatrixValue[2];
+                    insertImageY = imageMatrixValue[5];
+                    insertImageWidth = imageMatrixValue[0];
+                    insertImageHeight = imageMatrixValue[4];
+                    cacheMatrix = matrix;
+
+                    mView.setInsertViewBitmap(insertBitmap);
+                    mView.hideTakePhotoWindow();
+                    mView.openEditInsertImage();
+                }
+                break;
+            case Constant.TAKEPHOTO_SAVE_MYPATH: //拍照返回
+                if (insertBitmap != null && !insertBitmap.isRecycled()) {
+                    insertBitmap.recycle();
+                    insertBitmap = null;
+                    System.gc();
+                }
+                File file = new File(Environment.getExternalStorageDirectory() + "/image.jpg");
+                if (file.isFile() && file.exists()) {
+                    insertBitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/image.jpg");
+                    if (insertBitmap.getWidth() > w_screen / SCALE || insertBitmap.getHeight() > h_screen / SCALE) {
+                        insertBitmap = ImageUtil.zoomBitmap(insertBitmap, insertBitmap.getWidth() / SCALE,
+                                insertBitmap.getHeight() / SCALE);
+                    }
+                    //将拍到的图片保存到本地
+                    insertImagePath = saveInsertImageToSD(insertBitmap);
+                    file.delete();
+                    //将处理过的图片显示在界面上
+                    matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 25);
+                    mView.setInsertViewMatrix(matrix);
+                    float imageMatrixValue[] = new float[9];
+                    matrix.getValues(imageMatrixValue);
+                    insertImageX = imageMatrixValue[2];
+                    insertImageY = imageMatrixValue[5];
+                    insertImageWidth = imageMatrixValue[0];
+                    insertImageHeight = imageMatrixValue[4];
+                    cacheMatrix = matrix;
+
+                    mView.setInsertViewBitmap(insertBitmap);
+                    mView.hideTakePhotoWindow();
+                    mView.openEditInsertImage();
+                }
+                break;
+        }
+        return insertImagePath;
+    }
+
+    /**
+     * 保存插入的图到SD卡，并更新数据库页的插入图路径
+     * return 文件路径
+     */
+    private String saveInsertImageToSD(Bitmap bitmap) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+            return "";
+        }
+        String imageDirectory = DataCacheUtil.getInstance().getPicSDCardDirectory() + "/" + Constant.SD_DIRECTORY_INSERT;
+        String imageFileName = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+        String imageFilePath = imageDirectory + "/" + imageFileName;
+        File imageFile = new File(imageFilePath);
+        FileOutputStream b = null;
+        try {
+            b = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (b != null) {
+                    b.flush();
+                    b.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFilePath;
+    }
+
+    /**
+     * 保存插入图片的参数到数据库
+     */
+    @Override
+    public void saveInsertImageToData(final int pageIndex, Matrix imageMatrix) {
+        cacheMatrix = imageMatrix;
+        float imageMatrixValue[] = new float[9];
+        imageMatrix.getValues(imageMatrixValue);
+        insertImageX = imageMatrixValue[2];
+        insertImageY = imageMatrixValue[5];
+        insertImageWidth = imageMatrixValue[0];
+        insertImageHeight = imageMatrixValue[4];
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage currentPage = notePageDao.queryBuilder()
+                        .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (currentPage != null) {
+                    currentPage.setInsertPicPath(insertImagePath);
+                    currentPage.setX(insertImageX);
+                    currentPage.setY(insertImageY);
+                    currentPage.setWidth(insertImageWidth);
+                    currentPage.setHeight(insertImageHeight);
+                    notePageDao.update(currentPage);
+                } else {
+                    Log.e("test_greendao", "saveInsertImageToData：currentPage为空");
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRunnable);
+    }
+
+    /**
+     * 从数据库读当页插入的图片
+     */
+    @Override
+    public void readInsertImageFromData(final int pageIndex) {
+        //防止OOM
+        if (insertBitmap != null && !insertBitmap.isRecycled()) {
+            insertBitmap.recycle();
+            insertBitmap = null;
+            System.gc();
+        }
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage currentPage = notePageDao.queryBuilder()
+                        .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (currentPage != null && !currentPage.getInsertPicPath().isEmpty()) {
+                    insertImagePath = currentPage.getInsertPicPath();
+                    insertImageX = currentPage.getX();
+                    insertImageY = currentPage.getY();
+                    insertImageWidth = currentPage.getWidth();
+                    insertImageHeight = currentPage.getHeight();
+                    insertBitmap = BitmapFactory.decodeFile(insertImagePath).copy(Bitmap.Config.RGB_565, true);
+                    Matrix insertImageMatrix = new Matrix();
+                    float matrixValue[] = new float[9];
+                    insertImageMatrix.getValues(matrixValue);
+                    matrixValue[0] = insertImageWidth;
+                    matrixValue[4] = insertImageHeight;
+                    matrixValue[2] = insertImageX;
+                    matrixValue[5] = insertImageY;
+                    insertImageMatrix.setValues(matrixValue);
+                    cacheMatrix = insertImageMatrix;
+                    mView.setInsertViewMatrix(insertImageMatrix);
+                    mView.setInsertViewBitmap(insertBitmap);
+                } else {
+                    Log.e("test_greendao", "saveInsertImageToData：currentPage为空");
+                    //换页时若无图片清空相关数据
+                    resetData();
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRunnable);
+    }
+
+    /**
+     * 删除插入的图片
+     */
+    @Override
+    public void deleteInsertImageToData(final int pageIndex) {
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage currentPage = notePageDao.queryBuilder()
+                        .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (currentPage != null) {
+                    resetData();
+                    currentPage.setInsertPicPath(insertImagePath);
+                    currentPage.setX(insertImageX);
+                    currentPage.setY(insertImageY);
+                    currentPage.setWidth(insertImageWidth);
+                    currentPage.setHeight(insertImageHeight);
+                    notePageDao.update(currentPage);
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRunnable);
+    }
+
+    /**
+     * 重置数据
+     */
+    private void resetData() {
+        insertImagePath = "";
+        insertImageX = 0;
+        insertImageY = 0;
+        insertImageWidth = 0;
+        insertImageHeight = 0;
+    }
+
+    /**
+     * 加载缓存的Matrix用于取消编辑时使用
+     */
+    @Override
+    public void loadCacheMatrix() {
+        if (cacheMatrix != null) {
+            mView.setInsertViewMatrix(cacheMatrix);
+            float imageMatrixValue[] = new float[9];
+            cacheMatrix.getValues(imageMatrixValue);
+            insertImageX = imageMatrixValue[2];
+            insertImageY = imageMatrixValue[5];
+            insertImageWidth = imageMatrixValue[0];
+            insertImageHeight = imageMatrixValue[4];
+        }
+    }
+
+    /**
+     * 判断当前页是否有插入的图片
+     */
+    @Override
+    public void isCurrentPageHasInsertImage(final int pageIndex) {
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage currentPage = notePageDao.queryBuilder()
+                        .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (currentPage != null && !currentPage.getInsertPicPath().isEmpty()) {
+                    mView.openEditInsertImage();
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRunnable);
     }
 
     /**

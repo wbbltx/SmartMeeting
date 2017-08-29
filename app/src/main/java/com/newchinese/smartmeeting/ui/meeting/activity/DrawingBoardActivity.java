@@ -6,6 +6,9 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -21,7 +24,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -32,16 +34,15 @@ import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
+import com.newchinese.smartmeeting.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
-import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
@@ -49,25 +50,18 @@ import com.newchinese.smartmeeting.model.event.OnStrokeCatchedEvent;
 import com.newchinese.smartmeeting.model.event.OpenBleEvent;
 import com.newchinese.smartmeeting.model.event.ScanEvent;
 import com.newchinese.smartmeeting.model.event.ScanResultEvent;
-import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.presenter.meeting.DrawingBoardPresenter;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
-import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
-import com.newchinese.smartmeeting.util.DateUtils;
-import com.newchinese.smartmeeting.util.PlayBackUtil;
-import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
-import com.newchinese.smartmeeting.widget.ScanResultDialog;
+import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -83,7 +77,7 @@ import io.reactivex.functions.Consumer;
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
         DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
-    private static final java.lang.String TAG = "DrawingBoardActivity";
+    private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -108,17 +102,23 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView recordCount;
     @BindView(R.id.rl_record_count)
     RelativeLayout rlRecordCount;
+    @BindView(R.id.iv_insert_image)
+    ImageView ivInsertImage;
+    @BindView(R.id.ll_insert_operate)
+    LinearLayout llInsertOperate;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
     private CheckColorPopWin checkColorPopWin;
+    private TakePhotoPopWin takePhotoPopWin;
 
     private int pageIndex;
     private boolean isMenuBtnClicked = false;
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private List<NotePage> activeNotePageList;
+    private Bitmap insertBitmap;
     private DataCacheUtil dataCacheUtil;
-//    private ScanResultDialog scanResultDialog;
+    //    private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
@@ -141,6 +141,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
         initStrokeWidthWindow();
+        ivInsertImage.setBackgroundColor(Color.TRANSPARENT);
     }
 
     /**
@@ -175,12 +176,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 @Override
                 public void accept(Long aLong) throws Exception {
                     mPresenter.readDataBasePoint(pageIndex);
+                    mPresenter.readInsertImageFromData(pageIndex);
                     mPresenter.queryRecordCount(pageIndex);
                 }
             });
         }
         //初始化调色板窗口
         checkColorPopWin = new CheckColorPopWin(this);
+        //初始化
+        takePhotoPopWin = new TakePhotoPopWin(this);
 
         //初始化笔状态
         initPenState();
@@ -188,7 +192,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 //        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
 
-//       请求权限 录屏初始化 绑定服务
+        //请求权限 录屏初始化 绑定服务
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         Intent recordIntent = new Intent(this, RecordService.class);
         bindService(recordIntent, connection, BIND_AUTO_CREATE);
@@ -200,9 +204,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         int penState = dataCacheUtil.getPenState();
         if (penState == BluCommonUtils.PEN_CONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
-        } else if (penState == BluCommonUtils.PEN_DISCONNECTED){
+        } else if (penState == BluCommonUtils.PEN_DISCONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
-        }else if (penState == BluCommonUtils.PEN_CONNECTING){
+        } else if (penState == BluCommonUtils.PEN_CONNECTING) {
             ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
@@ -219,6 +223,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             }
         });
         rgStrkoeWidth.setOnCheckedChangeListener(this);
+        //设置插入图片的Touch事件
+        ivInsertImage.setOnTouchListener(new MulitPointTouchListener());
+        //编辑图片
+        drawViewMeeting.setClickable(true);
+        drawViewMeeting.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mPresenter.isCurrentPageHasInsertImage(pageIndex);
+                return true;
+            }
+        });
     }
 
     /**
@@ -276,6 +291,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         });
         //读当页的数据库数据
         mPresenter.readDataBasePoint(pageIndex);
+        //清空当页图片，置位编辑状态，置位所有window 
+        resetInsertImage();
+        closeEditInsertImage();
+        mPresenter.readInsertImageFromData(pageIndex);
     }
 
     /**
@@ -334,6 +353,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
     }
 
+    /**
+     * 翻页手势监听
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
@@ -346,38 +368,51 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 mCurPosY = event.getY();
                 break;
             case MotionEvent.ACTION_UP:
-                if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 200)) {
+                if (mCurPosX - mPosX > 0 && (Math.abs(mCurPosX - mPosX) > 150)) {
                     hideAll();
                     activeNotePageList = dataCacheUtil.getActiveNotePageList();
                     //读下一页的数据库数据
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position > 0 && position <= (activeNotePageList.size() - 1)) {
-//                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                        //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                        //截图
+                        mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
+                        //清空当页图片，置位编辑状态，置位所有window 
+                        resetInsertImage();
+                        closeEditInsertImage();
+                        mPresenter.readInsertImageFromData(pageIndex);
                     }
-                } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 200)) {
+                } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 150)) {
                     activeNotePageList = dataCacheUtil.getActiveNotePageList();
                     hideAll();
                     //读上一页的数据库数据
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position >= 0 && position < (activeNotePageList.size() - 1)) {
-//                                mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                        //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
+                        //截图
+                        mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
+                        //清空当页图片，置位编辑状态，置位所有window 
+                        resetInsertImage();
+                        closeEditInsertImage();
+                        mPresenter.readInsertImageFromData(pageIndex);
                     }
                 }
                 break;
         }
-        return true;
+        return false;
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
-            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.rl_record_count})
+            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record,
+            R.id.rl_record_count, R.id.iv_image_delete, R.id.iv_image_cancle, R.id.iv_image_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
@@ -396,6 +431,20 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_insert_pic: //图片
                 hideMenu();
+                showTakePhotoWindow();
+                break;
+            case R.id.iv_image_delete: //删除插入图片
+                resetInsertImage();
+                mPresenter.deleteInsertImageToData(pageIndex);
+                closeEditInsertImage();
+                break;
+            case R.id.iv_image_cancle: //取消插入图片
+                mPresenter.loadCacheMatrix();
+                closeEditInsertImage();
+                break;
+            case R.id.iv_image_confirm: //确认插入图片
+                mPresenter.saveInsertImageToData(pageIndex, ivInsertImage.getImageMatrix());
+                closeEditInsertImage();
                 break;
             case R.id.iv_stroke_color: //调色
                 hideMenu();
@@ -471,14 +520,47 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 101 && resultCode == RESULT_OK) {
-            mediaProjection = projectionManager.getMediaProjection(resultCode, data);
-            recordService.setMediaProject(mediaProjection);
-            recordService.startRecord();
-            startTimeDown = true;
-            dataCacheUtil.addPages(pageIndex);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 101) {
+                mediaProjection = projectionManager.getMediaProjection(resultCode, data);
+                recordService.setMediaProject(mediaProjection);
+                recordService.startRecord();
+                startTimeDown = true;
+                dataCacheUtil.addPages(pageIndex);
+            } else if (requestCode == Constant.SELECT_PIC_KITKAT || requestCode == Constant.TAKEPHOTO_SAVE_MYPATH) {
+                mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data);
+            }
         }
     }
+
+    /**
+     * 设置插入图片View的Bitmap
+     */
+    @Override
+    public void setInsertViewBitmap(Bitmap insertBitmap) {
+        this.insertBitmap = insertBitmap;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ivInsertImage.setVisibility(View.VISIBLE);
+                ivInsertImage.setImageBitmap(DrawingBoardActivity.this.insertBitmap);
+            }
+        });
+    }
+
+    /**
+     * 设置插入图片View的Matrix
+     */
+    @Override
+    public void setInsertViewMatrix(final Matrix matrix) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ivInsertImage.setImageMatrix(matrix);
+            }
+        });
+    }
+
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -525,6 +607,62 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     /**
+     * 打开插入图片编辑模式
+     */
+    @Override
+    public void openEditInsertImage() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ivMenuBtn.setVisibility(View.GONE);
+                llInsertOperate.setVisibility(View.VISIBLE);
+                ivInsertImage.bringToFront();
+                llInsertOperate.bringToFront();
+            }
+        });
+    }
+
+    /**
+     * 关闭插入图片编辑模式
+     */
+    @Override
+    public void closeEditInsertImage() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ivMenuBtn.setVisibility(View.VISIBLE);
+                llInsertOperate.setVisibility(View.GONE);
+                drawViewMeeting.bringToFront();
+            }
+        });
+    }
+
+
+    /**
+     * 显示插入普片PopupWindow
+     */
+
+    private void showTakePhotoWindow() {
+        takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    /**
+     * 隐藏插入图片PopupWindow
+     */
+    @Override
+    public void hideTakePhotoWindow() {
+        takePhotoPopWin.dismiss();
+    }
+
+    /**
+     * 置位插入图片
+     */
+    private void resetInsertImage() {
+        ivInsertImage.setImageDrawable(null);
+        ivInsertImage.refreshDrawableState();
+    }
+
+    /**
      * 显示调色板
      */
     private void showStrokeColor() {
@@ -557,6 +695,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     private void hideAll() {
         hideMenu();
+        hideTakePhotoWindow();
         hideStrokeColor();
         hideStrokeWidth();
     }
@@ -617,15 +756,18 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
         int i = Integer.parseInt(value);
-        if (i <= 30){
+        if (i <= 30) {
             ivPen.setImageResource(R.mipmap.pen_low_power);
         }
     }
 
     @Override
     protected void onDestroy() {
-        if (pageIndex != 0)
+        if (pageIndex != 0) {
+            mPresenter.loadCacheMatrix();
+            closeEditInsertImage();
             mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+        }
         EventBus.getDefault().unregister(this);
         unbindService(connection);
         super.onDestroy();

@@ -11,9 +11,6 @@ import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
-
-import java.util.UUID;
 
 
 /**
@@ -100,12 +97,5 @@ public class GreenDaoUtil {
 
     public CollectPageDao getCollectPageDao() {
         return collectPageDao;
-    }
-
-    /**
-     * 获取唯一标识
-     */
-    public String getUUIDCode() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

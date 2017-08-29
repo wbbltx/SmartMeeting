@@ -37,9 +37,14 @@ public class Constant {
     public static final String SD_DIRECTORY_REPORT = "ReportRecords";
     public static final String SD_DIRECTORY_REVIEW = "ReviewRecords";
     public static final String SD_DIRECTORY_OTHER = "OtherRecords";
+    //插入图片目录
+    public static final String SD_DIRECTORY_INSERT = "InsertImages";
     public static final String[] SD_DIRECTORY_RECORD_LIST = {SD_DIRECTORY_WORK, SD_DIRECTORY_PROJECT,
             SD_DIRECTORY_STUDY, SD_DIRECTORY_EXPLORE, SD_DIRECTORY_REPORT, SD_DIRECTORY_REVIEW,
             SD_DIRECTORY_OTHER}; //记录目录集合
     //存当天日期的tag
     public static final String DAY_NUM = "day_num";
+
+    public static final int SELECT_PIC_KITKAT = 0; //选择照片请求码
+    public static final int TAKEPHOTO_SAVE_MYPATH = 2; //照相请求码
 }

@@ -29,7 +29,11 @@ public class NotePage {
     private long bookId; //记录表Id
     private long date; //时间
     private String insertPicPath; //插入图片路径
-    private String thumbnailPath;
+    private float X;
+    private float Y;
+    private  float height;
+    private  float width;
+    private String thumbnailPath; //缩略图路径
     @Convert(columnType = String.class, converter = StringConverterUtil.class)
     private List<String> screenPathList; //录屏文件路径，需将List转换为StringBuilder
     @ToMany(referencedJoinProperty = "pageId") //页线一对多
@@ -45,14 +49,19 @@ public class NotePage {
     @Generated(hash = 1639320209)
     private transient NotePageDao myDao;
 
-    @Generated(hash = 1385814183)
+    @Generated(hash = 711196225)
     public NotePage(Long id, int pageIndex, long bookId, long date, String insertPicPath,
-                    String thumbnailPath, List<String> screenPathList) {
+            float X, float Y, float height, float width, String thumbnailPath,
+            List<String> screenPathList) {
         this.id = id;
         this.pageIndex = pageIndex;
         this.bookId = bookId;
         this.date = date;
         this.insertPicPath = insertPicPath;
+        this.X = X;
+        this.Y = Y;
+        this.height = height;
+        this.width = width;
         this.thumbnailPath = thumbnailPath;
         this.screenPathList = screenPathList;
     }
@@ -204,5 +213,37 @@ public class NotePage {
                 ", thumbnailPath='" + thumbnailPath + '\'' +
                 ", screenPathList=" + screenPathList +
                 '}';
+    }
+
+    public float getX() {
+        return this.X;
+    }
+
+    public void setX(float X) {
+        this.X = X;
+    }
+
+    public float getY() {
+        return this.Y;
+    }
+
+    public void setY(float Y) {
+        this.Y = Y;
+    }
+
+    public float getHeight() {
+        return this.height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return this.width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
     }
 }
