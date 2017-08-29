@@ -92,8 +92,9 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
         } else {
             for (BluetoothDevice device : devices) {
-                XLog.d(TAG, "连接的所有设备：" + device.getAddress());
+                XLog.d(TAG, "扫描到的所有设备：" + device.getAddress());
                 if (device.getAddress().equals(address)) {
+                    XLog.d(TAG, "搜索结果列表中报验上次连接的笔："+address);
                     EventBus.getDefault().post(new ConnectEvent(address, 0));
                     return;
                 }

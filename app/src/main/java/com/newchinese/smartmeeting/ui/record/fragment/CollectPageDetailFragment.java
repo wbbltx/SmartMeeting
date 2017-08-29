@@ -14,6 +14,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.ui.meeting.activity.RecordLibActivity;
 import com.newchinese.smartmeeting.ui.meeting.activity.RecordPlayActivity;
 
 import java.util.List;
@@ -85,8 +86,9 @@ public class CollectPageDetailFragment extends BaseSimpleFragment implements Vie
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.rl_record_count:
-                Intent intent = new Intent(getActivity(), RecordPlayActivity.class);
-
+                Intent intent = new Intent(getActivity(), RecordLibActivity.class);
+                intent.putExtra("selectPageIndex",collectPage.getPageIndex());
+                startActivity(intent);
                 break;
         }
     }
