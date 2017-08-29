@@ -125,9 +125,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void initView() {
-        if (scanResultDialog.isShowing()){
-            scanResultDialog.dismiss();
-        }
         if (mPresenter.isConnected()) {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
         } else {
@@ -483,6 +480,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         mPresenter.loadActivePageList();
         //置位非编辑模式
         resetEditMode();
+
+        if (scanResultDialog.isShowing()){
+            scanResultDialog.dismiss();
+        }
     }
 
     /**
