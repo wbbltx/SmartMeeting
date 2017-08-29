@@ -10,6 +10,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.model.bean.LoginData;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.bean.NotePoint;
 import com.newchinese.smartmeeting.model.bean.NoteRecord;
@@ -17,6 +18,7 @@ import com.newchinese.smartmeeting.model.bean.NoteStroke;
 
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
+import com.newchinese.smartmeeting.database.LoginDataDao;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
@@ -33,6 +35,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig collectPageDaoConfig;
     private final DaoConfig collectRecordDaoConfig;
+    private final DaoConfig loginDataDaoConfig;
     private final DaoConfig notePageDaoConfig;
     private final DaoConfig notePointDaoConfig;
     private final DaoConfig noteRecordDaoConfig;
@@ -40,6 +43,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final CollectPageDao collectPageDao;
     private final CollectRecordDao collectRecordDao;
+    private final LoginDataDao loginDataDao;
     private final NotePageDao notePageDao;
     private final NotePointDao notePointDao;
     private final NoteRecordDao noteRecordDao;
@@ -55,6 +59,9 @@ public class DaoSession extends AbstractDaoSession {
         collectRecordDaoConfig = daoConfigMap.get(CollectRecordDao.class).clone();
         collectRecordDaoConfig.initIdentityScope(type);
 
+        loginDataDaoConfig = daoConfigMap.get(LoginDataDao.class).clone();
+        loginDataDaoConfig.initIdentityScope(type);
+
         notePageDaoConfig = daoConfigMap.get(NotePageDao.class).clone();
         notePageDaoConfig.initIdentityScope(type);
 
@@ -69,6 +76,7 @@ public class DaoSession extends AbstractDaoSession {
 
         collectPageDao = new CollectPageDao(collectPageDaoConfig, this);
         collectRecordDao = new CollectRecordDao(collectRecordDaoConfig, this);
+        loginDataDao = new LoginDataDao(loginDataDaoConfig, this);
         notePageDao = new NotePageDao(notePageDaoConfig, this);
         notePointDao = new NotePointDao(notePointDaoConfig, this);
         noteRecordDao = new NoteRecordDao(noteRecordDaoConfig, this);
@@ -76,6 +84,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(CollectPage.class, collectPageDao);
         registerDao(CollectRecord.class, collectRecordDao);
+        registerDao(LoginData.class, loginDataDao);
         registerDao(NotePage.class, notePageDao);
         registerDao(NotePoint.class, notePointDao);
         registerDao(NoteRecord.class, noteRecordDao);
@@ -85,6 +94,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         collectPageDaoConfig.clearIdentityScope();
         collectRecordDaoConfig.clearIdentityScope();
+        loginDataDaoConfig.clearIdentityScope();
         notePageDaoConfig.clearIdentityScope();
         notePointDaoConfig.clearIdentityScope();
         noteRecordDaoConfig.clearIdentityScope();
@@ -97,6 +107,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public CollectRecordDao getCollectRecordDao() {
         return collectRecordDao;
+    }
+
+    public LoginDataDao getLoginDataDao() {
+        return loginDataDao;
     }
 
     public NotePageDao getNotePageDao() {

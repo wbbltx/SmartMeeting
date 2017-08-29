@@ -23,6 +23,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(Database db, boolean ifNotExists) {
         CollectPageDao.createTable(db, ifNotExists);
         CollectRecordDao.createTable(db, ifNotExists);
+        LoginDataDao.createTable(db, ifNotExists);
         NotePageDao.createTable(db, ifNotExists);
         NotePointDao.createTable(db, ifNotExists);
         NoteRecordDao.createTable(db, ifNotExists);
@@ -33,6 +34,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void dropAllTables(Database db, boolean ifExists) {
         CollectPageDao.dropTable(db, ifExists);
         CollectRecordDao.dropTable(db, ifExists);
+        LoginDataDao.dropTable(db, ifExists);
         NotePageDao.dropTable(db, ifExists);
         NotePointDao.dropTable(db, ifExists);
         NoteRecordDao.dropTable(db, ifExists);
@@ -57,6 +59,7 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(CollectPageDao.class);
         registerDaoClass(CollectRecordDao.class);
+        registerDaoClass(LoginDataDao.class);
         registerDaoClass(NotePageDao.class);
         registerDaoClass(NotePointDao.class);
         registerDaoClass(NoteRecordDao.class);

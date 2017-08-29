@@ -1,38 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.login.activity.LoginActivity">
 
-    <include layout="@layout/bar_base"/>
 
-    <RadioGroup
-        android:id="@+id/rg_login"
-        android:layout_width="match_parent"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppBarTheme"
+        app:navigationIcon="@mipmap/bar_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/tv_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/login_title"
+            android:textColor="@color/colorWhite"
+            android:textSize="19sp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.design.widget.TabLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal">
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:id="@+id/tl_login_switch">
 
-        <RadioButton
-            android:textColor="@drawable/rg_login_selector"
-            android:checked="true"
-            android:id="@+id/rb_fast_login"
-            style="@style/Login_Radio_Button"
-            android:text="快捷登陆"/>
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="快捷登录"/>
 
-        <RadioButton
-            android:textColor="@drawable/rg_login_selector"
-            android:id="@+id/rd_common_dogin"
-            style="@style/Login_Radio_Button"
-            android:text="普通登陆"/>
-    </RadioGroup>
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="普通登录"/>
+    </android.support.design.widget.TabLayout>
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_draw_main"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/tl_login_switch"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ib_login_qq">
 
+    </android.support.v4.view.ViewPager>
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/ib_login_qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/ib_login_wx"
+        android:src="@mipmap/login_qq"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"/>
+
+    <ImageButton
+        android:id="@+id/ib_login_wx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/ib_login_qq"
+        app:layout_constraintLeft_toLeftOf="@+id/ib_login_qq"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ib_login_qq"
+        android:src="@mipmap/login_wx"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"/>
+
+</android.support.constraint.ConstraintLayout>

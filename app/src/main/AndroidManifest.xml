@@ -47,9 +47,23 @@
 
         <activity
             android:name=".ui.meeting.activity.DraftBoxActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.login.activity.LoginActivity" />
-        <activity android:name=".ui.login.activity.RegisterActivity" />
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".ui.login.activity.RegisterActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/regist_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait"/>
+        <activity
+            android:name=".ui.login.activity.LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/login_title"
+            android:screenOrientation="sensorPortrait"
+            android:launchMode="singleTask"
+            >
+        </activity>
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
             android:launchMode="singleTask" />

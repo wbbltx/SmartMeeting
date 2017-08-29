@@ -4,10 +4,9 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
+import com.newchinese.smartmeeting.listener.ActivityLife;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
@@ -44,6 +43,7 @@ public class App extends Application {
         DrawingboardAPI.getInstance().init(getApplicationContext(), APPKEY);
         //初始化GreenDao
         GreenDaoUtil.getInstance().initDataBase(getApplicationContext());
+        registerActivityLifecycleCallbacks(new ActivityLife());
         getLastColor();
     }
 
