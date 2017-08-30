@@ -149,4 +149,19 @@ public class LoginData {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "LoginData{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", token='" + token + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", im_token='" + im_token + '\'' +
+                ", tel='" + tel + '\'' +
+                ", icon='" + icon + '\'' +
+                ", password='" + password + '\'' +
+                ", icon_format='" + icon_format + '\'' +
+                '}';
+    }
 }

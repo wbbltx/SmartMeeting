@@ -31,4 +31,16 @@ public class BaseResult<D> implements IModel {
     public String getErrorMsg() {
         return msg;
     }
+
+    @Override
+    public String toString() {
+        return "BaseResult{" +
+                "url='" + url + '\'' +
+                ", no='" + no + '\'' +
+                ", msg='" + msg + '\'' +
+                ", verifyCode='" + verifyCode + '\'' +
+                ", update=" + update +
+                ", data=" + data +
+                '}';
+    }
 }

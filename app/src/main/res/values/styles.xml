@@ -33,7 +33,7 @@
         <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
     </style>
-    
+
     <!--dialog样式-->
     <style name="Dialog" parent="android:style/Theme.Dialog">
         <item name="android:background">#00000000</item>
@@ -44,5 +44,35 @@
 
     <style name="AppBarTheme" parent="AppTheme">
         <item name="android:colorControlNormal">@color/colorWhite</item>
+    </style>
+
+    <!--通用白条背景-->
+    <style name="simple_white_back">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:paddingLeft">@dimen/simple_lr_padding</item>
+        <item name="android:paddingRight">@dimen/simple_lr_padding</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+    <!--通用白条字体-->
+    <style name="simple_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/gray5</item>
+        <item name="android:textSize">@dimen/simple_text_size</item>
+    </style>
+    <!--通用灰色字体-->
+    <style name="simple_gray9_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:paddingLeft">25dp</item>
+        <item name="android:paddingRight">25dp</item>
+        <item name="android:textColorHint">@color/gray9</item>
+        <item name="android:textColor">@color/simple_text</item>
+        <item name="android:maxLength">14</item>
+        <item name="android:lines">1</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:background">@drawable/shape_gray_circle_back</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 </resources>

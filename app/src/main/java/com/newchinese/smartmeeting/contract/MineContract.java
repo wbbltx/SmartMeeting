@@ -14,11 +14,13 @@ public interface MineContract {
     interface UpdateIVIew extends IToolbar {
 
         void showLoading(String msg);
+
+        void jumpLogin();
     }
 
     interface UpdateIPresenter<V> {
 
-        UpdateIPresenter attach (V v);
+        UpdateIPresenter attach(V v);
 
         void detach();
 

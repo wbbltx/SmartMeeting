@@ -17,6 +17,7 @@ import com.newchinese.smartmeeting.model.bean.LoginData;
 import com.newchinese.smartmeeting.net.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
+import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 import com.newchinese.smartmeeting.widget.EditView;
 
 import java.util.concurrent.TimeUnit;
@@ -62,21 +63,21 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         mIbWX = (ImageButton) findViewById(R.id.ib_login_wx);
 
         mTab.setSelectedTabIndicatorColor(getResources().getColor(R.color.simple_blue));
-        mTab.setTabTextColors(getResources().getColor(R.color.gray6),getResources().getColor(R.color.simple_blue));
+        mTab.setTabTextColors(getResources().getColor(R.color.gray6), getResources().getColor(R.color.simple_blue));
 
         mVp.setAdapter(new LoginPageAdapter().setOnPageInnerClickListener(this).setPresenter(mPresenter));
         mTab.setupWithViewPager(mVp);
     }
 
     @Override
-   public void skipWhat() {
+    public void skipWhat() {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
     @Override
     public void updateView(BaseResult<LoginData> data) {
         if (!NetUrl.DYNAMIC_PASS.equals(data.url)) {
-            finish();
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 

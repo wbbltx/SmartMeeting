@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.listener.ActivityLife;
@@ -58,6 +60,10 @@ public class App extends Application {
         GreenDaoUtil.getInstance().initDataBase(getApplicationContext());
         registerActivityLifecycleCallbacks(new ActivityLife());
         getLastColor();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
     }
 
     //设置书写页色板最后一个颜色

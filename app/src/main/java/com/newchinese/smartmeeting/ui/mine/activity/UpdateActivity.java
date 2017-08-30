@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.mine.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.contract.MineContract;
 import com.newchinese.smartmeeting.presenter.mine.UpdatePresenterImpl;
+import com.newchinese.smartmeeting.ui.login.activity.LoginActivity;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.widget.EditView;
 
@@ -96,6 +98,11 @@ public class UpdateActivity extends AppCompatActivity implements MineContract.Up
                 mPd.dismiss();
             }
         }
+    }
+
+    @Override
+    public void jumpLogin() {
+        finish();
     }
 
     @Override

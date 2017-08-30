@@ -17,6 +17,7 @@ import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.LoginData;
 import com.newchinese.smartmeeting.ui.mine.activity.AboutActivity;
 import com.newchinese.smartmeeting.ui.mine.activity.FBActivity;
+import com.newchinese.smartmeeting.ui.mine.activity.SettingActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
@@ -77,15 +78,6 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
 
     @Override
     protected void initStateAndData() {
-        LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
-        if (data != null) {
-            Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop().placeholder(R.mipmap.mine_icon).error(R.mipmap.mine_icon)).into(mIvIcon);
-            mTvNick.setText(data.nickname);
-            String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
-            mTvTel.setText(tel);
-        }
-        String penName = SharedPreUtils.getString("connectBluInfo_name");
-        mTvPen.setText(TextUtils.isEmpty(penName) ? "未连接" : penName);
     }
 
     @Override
@@ -100,6 +92,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cl_mine_more://设置
+                startActivity(new Intent(mActivity, SettingActivity.class));
                 break;
             case R.id.rl_mine_pen://笔信息
                 break;
@@ -110,5 +103,19 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
                 startActivity(new Intent(getActivity(), AboutActivity.class));
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
+        if (data != null) {
+            Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop().placeholder(R.mipmap.mine_icon).error(R.mipmap.mine_icon)).into(mIvIcon);
+            mTvNick.setText(data.nickname);
+            String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+            mTvTel.setText(tel);
+        }
+        String penName = SharedPreUtils.getString("connectBluInfo_name");
+        mTvPen.setText(TextUtils.isEmpty(penName) ? "未连接" : penName);
     }
 }

@@ -11,7 +11,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/AppBarTheme"
@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:text="@string/login_title"
             android:textColor="@color/colorWhite"
-            android:textSize="19sp"/>
+            android:textSize="18sp"/>
     </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.TabLayout
@@ -72,7 +72,7 @@
         android:id="@+id/ib_login_qq"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="22dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@null"

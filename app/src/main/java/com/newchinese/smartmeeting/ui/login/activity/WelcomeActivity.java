@@ -1,13 +1,17 @@
 package com.newchinese.smartmeeting.ui.login.activity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.WelcomeActContract;
+import com.newchinese.smartmeeting.database.LoginDataDao;
+import com.newchinese.smartmeeting.model.bean.LoginData;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
+import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 /**
  * Description:   欢迎页
@@ -39,7 +43,15 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
      */
     @Override
     public void jumpActivity() {
-        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        Intent intent;
+        LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
+        LoginData loginData = loginDataDao.queryBuilder().unique();
+        //判断是否登录过
+        if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
+            intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        } else {
+            intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+        }
         startActivity(intent);
         finish();
     }

@@ -8,14 +8,17 @@
     <color name="simple_title">#ffffff</color>
     <color name="simple_text">#111111</color>
     <color name="simple_line">#dddddd</color>
-    <color name="simple_blue">#3D82E0</color>
+    <color name="simple_blue">#3d82e0</color>
+    <color name="simple_blue1">#3d82f4</color>
     <color name="simple_background">#f4f4f4</color>
 
     <color name="gray9">#999999</color>
     <color name="gray6">#666666</color>
+    <color name="gray5">#555555</color>
     <color name="gray3">#333333</color>
     <color name="graye">#eeeeee</color>
     <color name="graydc">#dcdcdc</color>
     <color name="black_alpha_55">#55000000</color>
     <color name="light_blue">#C2DAFA</color>
+    
 </resources>

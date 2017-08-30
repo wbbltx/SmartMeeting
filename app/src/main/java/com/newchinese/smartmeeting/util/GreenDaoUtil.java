@@ -7,6 +7,7 @@ import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
 import com.newchinese.smartmeeting.database.DaoMaster;
 import com.newchinese.smartmeeting.database.DaoSession;
+import com.newchinese.smartmeeting.database.LoginDataDao;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
@@ -27,6 +28,7 @@ public class GreenDaoUtil {
     private NotePointDao notePointDao;
     private CollectRecordDao collectRecordDao;
     private CollectPageDao collectPageDao;
+    private LoginDataDao loginDataDao;
 
     private static class SingleHolder {
         private static final GreenDaoUtil INSTANCE = new GreenDaoUtil();
@@ -54,39 +56,25 @@ public class GreenDaoUtil {
         notePointDao = daoSession.getNotePointDao();
         collectRecordDao = daoSession.getCollectRecordDao();
         collectPageDao = daoSession.getCollectPageDao();
+        loginDataDao = daoSession.getLoginDataDao();
     }
 
-    /**
-     * 获取DaoSession对象
-     */
     public DaoSession getDaoSession() {
         return daoSession;
     }
 
-    /**
-     * 获取NoteRecordDao对象
-     */
     public NoteRecordDao getNoteRecordDao() {
         return noteRecordDao;
     }
 
-    /**
-     * 获取NotePageDao对象
-     */
     public NotePageDao getNotePageDao() {
         return notePageDao;
     }
 
-    /**
-     * 获取NoteStrokeDao对象
-     */
     public NoteStrokeDao getNoteStrokeDao() {
         return noteStrokeDao;
     }
 
-    /**
-     * 获取NotePointDao对象
-     */
     public NotePointDao getNotePointDao() {
         return notePointDao;
     }
@@ -97,5 +85,9 @@ public class GreenDaoUtil {
 
     public CollectPageDao getCollectPageDao() {
         return collectPageDao;
+    }
+
+    public LoginDataDao getLoginDataDao() {
+        return loginDataDao;
     }
 }

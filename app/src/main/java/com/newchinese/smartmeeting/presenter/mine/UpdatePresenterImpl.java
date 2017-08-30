@@ -40,9 +40,9 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
 
     @Override
     public void updatePass(String oldPass, String newPass) {
-        GreenDaoUtil.getInstance().getDaoSession().clear();
+//        GreenDaoUtil.getInstance().getDaoSession().clear();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
-        data.setId(null).setTel(null).setNickname(null);
+//        data.setId(null).setTel(null).setNickname(null);
         mModel.updatePass(data.setPassword(oldPass).setNew_password(newPass));
     }
 
@@ -64,5 +64,7 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
         if (mV != null) {
             mV.showLoading(null);
         }
+        if ("修改成功".equals(data.msg))
+            mV.jumpLogin();
     }
 }

@@ -5,13 +5,13 @@
     android:layout_marginBottom="5dp"
     android:layout_marginLeft="9dp"
     android:layout_marginRight="9dp"
-    android:layout_marginTop="18dp"
+    android:layout_marginTop="20dp"
     android:background="@color/simple_background">
 
     <RelativeLayout
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="207dp"
+        android:layout_height="230dp"
         android:layout_centerHorizontal="true"
         android:background="@color/colorWhite">
 

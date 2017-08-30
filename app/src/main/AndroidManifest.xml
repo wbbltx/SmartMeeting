@@ -64,7 +64,7 @@
             android:exported="true"
             android:label="@string/login_title"
             android:launchMode="singleTask"
-            android:screenOrientation="sensorPortrait"></activity>
+            android:screenOrientation="sensorPortrait"/>
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
             android:launchMode="singleTask" />
@@ -74,14 +74,14 @@
         <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
         <activity android:name=".ui.meeting.activity.PlayBackActivity" />
         <activity android:name=".ui.meeting.activity.RecordLibActivity" />
-        <activity android:name=".wxapi.WXEntryActivity"></activity>
+        <activity android:name=".wxapi.WXEntryActivity"/>
 
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <!--<activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"-->
         <!--android:configChanges="keyboardHidden|orientation"-->
         <!--android:exported="false"-->
@@ -125,38 +125,33 @@
             android:exported="true"
             android:label="@string/fb_title"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait">
-        </activity>
+            android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".ui.mine.activity.UpdateActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="修改昵称"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait">
-        </activity>
-        <activity android:name=".ui.mine.activity.AboutActivity"
-                  android:configChanges="keyboardHidden|orientation|screenSize"
-                  android:exported="true"
-                  android:label="关于我们"
-                  android:launchMode="singleTop"
-                  android:screenOrientation="sensorPortrait">
-        </activity>
-        <activity android:name=".ui.mine.activity.DealActivity"
-                  android:configChanges="keyboardHidden|orientation|screenSize"
-                  android:exported="true"
-                  android:label="服务条款与协议"
-                  android:launchMode="singleTop"
-                  android:screenOrientation="sensorPortrait">
-        </activity>
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".ui.mine.activity.AboutActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="关于我们"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".ui.mine.activity.DealActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="服务条款与协议"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait" />
+        <activity android:name=".ui.mine.activity.SettingActivity" />
+        <activity android:name=".ui.mine.activity.ChangeNickNameActivity" />
     </application>
 
-
     <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="59a62a28f43e48729a000431">
-        </meta-data>
-
-
-
+        android:name="UMENG_APPKEY"
+        android:value="59a62a28f43e48729a000431"/>
 </manifest>

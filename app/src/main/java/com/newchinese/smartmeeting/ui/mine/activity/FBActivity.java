@@ -85,6 +85,11 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
     }
 
     @Override
+    public void jumpLogin() {
+        
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mPd != null && mPd.isShowing()) {
