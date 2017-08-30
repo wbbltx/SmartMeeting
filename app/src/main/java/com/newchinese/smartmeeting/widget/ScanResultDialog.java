@@ -55,10 +55,9 @@ public class ScanResultDialog extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BluetoothDevice device = getItem(position);
-                String address = device.getAddress();
                 dismiss();
                 if (onDeviceItemClickListener != null){
-                    onDeviceItemClickListener.onDeviceClick(address);
+                    onDeviceItemClickListener.onDeviceClick(device);
                 }
             }
         });

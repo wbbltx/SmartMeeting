@@ -1,20 +1,22 @@
 package com.newchinese.smartmeeting.model.event;
 
+import android.bluetooth.BluetoothDevice;
+
 /**
  * Created by Administrator on 2017/7/20 0020.
  */
 
 public class ConnectEvent {
 
-    private String address;
+    private BluetoothDevice device;
     private int flag;
 
-    public String getAddress() {
-        return address;
+    public BluetoothDevice getDevice() {
+        return device;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDevice(BluetoothDevice device) {
+        this.device = device;
     }
 
     public int getFlag() {
@@ -25,8 +27,9 @@ public class ConnectEvent {
         this.flag = flag;
     }
 
-    public ConnectEvent(String address, int flag) {
-        this.address = address;
+    public ConnectEvent(BluetoothDevice device, int flag) {
+
+        this.device = device;
         this.flag = flag;
     }
 }

@@ -14,16 +14,5 @@ public class BluCommonUtils {
     public static final int PEN_FAILED = -1;
     public static final int PEN_CONNECTING = 2;
 
-    /**
-     * 保存蓝牙地址的临时变量
-     */
-    public static String DEVICE_ADDRESS;
 
-    public static String getDeviceAddress() {
-        return DEVICE_ADDRESS;
-    }
-
-    public static void setDeviceAddress(String deviceAddress) {
-        DEVICE_ADDRESS = deviceAddress;
-    }
 }

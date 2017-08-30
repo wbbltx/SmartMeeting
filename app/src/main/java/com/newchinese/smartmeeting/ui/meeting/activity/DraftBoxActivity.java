@@ -122,9 +122,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void initView() {
-        if (mPresenter.isConnected()) {
+        if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
-        } else {
+        } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING){
+            ivPen.setImageResource(R.mipmap.weilianjie);
+        }else {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
         }
     }
@@ -337,7 +339,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (mPresenter.isConnected()) {
             mPresenter.disConnect();
         }
-        mPresenter.connectDevice(type.getAddress());
+        mPresenter.connectDevice(type.getDevice());
     }
 
     /**
@@ -362,7 +364,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onSuccess() {
-        SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, BluCommonUtils.getDeviceAddress());
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
@@ -424,9 +425,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      * @param add
      */
     @Override
-    public void onDeviceClick(String add) {
+    public void onDeviceClick(BluetoothDevice add) {
         if (!add.equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
-            EventBus.getDefault().post(new ConnectEvent(add, 0));
+            EventBus.getDefault().post(new ConnectEvent(add , 0));
         }
     }
 

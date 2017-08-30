@@ -371,6 +371,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             String recordDirectory = picSDCardDirectory + "/" + activeNoteRecord.getClassifyCode(); //记录缩略图存储路径
             //缩略图文件名称（分类记录名称+页码+时间戳），加时间戳防止重复
             final String thumbnailFilePath = recordDirectory + "/" + classifyName + "-" + pageIndex + "-" + System.currentTimeMillis() + ".jpg";
+            dataCacheUtil.setThumbPath(thumbnailFilePath);
             Log.e("test_pic", "" + thumbnailFilePath);
             File thumbnailFile = new File(thumbnailFilePath);
             if (bitmap != null) {

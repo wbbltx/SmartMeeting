@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.util;
 
+import android.bluetooth.BluetoothDevice;
+
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
@@ -35,6 +37,24 @@ public class DataCacheUtil {
     private int progressMax;//笔记回放max
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;//笔记回放点的缓存
     private List<String> recordPathList;  //当页的录屏文件路径集合
+    private String thumbPath;      //最近的缩略图的路径
+    private BluetoothDevice device;//保存蓝牙的临时变量
+
+    public BluetoothDevice getDevice() {
+        return device;
+    }
+
+    public void setDevice(BluetoothDevice device) {
+        this.device = device;
+    }
+
+    public String getThumbPath() {
+        return thumbPath;
+    }
+
+    public void setThumbPath(String thumbPath) {
+        this.thumbPath = thumbPath;
+    }
 
     public List<String> getRecordPathList() {
         return recordPathList;

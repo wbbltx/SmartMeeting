@@ -9,6 +9,8 @@ import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.listener.ActivityLife;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
 
 import java.util.List;
 
@@ -30,10 +32,21 @@ public class App extends Application {
         return topActivity;
     }
 
+    {
+//        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+//        PlatformConfig.setQQZone("100424468", "c7394704798a158208a74ab60104f0ba");
+//        PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
+
+        PlatformConfig.setWeixin("wx39e0c6a3fce32c42", "9a310e8db6733a0991609241f92cb87e");
+//        PlatformConfig.setSinaWeibo("1008135933", "39042381a56006a22cc3ac3587318683");
+        PlatformConfig.setQQZone("1105588920", "5ZG9giNo8gPt3fRx");
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         appliction = this;
+        UMShareAPI.get(this);
         //获取栈顶Activity
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);

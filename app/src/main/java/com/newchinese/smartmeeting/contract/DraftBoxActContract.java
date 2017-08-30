@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.bluetooth.BluetoothDevice;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,7 +57,7 @@ public interface DraftBoxActContract {
 
         void disConnect();
 
-        void connectDevice(String add);
+        void connectDevice(BluetoothDevice device);
 
         void loadActivePageList();
 
