@@ -42,6 +42,7 @@ import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.listener.OnShareListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.listener.ShareCallBackListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.AddDeviceEvent;
@@ -499,46 +500,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
-    private UMShareListener shareListener = new UMShareListener() {
-        /**
-         * @descrption 分享开始的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onStart(SHARE_MEDIA platform) {
-            Toast.makeText(DrawingBoardActivity.this, "分享的回调：平台 " + platform.toString(), Toast.LENGTH_LONG).show();
-        }
-
-        /**
-         * @descrption 分享成功的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onResult(SHARE_MEDIA platform) {
-            Toast.makeText(DrawingBoardActivity.this, "成功了", Toast.LENGTH_LONG).show();
-        }
-
-        /**
-         * @descrption 分享失败的回调
-         * @param platform 平台类型
-         * @param t 错误原因
-         */
-        @Override
-        public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(DrawingBoardActivity.this, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        /**
-         * @descrption 分享取消的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(DrawingBoardActivity.this, "取消了", Toast.LENGTH_LONG).show();
-
-        }
-    };
-
     private void stopRecord() {
         recordBar.setVisibility(View.GONE);
         startTimeDown = false;
@@ -914,7 +875,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 //                .withText("content")
 // .withTargetUrl(linkHref)
                 .withMedia(shareImage)
-                .setCallback(shareListener)
+                .setCallback(new ShareCallBackListener(this))
                 .share();
     }
 }

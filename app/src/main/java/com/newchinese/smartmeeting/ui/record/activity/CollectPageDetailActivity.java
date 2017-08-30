@@ -1,19 +1,35 @@
 package com.newchinese.smartmeeting.ui.record.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
+import com.newchinese.smartmeeting.listener.OnShareListener;
+import com.newchinese.smartmeeting.listener.ShareCallBackListener;
+import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectPageDetailVpAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
+import com.newchinese.smartmeeting.widget.SharePopWindow;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +41,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/26 10:43
  */
-public class CollectPageDetailActivity extends BaseSimpleActivity {
+public class CollectPageDetailActivity extends BaseSimpleActivity implements OnShareListener {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.iv_share)
@@ -38,6 +54,8 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
     private CollectPage currentPage;
     private List<CollectPage> collectPageList = new ArrayList<>(); //活动收藏记录表中当前所有收藏页
     private CollectPageDetailVpAdapter adapter;
+    private SharePopWindow sharePopWindow;
+    private UMImage umImage;
 
     @Override
     protected int getLayoutId() {
@@ -46,11 +64,12 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-
     }
 
     @Override
     protected void initStateAndData() {
+        bgDark();
+        sharePopWindow = new SharePopWindow(this, this);
         Intent intent = getIntent();
         selectPosition = intent.getIntExtra("selectPosition", selectPosition);
         collectPageList = DataCacheUtil.getInstance().getActiveCollectPageList();
@@ -60,7 +79,47 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
             adapter = new CollectPageDetailVpAdapter(getSupportFragmentManager(), collectPageList);
             vpThumnbail.setAdapter(adapter);
             vpThumnbail.setCurrentItem(selectPosition);
+
+            String thumbnailPath = currentPage.getThumbnailPath();
+            Bitmap bitmapFromPath = getBitmapFromPath(thumbnailPath);
+            umImage = new UMImage(this,bitmapFromPath);
+            UMImage thumb = new UMImage(this, bitmapFromPath);
+            umImage.setThumb(thumb);
         }
+    }
+
+    public Bitmap getBitmapFromPath(String path) {
+
+        if (!new File(path).exists()) {
+            System.err.println("getBitmapFromPath: file not exists");
+            return null;
+        }
+        // Bitmap bitmap = Bitmap.createBitmap(1366, 768, Config.ARGB_8888);
+        // Canvas canvas = new Canvas(bitmap);
+        // Movie movie = Movie.decodeFile(path);
+        // movie.draw(canvas, 0, 0);
+        //
+        // return bitmap;
+
+        byte[] buf = new byte[1024 * 1024];// 1M
+        Bitmap bitmap = null;
+
+        try {
+
+            FileInputStream fis = new FileInputStream(path);
+            int len = fis.read(buf, 0, buf.length);
+            bitmap = BitmapFactory.decodeByteArray(buf, 0, len);
+            if (bitmap == null) {
+                System.out.println("len= " + len);
+                System.err
+                        .println("path: " + path + "  could not be decode!!!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -97,7 +156,45 @@ public class CollectPageDetailActivity extends BaseSimpleActivity {
                 finish();
                 break;
             case R.id.iv_share: //分享
+//                bgDark();
+                sharePopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.CENTER, 0, 0);
+                break;
+        }
+    }
 
+    private void bgDark(){
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getWindow().setAttributes(lp);
+    }
+
+    private void share(SHARE_MEDIA shareMedia) {
+        new ShareAction(this)
+                .setPlatform(shareMedia)
+//                .withText("content")
+// .withTargetUrl(linkHref)
+                .withMedia(umImage)
+                .setCallback(new ShareCallBackListener(this))
+                .share();
+    }
+
+    @Override
+    public void onShare(String i) {
+        switch (i) {
+            case "0"://qq空间分享
+                share(SHARE_MEDIA.QZONE);
+                break;
+            case "1"://qq分享
+                share(SHARE_MEDIA.QQ);
+                break;
+            case "2"://朋友圈
+                share(SHARE_MEDIA.WEIXIN);
+                break;
+            case "3"://微信
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                break;
+            case "4"://微博
+                share(SHARE_MEDIA.SINA);
                 break;
         }
     }

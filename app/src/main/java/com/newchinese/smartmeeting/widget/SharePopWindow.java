@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,7 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener,
 //        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setHeight(height/2);
         //设置PopupWindow弹出窗体可点击
-//        this.setFocusable(true);
+        this.setFocusable(true);
         //设置SelectPicPopupWindow弹出窗体动画效果
         this.setAnimationStyle(R.style.popup_anim);
         //实例化一个ColorDrawable颜色为半透明
@@ -101,8 +102,8 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener,
     @Override
     public void onDismiss() {
         XLog.d("hahaha","窗口消失被调用");
-        WindowManager.LayoutParams lp = context.getWindow().getAttributes();
-        lp.alpha = 1f;
-        context.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = context.getWindow().getAttributes();
+//        lp.alpha = 1f;
+//        context.getWindow().setAttributes(lp);
     }
 }
