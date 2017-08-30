@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@drawable/btn_corner_bg"
-        android:text="@string/regist_sub"
+        android:text="@string/regist_title"
         android:textColor="@color/colorWhite"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="@+id/ev_regist_4"

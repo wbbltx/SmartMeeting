@@ -74,7 +74,8 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         if (data != null) {
             Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop().placeholder(R.mipmap.mine_icon).error(R.mipmap.mine_icon)).into(mIvIcon);
             mTvNick.setText(data.nickname);
-            mTvTel.setText(data.tel.replace("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+            String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+            mTvTel.setText(tel);
         }
     }
 

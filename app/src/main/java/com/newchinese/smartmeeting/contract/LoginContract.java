@@ -77,6 +77,5 @@ public interface LoginContract {
         void updateNick(LoginData data);
 
         void updateIcon(LoginData data);
-
     }
 }

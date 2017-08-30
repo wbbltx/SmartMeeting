@@ -6,10 +6,11 @@
     <string name="read_channel">是否读取存储数据</string>
     <string name="login_title">登录</string>
     <string name="regist_title">注册</string>
-    <string name="regist_sub">注册</string>
+    <string name="fb_title">问题反馈</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mine_confirm">确认</string>
 
     <string-array name="selectIcon">
         <item>拍照</item>

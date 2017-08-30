@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.newchinese.smartmeeting">
+          package="com.newchinese.smartmeeting">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <!-- 获取mac地址权限 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!-- SD卡权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <!-- 录屏权限 -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!--拍照权限-->
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 拍照权限 -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:name=".app.App"
@@ -33,17 +34,17 @@
             android:name=".ui.login.activity.WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.main.activity.MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
-        <service android:name=".ui.meeting.service.RecordService" />
+        <service android:name=".ui.meeting.service.RecordService"/>
 
         <activity
             android:name=".ui.meeting.activity.DraftBoxActivity"
@@ -60,19 +61,48 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/login_title"
-            android:screenOrientation="sensorPortrait"
             android:launchMode="singleTask"
-            >
+            android:screenOrientation="sensorPortrait">
         </activity>
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.record.activity.CollectPageListActivity" />
-        <activity android:name=".ui.record.activity.CollectPageDetailActivity" />
-        <activity android:name=".ui.record.activity.CollectRecordFilterActivity"></activity>
-        <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
-        <activity android:name=".ui.meeting.activity.PlayBackActivity" />
-        <activity android:name=".ui.meeting.activity.RecordLibActivity"></activity>
+            android:launchMode="singleTask"/>
+        <activity android:name=".ui.record.activity.CollectPageListActivity"/>
+        <activity android:name=".ui.record.activity.CollectPageDetailActivity"/>
+        <activity android:name=".ui.record.activity.CollectRecordFilterActivity"/>
+        <activity android:name=".ui.meeting.activity.RecordPlayActivity"/>
+        <activity android:name=".ui.meeting.activity.PlayBackActivity"/>
+        <activity android:name=".ui.meeting.activity.RecordLibActivity"/>
+        <activity
+            android:name=".ui.mine.activity.FBActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/fb_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait">
+        </activity>
+        <activity
+            android:name=".ui.mine.activity.UpdateActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="修改昵称"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait">
+        </activity>
+        <activity android:name=".ui.mine.activity.AboutActivity"
+                  android:configChanges="keyboardHidden|orientation|screenSize"
+                  android:exported="true"
+                  android:label="关于我们"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="sensorPortrait">
+        </activity>
+        <activity android:name=".ui.mine.activity.DealActivity"
+                  android:configChanges="keyboardHidden|orientation|screenSize"
+                  android:exported="true"
+                  android:label="服务条款与协议"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="sensorPortrait">
+        </activity>
     </application>
 
 </manifest>

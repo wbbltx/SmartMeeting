@@ -21,7 +21,7 @@ public class LoginData {
     public String code, token, nickname, im_token, tel, icon;
 
     @Transient
-    public String password, icon_format;
+    public String password, new_password, icon_format;
 
     @Generated(hash = 29521069)
     public LoginData(Long id, String code, String token, String nickname,
@@ -120,6 +120,14 @@ public class LoginData {
         return this;
     }
 
+    public String getNew_password() {
+        return new_password;
+    }
+
+    public LoginData setNew_password(String new_password) {
+        this.new_password = new_password;
+        return this;
+    }
 
     private String md5(String src) {
         try {

@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.net;
 
 import com.newchinese.smartmeeting.model.bean.BaseResult;
+import com.newchinese.smartmeeting.model.bean.FeedBack;
 import com.newchinese.smartmeeting.model.bean.LoginData;
 
 import io.reactivex.Flowable;
@@ -44,4 +45,11 @@ public interface ApiService {
     //更新资料
     @POST(NetUrl.UPDATE_ICON)
     Flowable<BaseResult<String>> updateIcon(@Body LoginData data);
+
+    //一键反馈
+    @POST(NetUrl.FEED_BACK)
+    Flowable<BaseResult<LoginData>> feedBack(@Body FeedBack data);
+
+    @POST(NetUrl.UPDATE_PASS)
+    Flowable<BaseResult<LoginData>> updatePass(@Body LoginData data);
 }

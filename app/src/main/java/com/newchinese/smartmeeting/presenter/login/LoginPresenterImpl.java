@@ -2,7 +2,6 @@ package com.newchinese.smartmeeting.presenter.login;
 
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -123,9 +122,11 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
             CustomizedToast.showLong(App.getAppliction(), "数据异常");
         } else if (succ) {
             CustomizedToast.showLong(App.getAppliction(), data.msg);
-            if (data.update && NetUrl.NO_SUCC.equals(data.no) && data.data != null && !TextUtils.isEmpty(data.data.code)) {
-                data.data.id = 1L;
-                GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().insertOrReplaceInTx(data.data);
+            if (data.update && NetUrl.NO_SUCC.equals(data.no)) {
+                if (data.data != null) {
+                    data.data.id = 1L;
+                    GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().insertOrReplaceInTx(data.data);
+                }
                 if (mV != null) {
                     mV.updateView(data);
                 }
