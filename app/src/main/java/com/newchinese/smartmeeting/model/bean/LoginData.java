@@ -125,7 +125,7 @@ public class LoginData {
     }
 
     public LoginData setNew_password(String new_password) {
-        this.new_password = new_password;
+        this.new_password = md5(new_password);
         return this;
     }
 
