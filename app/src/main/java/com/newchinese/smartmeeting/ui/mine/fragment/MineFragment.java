@@ -1,7 +1,9 @@
 package com.newchinese.smartmeeting.ui.mine.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,7 +15,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.LoginData;
+import com.newchinese.smartmeeting.ui.mine.activity.AboutActivity;
+import com.newchinese.smartmeeting.ui.mine.activity.FBActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 /**
  * Description:   我的页Fragment
@@ -31,6 +36,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
     private RelativeLayout mRlPen;
     private TextView mTvFb;
     private TextView mTvAbout;
+    private TextView mTvPen;
 
     public MineFragment() {
     }
@@ -64,6 +70,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         mTvTel = (TextView) mView.findViewById(R.id.tv_mine_tel);
 
         mRlPen = (RelativeLayout) mView.findViewById(R.id.rl_mine_pen);
+        mTvPen = (TextView) mView.findViewById(R.id.tv_mine_pen);
         mTvFb = (TextView) mView.findViewById(R.id.tv_mine_fb);
         mTvAbout = (TextView) mView.findViewById(R.id.tv_mine_about);
     }
@@ -77,6 +84,8 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
             String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
             mTvTel.setText(tel);
         }
+        String penName = SharedPreUtils.getString("connectBluInfo_name");
+        mTvPen.setText(TextUtils.isEmpty(penName) ? "未连接" : penName);
     }
 
     @Override
@@ -95,8 +104,10 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
             case R.id.rl_mine_pen://笔信息
                 break;
             case R.id.tv_mine_fb://问题反馈
+                startActivity(new Intent(getActivity(), FBActivity.class));
                 break;
             case R.id.tv_mine_about://关于我们
+                startActivity(new Intent(getActivity(), AboutActivity.class));
                 break;
         }
     }

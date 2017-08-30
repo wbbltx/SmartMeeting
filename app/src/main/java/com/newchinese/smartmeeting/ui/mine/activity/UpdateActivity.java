@@ -33,7 +33,7 @@ public class UpdateActivity extends AppCompatActivity implements MineContract.Up
     }
 
     private void initIntent() {
-        mType = getIntent().getIntExtra("type", 1);
+        mType = getIntent().getIntExtra("type", 0);
     }
 
     private void initPresenter() {

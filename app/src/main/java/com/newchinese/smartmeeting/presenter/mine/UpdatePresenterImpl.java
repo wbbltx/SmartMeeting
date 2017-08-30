@@ -61,5 +61,8 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
     @Override
     public void onResult(boolean succ, BaseResult data) {
         CustomizedToast.showLong(App.getAppliction(), data.msg);
+        if (mV != null) {
+            mV.showLoading(null);
+        }
     }
 }
