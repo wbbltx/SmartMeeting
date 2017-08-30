@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -28,6 +29,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.coolpensdk.constants.PointFromType;
 import com.newchinese.coolpensdk.entity.NotePoint;
@@ -38,6 +40,7 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.listener.MulitPointTouchListener;
+import com.newchinese.smartmeeting.listener.OnShareListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
@@ -57,7 +60,13 @@ import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
+import com.newchinese.smartmeeting.widget.SharePopWindow;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -76,7 +85,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
@@ -107,6 +116,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     ImageView ivInsertImage;
     @BindView(R.id.ll_insert_operate)
     LinearLayout llInsertOperate;
+    @BindView(R.id.iv_right)
+    ImageView ivShare;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -121,12 +132,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private DataCacheUtil dataCacheUtil;
     //    private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
+    private SharePopWindow sharePopWindow;
     private MediaProjectionManager projectionManager;
     private MediaProjection mediaProjection;
     private RecordService recordService;
 
     private boolean startTimeDown;
     private Handler handler = new Handler();
+    private UMImage shareImage;
+    private Bitmap shareBitmap;
 
     @Override
     protected int getLayoutId() {
@@ -143,6 +157,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         super.onViewCreated(savedInstanceState);
         initStrokeWidthWindow();
         ivInsertImage.setBackgroundColor(Color.TRANSPARENT);
+        ivShare.setVisibility(View.VISIBLE);
+        ivShare.setImageResource(R.mipmap.icon_share);
     }
 
     /**
@@ -192,7 +208,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
 //        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
-
+        sharePopWindow = new SharePopWindow(this, this);
         //请求权限 录屏初始化 绑定服务
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         Intent recordIntent = new Intent(this, RecordService.class);
@@ -412,7 +428,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
-            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record,
+            R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.iv_right,
             R.id.rl_record_count, R.id.iv_image_delete, R.id.iv_image_cancle, R.id.iv_image_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -469,8 +485,59 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
                 startActivity(intent1);
                 break;
+            case R.id.iv_right://分享按钮
+                XLog.d(TAG, TAG + " 点击了分享按钮:");
+                sharePopWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.CENTER, 0, 0);
+                WindowManager.LayoutParams lp = getWindow().getAttributes();
+                lp.alpha = 0.7f;
+                getWindow().setAttributes(lp);
+                shareBitmap = mPresenter.viewToBitmap(rlDrawViewContainer);
+                shareImage = new UMImage(this, shareBitmap);
+                UMImage thumb = new UMImage(this, shareBitmap);
+                shareImage.setThumb(thumb);
+                break;
         }
     }
+
+    private UMShareListener shareListener = new UMShareListener() {
+        /**
+         * @descrption 分享开始的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+            Toast.makeText(DrawingBoardActivity.this, "分享的回调：平台 " + platform.toString(), Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @descrption 分享成功的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Toast.makeText(DrawingBoardActivity.this, "成功了", Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @descrption 分享失败的回调
+         * @param platform 平台类型
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(DrawingBoardActivity.this, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @descrption 分享取消的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(DrawingBoardActivity.this, "取消了", Toast.LENGTH_LONG).show();
+
+        }
+    };
 
     private void stopRecord() {
         recordBar.setVisibility(View.GONE);
@@ -517,7 +584,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             mPresenter.startRecordTimer();
             Intent captureIntent = projectionManager.createScreenCaptureIntent();
             startActivityForResult(captureIntent, 101);
-            CustomizedToast.showShort(this,"正在录屏");
+            CustomizedToast.showShort(this, "正在录屏");
         }
     }
 
@@ -533,6 +600,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             } else if (requestCode == Constant.SELECT_PIC_KITKAT || requestCode == Constant.TAKEPHOTO_SAVE_MYPATH) {
                 mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data);
             }
+        } else {
+            UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -720,6 +789,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     /**
      * 接收到扫描结束时间
+     *
      * @param scanResultEvent
      */
     @Subscribe
@@ -734,6 +804,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     /**
      * 接收到添加设备事件
+     *
      * @param addDeviceEvent
      */
     @Subscribe
@@ -743,6 +814,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     /**
      * 接收到电量事件
+     *
      * @param receivedEvent
      */
     @Subscribe
@@ -763,11 +835,16 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
         EventBus.getDefault().unregister(this);
         unbindService(connection);
+        if (shareBitmap != null){
+            shareBitmap.recycle();
+            shareBitmap = null;
+        }
         super.onDestroy();
     }
 
     /**
      * 接收到更新图标事件
+     *
      * @param stateEvent
      */
     @Subscribe
@@ -808,5 +885,36 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     }
                 })
                 .create().show();
+    }
+
+    @Override
+    public void onShare(String i) {
+        switch (i) {
+            case "0"://qq空间分享
+                share(SHARE_MEDIA.QZONE);
+                break;
+            case "1"://qq分享
+                share(SHARE_MEDIA.QQ);
+                break;
+            case "2"://朋友圈
+                share(SHARE_MEDIA.WEIXIN);
+                break;
+            case "3"://微信
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                break;
+            case "4"://微博
+                share(SHARE_MEDIA.SINA);
+                break;
+        }
+    }
+
+    private void share(SHARE_MEDIA shareMedia) {
+        new ShareAction(DrawingBoardActivity.this)
+                .setPlatform(shareMedia)
+//                .withText("content")
+// .withTargetUrl(linkHref)
+                .withMedia(shareImage)
+                .setCallback(shareListener)
+                .share();
     }
 }

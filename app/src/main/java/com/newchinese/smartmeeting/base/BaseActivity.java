@@ -65,13 +65,13 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     public void showResult(E e) {
     }
 
-    protected void showDialog(final String address) {
+    protected void showDialog(final BluetoothDevice bluetoothDevice) {
         new android.app.AlertDialog.Builder(this)
-                .setTitle("是否连接新笔" + address)
+                .setTitle("是否连接新笔" + bluetoothDevice.getAddress())
                 .setPositiveButton("连接", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EventBus.getDefault().post(new ConnectEvent(address, 0));
+                        EventBus.getDefault().post(new ConnectEvent(bluetoothDevice, 0));
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -95,12 +95,12 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                 XLog.d(TAG, "扫描到的所有设备：" + device.getAddress());
                 if (device.getAddress().equals(address)) {
                     XLog.d(TAG, "搜索结果列表中报验上次连接的笔："+address);
-                    EventBus.getDefault().post(new ConnectEvent(address, 0));
+                    EventBus.getDefault().post(new ConnectEvent(device, 0));
                     return;
                 }
             }
             if (count == 1) {
-                showDialog(devices.get(0).getAddress());
+                showDialog(devices.get(0));
             } else {
                 scanResultDialog.show();
             }

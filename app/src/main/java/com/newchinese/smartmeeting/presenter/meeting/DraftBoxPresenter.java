@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
@@ -192,10 +193,10 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     }
 
     @Override
-    public void connectDevice(String add) {
+    public void connectDevice(BluetoothDevice device) {
         //去连接设备时 将mac地址放在临时变量中
-        BluCommonUtils.setDeviceAddress(add);
-        BluetoothLe.getDefault().connectBleDevice(add);
+        DataCacheUtil.getInstance().setDevice(device);
+        BluetoothLe.getDefault().connectBleDevice(device.getAddress());
     }
 
     @Override

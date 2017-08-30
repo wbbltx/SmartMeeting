@@ -18,8 +18,11 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <!-- 录屏权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!--拍照权限-->
+    <!-- 拍照权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!--友盟分享-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
     <application
         android:name=".app.App"
@@ -47,32 +50,81 @@
 
         <activity
             android:name=".ui.meeting.activity.DraftBoxActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.login.activity.RegisterActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/regist_title"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".ui.login.activity.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/login_title"
-            android:screenOrientation="sensorPortrait"
             android:launchMode="singleTask"
-            >
-        </activity>
+            android:screenOrientation="sensorPortrait"></activity>
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
             android:launchMode="singleTask" />
         <activity android:name=".ui.record.activity.CollectPageListActivity" />
         <activity android:name=".ui.record.activity.CollectPageDetailActivity" />
-        <activity android:name=".ui.record.activity.CollectRecordFilterActivity"></activity>
+        <activity android:name=".ui.record.activity.CollectRecordFilterActivity" />
         <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
         <activity android:name=".ui.meeting.activity.PlayBackActivity" />
-        <activity android:name=".ui.meeting.activity.RecordLibActivity"></activity>
+        <activity android:name=".ui.meeting.activity.RecordLibActivity" />
+        <activity android:name=".wxapi.WXEntryActivity"></activity>
+
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+        <!--<activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"-->
+        <!--android:configChanges="keyboardHidden|orientation"-->
+        <!--android:exported="false"-->
+        <!--android:windowSoftInputMode="adjustResize">-->
+
+        <!--</activity>-->
+        <activity
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.umeng.qq.tencent.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent100424468" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.umeng.qq.tencent.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59a62a28f43e48729a000431">
+        </meta-data>
+
+
     </application>
 
 </manifest>
