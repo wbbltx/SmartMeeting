@@ -21,7 +21,7 @@ import com.newchinese.smartmeeting.log.XLog;
  * Date           2017/8/18
  */
 
-public class SharePopWindow extends PopupWindow implements View.OnClickListener, PopupWindow.OnDismissListener {
+public class SharePopWindow extends PopupWindow implements View.OnClickListener{
 
     private final View mView;
     private final Activity context;
@@ -44,11 +44,12 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener,
         mView.findViewById(R.id.share_weibo).setOnClickListener(this);
         mView.findViewById(R.id.share_moments).setOnClickListener(this);
         mView.findViewById(R.id.share_wechat).setOnClickListener(this);
+        mView.findViewById(R.id.share_cancel).setOnClickListener(this);
 
         //设置PopupWindow的View
         this.setContentView(mView);
         //设置PopupWindow弹出窗体的宽
-        this.setWidth(width*4/5);
+        this.setWidth(width*2/3);
         //设置PopupWindow弹出窗体的高
 //        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setHeight(height/2);
@@ -64,9 +65,6 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener,
         this.setOutsideTouchable(true);
 
         setFocusable(true);
-
-        setOnDismissListener(this);
-
     }
 
     @Override
@@ -96,14 +94,9 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener,
                 onShareListener.onShare("4");
                 dismiss();
                 break;
+            case R.id.share_cancel:
+                dismiss();
+                break;
         }
-    }
-
-    @Override
-    public void onDismiss() {
-        XLog.d("hahaha","窗口消失被调用");
-//        WindowManager.LayoutParams lp = context.getWindow().getAttributes();
-//        lp.alpha = 1f;
-//        context.getWindow().setAttributes(lp);
     }
 }

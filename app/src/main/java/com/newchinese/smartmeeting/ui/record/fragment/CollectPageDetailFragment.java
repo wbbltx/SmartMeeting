@@ -15,7 +15,6 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
 import com.newchinese.smartmeeting.ui.meeting.activity.RecordLibActivity;
-import com.newchinese.smartmeeting.ui.meeting.activity.RecordPlayActivity;
 
 import java.util.List;
 

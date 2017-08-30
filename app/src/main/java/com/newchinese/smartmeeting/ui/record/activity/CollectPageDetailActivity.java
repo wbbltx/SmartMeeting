@@ -3,12 +3,15 @@ package com.newchinese.smartmeeting.ui.record.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +44,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/26 10:43
  */
-public class CollectPageDetailActivity extends BaseSimpleActivity implements OnShareListener {
+public class CollectPageDetailActivity extends BaseSimpleActivity implements OnShareListener, PopupWindow.OnDismissListener {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.iv_share)
@@ -68,8 +71,8 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
 
     @Override
     protected void initStateAndData() {
-        bgDark();
         sharePopWindow = new SharePopWindow(this, this);
+        sharePopWindow.setOnDismissListener(this);
         Intent intent = getIntent();
         selectPosition = intent.getIntExtra("selectPosition", selectPosition);
         collectPageList = DataCacheUtil.getInstance().getActiveCollectPageList();
@@ -156,7 +159,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
                 finish();
                 break;
             case R.id.iv_share: //分享
-//                bgDark();
+                bgDark();
                 sharePopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.CENTER, 0, 0);
                 break;
         }
@@ -165,6 +168,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
     private void bgDark(){
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = 0.7f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(lp);
     }
 
@@ -197,5 +201,13 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
                 share(SHARE_MEDIA.SINA);
                 break;
         }
+    }
+
+    @Override
+    public void onDismiss() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 }

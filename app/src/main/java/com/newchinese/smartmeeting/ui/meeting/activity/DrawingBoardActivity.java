@@ -86,7 +86,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
@@ -210,6 +210,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 //        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
         sharePopWindow = new SharePopWindow(this, this);
+        sharePopWindow.setOnDismissListener(this);
         //请求权限 录屏初始化 绑定服务
         projectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         Intent recordIntent = new Intent(this, RecordService.class);
@@ -487,10 +488,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 startActivity(intent1);
                 break;
             case R.id.iv_right://分享按钮
-                XLog.d(TAG, TAG + " 点击了分享按钮:");
                 sharePopWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.CENTER, 0, 0);
                 WindowManager.LayoutParams lp = getWindow().getAttributes();
                 lp.alpha = 0.7f;
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 getWindow().setAttributes(lp);
                 shareBitmap = mPresenter.viewToBitmap(rlDrawViewContainer);
                 shareImage = new UMImage(this, shareBitmap);
@@ -877,5 +878,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 .withMedia(shareImage)
                 .setCallback(new ShareCallBackListener(this))
                 .share();
+    }
+
+    @Override
+    public void onDismiss() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 }

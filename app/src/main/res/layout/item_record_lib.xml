@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="163dp"
-    android:layout_height="219dp"
-    android:layout_marginBottom="25dp"
-    android:background="@color/colorWhite">
-    
-    <ImageView
-        android:layout_width="59dp"
-        android:layout_height="59dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/record_icon"/>
-    
-    <TextView
-        android:id="@+id/record_lib_title"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/light_blue"
-        android:textColor="@color/simple_blue"
-        android:gravity="center"
-        android:text="11111111111"/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="25dp">
 
     <RelativeLayout
-        android:id="@+id/rl_is_selected"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_alpha_55"
-        android:visibility="gone">
+        android:layout_centerInParent="true"
+        android:layout_width="163dp"
+        android:layout_height="219dp"
+        android:background="@color/colorWhite">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="8dp"
-            android:src="@mipmap/draft_is_selected" />
+            android:layout_width="59dp"
+            android:layout_height="59dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/record_icon"/>
+
+        <TextView
+            android:id="@+id/record_lib_title"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/light_blue"
+            android:textColor="@color/simple_blue"
+            android:gravity="center"
+            android:text="11111111111"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_is_selected"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_alpha_55"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="8dp"
+                android:src="@mipmap/draft_is_selected" />
+        </RelativeLayout>
     </RelativeLayout>
+    
+
 
 </RelativeLayout>

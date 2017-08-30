@@ -70,13 +70,6 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
             setTitle(selectPageIndex); //设置当前页数
 
             recordPathList = dataCacheUtil.getRecordPathList();
-//            延时一会儿再加载数据库，防止View还未初始化完毕
-//            Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
-//                @Override
-//                public void accept(Long aLong) throws Exception {
-//                    mPresenter.readRecordData(selectPageIndex);
-//                }
-//            });
         }
         //recycler初始化
         recordView.setHasFixedSize(true);

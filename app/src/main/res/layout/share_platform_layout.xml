@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     >
 
     <LinearLayout
@@ -13,7 +13,8 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:padding="20dp"
             android:gravity="center"
             android:textSize="20sp"
@@ -65,10 +66,10 @@
                 android:layout_alignLeft="@id/share_moments"
                 android:src="@mipmap/share_weibo"/>
         </RelativeLayout>
-
     </LinearLayout>
 
     <ImageView
+        android:padding="20dp"
         android:id="@+id/share_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
