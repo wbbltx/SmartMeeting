@@ -148,9 +148,8 @@
             android:screenOrientation="sensorPortrait" />
         <activity android:name=".ui.mine.activity.SettingActivity" />
         <activity android:name=".ui.mine.activity.ChangeNickNameActivity" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="59a62a28f43e48729a000431"/>
     </application>
-
-    <meta-data
-        android:name="UMENG_APPKEY"
-        android:value="59a62a28f43e48729a000431"/>
 </manifest>
