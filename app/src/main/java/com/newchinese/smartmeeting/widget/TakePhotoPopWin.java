@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
+import com.newchinese.smartmeeting.ui.mine.activity.SettingActivity;
 
 import java.io.File;
 
@@ -27,9 +28,11 @@ import java.io.File;
 public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener {
     private Context mContext;
     private View view;
+    private String type;
 
-    public TakePhotoPopWin(Context mContext) {
+    public TakePhotoPopWin(Context mContext, String type) {
         this.mContext = mContext;
+        this.type = type;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.take_photo_pop, null);
         Button btn_take_photo = (Button) view.findViewById(R.id.btn_take_photo);
         Button btn_pick_photo = (Button) view.findViewById(R.id.btn_pick_photo);
@@ -78,12 +81,18 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
                 Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "image.jpg"));
                 //指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//命令相机返回的uri指定到此处
-                ((DrawingBoardActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
+                if ("SettingActivity".equals(type))
+                    ((SettingActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
+                else if ("DrawingBoardActivity".equals(type))
+                    ((DrawingBoardActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
                 break;
             case R.id.btn_pick_photo:
                 Intent albmIntent = new Intent(Intent.ACTION_PICK);
                 albmIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
-                ((DrawingBoardActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
+                if ("SettingActivity".equals(type))
+                    ((SettingActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
+                else if ("DrawingBoardActivity".equals(type))
+                    ((DrawingBoardActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
                 break;
             case R.id.btn_cancel_photo:
                 this.dismiss();

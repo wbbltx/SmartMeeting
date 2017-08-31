@@ -21,4 +21,5 @@ public interface NetUrl {
     String UPDATE_ICON = HOST + "/user/m/update/icon";
     String FEED_BACK = HOST + "/user/m/feed_back";
     String UPDATE_PASS = HOST + "/user/m/pass";
+
 }

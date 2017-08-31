@@ -201,8 +201,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
         //初始化调色板窗口
         checkColorPopWin = new CheckColorPopWin(this);
-        //初始化
-        takePhotoPopWin = new TakePhotoPopWin(this);
+        //初始化图片窗口
+        takePhotoPopWin = new TakePhotoPopWin(this,"DrawingBoardActivity");
 
         //初始化笔状态
         initPenState();

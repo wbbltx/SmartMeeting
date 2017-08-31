@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
@@ -27,9 +28,6 @@ import com.newchinese.smartmeeting.util.SharedPreUtils;
  * Date           2017/8/17 17:30
  */
 public class MineFragment extends BaseSimpleFragment implements View.OnClickListener {
-    private static final String TITLE = "title";
-
-    private String title;
     private ConstraintLayout mClMore;
     private ImageView mIvIcon;
     private TextView mTvNick;
@@ -40,22 +38,6 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
     private TextView mTvPen;
 
     public MineFragment() {
-    }
-
-    public static MineFragment newInstance(String title) {
-        MineFragment fragment = new MineFragment();
-        Bundle args = new Bundle();
-        args.putString(TITLE, title);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            title = getArguments().getString(title);
-        }
     }
 
     @Override
@@ -110,7 +92,8 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         super.onResume();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
         if (data != null) {
-            Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop().placeholder(R.mipmap.mine_icon).error(R.mipmap.mine_icon)).into(mIvIcon);
+            Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop())
+                    .into(mIvIcon);
             mTvNick.setText(data.nickname);
             String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
             mTvTel.setText(tel);

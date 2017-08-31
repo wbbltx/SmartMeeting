@@ -139,6 +139,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         if (mPd != null && mPd.isShowing()) {
             mPd.dismiss();
         }
+        System.exit(0);
     }
 
     @Override

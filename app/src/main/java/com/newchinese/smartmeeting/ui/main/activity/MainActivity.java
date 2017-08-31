@@ -78,7 +78,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         fragmentManager = getSupportFragmentManager();
         recordsFragment = new RecordsFragment();
         meetingFragemnt = new MeetingFragment();
-        mineFragment = MineFragment.newInstance("我的");
+        mineFragment = new MineFragment();
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
     }
@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
                 break;
             case R.id.rb_mine:
                 changeFragment(mineFragment);
-                tvTitle.setText("我");
+                tvTitle.setText("我的");
                 break;
         }
     }

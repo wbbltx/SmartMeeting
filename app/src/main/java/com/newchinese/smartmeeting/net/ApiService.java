@@ -42,7 +42,7 @@ public interface ApiService {
     @POST(NetUrl.UPDATE_NICK)
     Flowable<BaseResult<LoginData>> updateNick(@Body LoginData data);
 
-    //更新资料
+    //更新头像
     @POST(NetUrl.UPDATE_ICON)
     Flowable<BaseResult<String>> updateIcon(@Body LoginData data);
 
