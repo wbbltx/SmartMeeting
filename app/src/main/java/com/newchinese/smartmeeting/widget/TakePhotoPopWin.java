@@ -88,7 +88,8 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
                 break;
             case R.id.btn_pick_photo:
                 Intent albmIntent = new Intent(Intent.ACTION_PICK);
-                albmIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
+                albmIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                albmIntent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
                 if ("SettingActivity".equals(type))
                     ((SettingActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
                 else if ("DrawingBoardActivity".equals(type))

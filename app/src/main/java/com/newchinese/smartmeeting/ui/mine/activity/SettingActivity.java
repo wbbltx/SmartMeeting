@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,6 +46,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -81,6 +83,7 @@ public class SettingActivity extends BaseSimpleActivity {
     @BindView(R.id.rl_change_pwd)
     RelativeLayout rlChangePwd;
     private TakePhotoPopWin takePhotoPopWin;
+    private Bitmap headerBitmap;
     private LoginData loginData;
     private LoginDataDao loginDataDao;
     private File headerFile;
@@ -88,6 +91,7 @@ public class SettingActivity extends BaseSimpleActivity {
     private ApiService mServices;
     private Flowable<BaseResult<LoginData>> observable;
     private ProgressDialog mPd;
+    private static String path = "/sdcard/myHead/";//sd路径
 
     @Override
     protected int getLayoutId() {
@@ -164,42 +168,83 @@ public class SettingActivity extends BaseSimpleActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case Constant.SELECT_PIC_KITKAT: //选择照片返回
-                    if (data != null) {
-                        Uri uri = Uri.parse(data.getData().toString());
-                        try {
-                            headerFile = new File(new URI(uri.toString()));
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                        Glide.with(this)
-                                .load(headerFile)
-                                .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
-                                .into(ivHeader);
-                        chansformHeaderFile();
-                        takePhotoPopWin.dismiss();
-                    }
+                    cropPhoto(data.getData());//裁切图片
                     break;
                 case Constant.TAKEPHOTO_SAVE_MYPATH: //拍照返回
                     File file = new File(Environment.getExternalStorageDirectory() + "/image.jpg");
-                    if (file.isFile() && file.exists()) {
-                        headerFile = file;
-                        Glide.with(this)
-                                .asBitmap()
-                                .load(headerFile)
-                                .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
-                                .into(new SimpleTarget<Bitmap>() {
-                                    @Override
-                                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                        resource.compress(Bitmap.CompressFormat.PNG, 100, mBaos);
-                                        ivHeader.setImageBitmap(resource);
-                                    }
-                                });
-                        chansformHeaderFile();
-                        takePhotoPopWin.dismiss();
+                    cropPhoto(Uri.fromFile(file));//裁剪图片
+                    break;
+                case Constant.CROP_HEADER: //裁剪返回
+                    if (headerBitmap != null && !headerBitmap.isRecycled()) {
+                        headerBitmap.recycle();
+                        headerBitmap = null;
+                        System.gc();
+                    }
+                    if (data != null) {
+                        Bundle extras = data.getExtras();
+                        headerBitmap = extras.getParcelable("data");
+                        if (headerBitmap != null) {
+                            String fileName = setPicToView(headerBitmap);//保存到SD卡中
+                            if (!TextUtils.isEmpty(fileName)) {
+                                headerFile = new File(fileName);
+                                chansformHeaderFile();
+                                Glide.with(this)
+                                        .load(headerFile)
+                                        .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
+                                        .into(ivHeader);
+                                takePhotoPopWin.dismiss();
+                            }
+                        }
                     }
                     break;
             }
         }
+    }
+
+    /**
+     * 调用系统的裁剪
+     */
+    public void cropPhoto(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, 3);
+    }
+
+    /**
+     * 头像存SD卡
+     */
+    private String setPicToView(Bitmap mBitmap) {
+        String sdStatus = Environment.getExternalStorageState();
+        if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+            return "";
+        }
+        FileOutputStream b = null;
+        File file = new File(path);
+        file.mkdirs();// 创建文件夹
+        String fileName = path + "header.png";//图片名字
+        try {
+            b = new FileOutputStream(fileName);
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 80, b);// 把数据写入文件
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //关闭流
+                b.flush();
+                b.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return fileName;
     }
 
     /**
@@ -314,6 +359,10 @@ public class SettingActivity extends BaseSimpleActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (headerBitmap != null && !headerBitmap.isRecycled()) {
+            headerBitmap.recycle();
+            headerBitmap = null;
+        }
         if (mBaos != null) {
             try {
                 mBaos.flush();
@@ -323,5 +372,6 @@ public class SettingActivity extends BaseSimpleActivity {
                 e.printStackTrace();
             }
         }
+        System.gc();
     }
 }

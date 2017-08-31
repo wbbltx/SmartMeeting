@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/simple_background">
 
     <TextView
         android:id="@+id/tv_mine_about"
@@ -73,7 +74,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="6dp"
                 android:textColor="@color/simple_background"
-                android:text="sdads"
                 android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_mine_icon"
                 app:layout_constraintLeft_toRightOf="@+id/iv_mine_icon"
@@ -87,7 +87,6 @@
                 android:layout_marginLeft="13dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="20dp"
-                android:text="sdads"
                 android:textColor="#b9d7ff"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -138,7 +137,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="KSB"
             android:textColor="#494949"
             android:textSize="14sp" />
     </RelativeLayout>

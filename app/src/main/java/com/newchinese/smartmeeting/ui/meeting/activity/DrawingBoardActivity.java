@@ -12,10 +12,12 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.IdRes;
+import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,6 +37,7 @@ import com.newchinese.coolpensdk.constants.PointFromType;
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
+import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
@@ -397,6 +400,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
+                        DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
@@ -415,6 +419,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
+                        DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
@@ -429,6 +434,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
             R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.iv_right,
             R.id.rl_record_count, R.id.iv_image_delete, R.id.iv_image_cancle, R.id.iv_image_confirm})
@@ -540,6 +546,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         hideStrokeWidth();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkRecordState() {
         if (!recordService.isRunning()) {
             recordBar.setVisibility(View.VISIBLE);
@@ -550,6 +557,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
