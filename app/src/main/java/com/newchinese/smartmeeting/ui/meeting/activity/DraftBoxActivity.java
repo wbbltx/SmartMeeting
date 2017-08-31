@@ -292,8 +292,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onScanComplete() {
-        XLog.d(TAG, TAG + " onScanComplete");
-        if (mPresenter.isConnected()) {
+        XLog.d(TAG, TAG + " onScanComplete "+isFinishing());
+        if (mPresenter.isConnected() && !isFinishing()) {
             scanResultDialog.show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
@@ -323,7 +323,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 XLog.d("haha", "连接状态" + mPresenter.isConnected());
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
             } else {
-                mPresenter.scanBlueDevice();
+//                mPresenter.scanBlueDevice();
+                EventBus.getDefault().post(new ScanEvent());
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
             }
         }
@@ -367,7 +368,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
-//        ivPen.setBackgroundResource(R.mipmap.pen_normal_power);
+//        ivPen.setImageResource(R.mipmap.pen_normal_power);
 //        开启定时任务获取电量
         mPresenter.startTimer();
     }
@@ -426,7 +427,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onDeviceClick(BluetoothDevice add) {
-        if (!add.equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
+        if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
             EventBus.getDefault().post(new ConnectEvent(add , 0));
         }
     }

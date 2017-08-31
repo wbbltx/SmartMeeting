@@ -50,6 +50,7 @@ public class BleManager {
     private Handler mHandler;
     private Timer mTimer;
     private TimerTask mTimerTask;
+    private int delayTime = 15000;
 
     BleManager(Context context, Handler handler) {
         this.context = context;
@@ -201,6 +202,17 @@ public class BleManager {
                 onConnectListener.isConnecting();
             }
         });
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getConnected() == false){
+                    Log.i(TAG, "connect timeout...");
+                    isConnected = true;
+                    disconnect();
+                    onConnectListener.onFailed(0);
+                }
+            }
+        },delayTime);
         Log.i(TAG, "connecting...");
         checkConnected(remote, autoConnect, bluetoothGattCallback, onConnectListener);
     }
@@ -418,4 +430,11 @@ public class BleManager {
         return isConnected;
     }
 
+    public int getDelayTime() {
+        return delayTime;
+    }
+
+    public void setDelayTime(int delayTime) {
+        this.delayTime = delayTime;
+    }
 }

@@ -43,6 +43,7 @@ import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.listener.MulitPointTouchListener;
+import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.listener.OnShareListener;
 import com.newchinese.smartmeeting.listener.PopWindowListener;
 import com.newchinese.smartmeeting.listener.ShareCallBackListener;
@@ -50,6 +51,7 @@ import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.NotePage;
 import com.newchinese.smartmeeting.model.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.model.event.CheckBlueStateEvent;
+import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.model.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.model.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.model.event.OnPointCatchedEvent;
@@ -62,6 +64,7 @@ import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
@@ -89,7 +92,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener, OnDeviceItemClickListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
@@ -235,6 +238,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     protected void initListener() {
+        scanResultDialog.setOnDeviceItemClickListener(this);
         //设置左右滑动作监听器
         drawViewMeeting.setOnTouchListener(this);
         checkColorPopWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -894,5 +898,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         lp.alpha = 1f;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public void onDeviceClick(BluetoothDevice add) {
+        if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
+            EventBus.getDefault().post(new ConnectEvent(add , 0));
+        }
     }
 }
