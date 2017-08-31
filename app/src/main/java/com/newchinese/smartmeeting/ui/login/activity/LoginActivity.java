@@ -132,7 +132,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -140,6 +139,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
             mPd.dismiss();
         }
         System.exit(0);
+        super.onDestroy();
     }
 
     @Override

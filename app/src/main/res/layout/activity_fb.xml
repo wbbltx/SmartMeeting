@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/graye"
+    android:background="@color/simple_background"
     tools:context="com.newchinese.smartmeeting.ui.mine.activity.FBActivity">
 
     <android.support.v7.widget.Toolbar
@@ -18,11 +17,11 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@mipmap/bar_back"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@mipmap/bar_back">
 
         <TextView
             android:id="@+id/tv_bar_title"
@@ -30,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="19sp"/>
+            android:textSize="19sp" />
     </android.support.v7.widget.Toolbar>
 
     <EditText
@@ -41,17 +40,19 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
         android:background="@color/colorWhite"
-        android:padding="8dp"
         android:elevation="1dp"
         android:ems="10"
         android:gravity="top"
-        android:textColorHint="@color/simple_line"
         android:hint="请填写您要反馈的内容..."
         android:inputType="textMultiLine"
+        android:padding="8dp"
+        android:textColor="@color/simple_text"
+        android:textColorHint="#C5C3C3"
+        android:textSize="13sp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
         android:id="@+id/et_fb_contact"
@@ -61,15 +62,17 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@color/colorWhite"
-        android:padding="8dp"
         android:ems="10"
-        android:textColorHint="@color/simple_line"
         android:hint="请留下您的联系方式：手机/邮箱"
         android:inputType="textPersonName"
+        android:padding="8dp"
+        android:textColor="@color/simple_text"
+        android:textColorHint="#C5C3C3"
+        android:textSize="13sp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_fb_content"/>
+        app:layout_constraintTop_toBottomOf="@+id/et_fb_content" />
 
     <Button
         android:id="@+id/btn_fb_sub"
@@ -85,5 +88,5 @@
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_fb_contact"/>
+        app:layout_constraintTop_toBottomOf="@+id/et_fb_contact" />
 </android.support.constraint.ConstraintLayout>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/simple_background"
+    android:background="@color/colorWhite"
     tools:context="com.newchinese.smartmeeting.ui.login.activity.WelcomeActivity">
 
     <ImageView
@@ -12,16 +12,16 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/app_icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_app_icon"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="智·会议"
-        android:textColor="@color/simple_text"
+        android:textColor="@color/simple_blue"
         android:textSize="20sp" />
 
     <TextView
@@ -32,6 +32,6 @@
         android:layout_marginBottom="50dp"
         android:layout_marginTop="20dp"
         android:text="新国人出品"
-        android:textColor="@color/simple_text"
+        android:textColor="@color/gray5"
         android:textSize="18sp" />
 </RelativeLayout>
