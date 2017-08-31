@@ -34,7 +34,7 @@ public class BluetoothLe {
     private static final String TAG = BluetoothLe.class.getName();
     private BleManager bleManager;
     private int scanPeriod = 30000;
-    private int errorCount = 2;
+    private int errorCount = 1;
     private UUID[] serviceUUID = {BluUUIDUtils.BtSmartUuid.UUID_SERVICE.getUuid()};
     private OnBleScanListener onBleScanListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -307,7 +307,7 @@ public class BluetoothLe {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(TAG, "connected 1 level" + System.currentTimeMillis());
 //                bleManager.setIsConnected(true);
-                errorCount = 2;
+                errorCount = 1;
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -330,7 +330,7 @@ public class BluetoothLe {
                         }
                     }
                 };
-                mHandler.postDelayed(runnableDiscoverService, 15000);
+                mHandler.postDelayed(runnableDiscoverService, 10000);
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "onConnectionStateChange STATE_DISCONNECTED called");
@@ -344,7 +344,7 @@ public class BluetoothLe {
                         connectBleDevice(address);
                         errorCount--;
                     } else {
-                        errorCount = 2;
+                        errorCount = 1;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -726,5 +726,10 @@ public class BluetoothLe {
 
     public boolean getConnected() {
         return bleManager.getConnected();
+    }
+
+    public BluetoothLe setDelayTime(int delayTime){
+        bleManager.setDelayTime(delayTime);
+        return this;
     }
 }

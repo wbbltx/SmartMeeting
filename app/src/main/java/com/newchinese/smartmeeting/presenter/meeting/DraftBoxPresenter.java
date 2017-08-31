@@ -116,8 +116,10 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
 
     @Override
     public void stopTimer() {
-        timerTask.cancel();
-        timer.cancel();
+        if (timer != null && timerTask != null){
+            timerTask.cancel();
+            timer.cancel();
+        }
     }
 
     @Override

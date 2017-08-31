@@ -11,6 +11,7 @@ import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.event.ConnectEvent;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 
@@ -92,18 +93,19 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
         } else {
             for (BluetoothDevice device : devices) {
-                XLog.d(TAG, "扫描到的所有设备：" + device.getAddress());
                 if (device.getAddress().equals(address)) {
-                    XLog.d(TAG, "搜索结果列表中报验上次连接的笔："+address);
-                    EventBus.getDefault().post(new ConnectEvent(device, 0));
+                    if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
+                        EventBus.getDefault().post(new ConnectEvent(device, 0));
+                    }
                     return;
                 }
             }
-            if (count == 1) {
-                showDialog(devices.get(0));
-            } else {
+//            if (count == 1) {
+//                showDialog(devices.get(0));
+//            } else {
+            if (scanResultDialog != null)
                 scanResultDialog.show();
-            }
+//            }
         }
     }
 
@@ -131,7 +133,6 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     public void onElecReceived(String ele) {
         XLog.d(TAG, TAG + " onElecReceived");
     }
-
 
 
     @Override
