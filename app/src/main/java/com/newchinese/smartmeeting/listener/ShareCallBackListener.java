@@ -25,7 +25,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onStart(SHARE_MEDIA platform) {
-        Toast.makeText(context, "分享的回调：平台 " + platform.toString(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, "分享的平台：" + platform.toString(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -34,7 +34,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onResult(SHARE_MEDIA platform) {
-        Toast.makeText(context, "成功了", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "分享成功", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -44,7 +44,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onError(SHARE_MEDIA platform, Throwable t) {
-        Toast.makeText(context, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "分享失败" + t.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onCancel(SHARE_MEDIA platform) {
-        Toast.makeText(context, "取消了", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "取消分享", Toast.LENGTH_LONG).show();
 
     }
 }

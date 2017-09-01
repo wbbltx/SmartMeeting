@@ -73,6 +73,8 @@
         <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
         <activity android:name=".ui.meeting.activity.PlayBackActivity" />
         <activity android:name=".ui.meeting.activity.RecordLibActivity" />
+
+        <!--分享需要的activity-->
         <activity android:name=".wxapi.WXEntryActivity"/>
 
         <activity

@@ -631,6 +631,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         } else {
             //如果蓝牙已经打开，则去扫描
             EventBus.getDefault().post(new ScanEvent());
+            ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
 
@@ -871,10 +872,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 share(SHARE_MEDIA.QQ);
                 break;
             case "2"://朋友圈
-                share(SHARE_MEDIA.WEIXIN);
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case "3"://微信
-                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                share(SHARE_MEDIA.WEIXIN);
                 break;
             case "4"://微博
                 share(SHARE_MEDIA.SINA);
