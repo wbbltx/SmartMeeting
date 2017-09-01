@@ -11,9 +11,9 @@
         android:id="@+id/videoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_marginTop="-22dp" />
 
-    <include layout="@layout/bar_base"/>
+    <include layout="@layout/bar_base" />
     <!--<RelativeLayout-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="50dp"-->
@@ -49,58 +49,58 @@
     <!--</RelativeLayout>-->
 
     <!--<ImageView-->
-        <!--android:id="@+id/play_back_start"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:src="@mipmap/play_back_start"/>-->
+    <!--android:id="@+id/play_back_start"-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@mipmap/play_back_start"/>-->
 
     <!--<RelativeLayout-->
-        <!--android:id="@+id/record_play_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_alignParentBottom="true">-->
+    <!--android:id="@+id/record_play_bar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_alignParentBottom="true">-->
 
-        <!--<ImageView-->
-            <!--android:id="@+id/record_play"-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginLeft="15dp"-->
-            <!--android:src="@mipmap/record_play" />-->
+    <!--<ImageView-->
+    <!--android:id="@+id/record_play"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginLeft="15dp"-->
+    <!--android:src="@mipmap/record_play" />-->
 
-        <!--<com.xw.repo.BubbleSeekBar-->
-            <!--android:id="@+id/record_play_seekbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginLeft="13dp"-->
-            <!--android:layout_marginTop="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_toRightOf="@id/record_play"-->
-            <!--app:bsb_second_track_color="@color/colorPrimaryDark"-->
-            <!--app:bsb_track_color="@color/colorPrimaryDark"-->
-            <!--/>-->
+    <!--<com.xw.repo.BubbleSeekBar-->
+    <!--android:id="@+id/record_play_seekbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="13dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_toRightOf="@id/record_play"-->
+    <!--app:bsb_second_track_color="@color/colorPrimaryDark"-->
+    <!--app:bsb_track_color="@color/colorPrimaryDark"-->
+    <!--/>-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/record_play_starttime"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginBottom="9dp"-->
-            <!--android:layout_alignLeft="@id/record_play_seekbar"-->
-            <!--android:layout_toRightOf="@id/record_play"-->
-            <!--android:text="00:00:00"-->
-            <!--android:textSize="12sp"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/record_play_starttime"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_marginBottom="9dp"-->
+    <!--android:layout_alignLeft="@id/record_play_seekbar"-->
+    <!--android:layout_toRightOf="@id/record_play"-->
+    <!--android:text="00:00:00"-->
+    <!--android:textSize="12sp"/>-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/record_play_endtime"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignRight="@id/record_play_seekbar"-->
-            <!--android:layout_alignBottom="@id/record_play_starttime"-->
-            <!--android:text="00:00:00"-->
-            <!--android:textSize="12sp"/>-->
+    <!--<TextView-->
+    <!--android:id="@+id/record_play_endtime"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignRight="@id/record_play_seekbar"-->
+    <!--android:layout_alignBottom="@id/record_play_starttime"-->
+    <!--android:text="00:00:00"-->
+    <!--android:textSize="12sp"/>-->
     <!--</RelativeLayout>-->
 
 </RelativeLayout>
