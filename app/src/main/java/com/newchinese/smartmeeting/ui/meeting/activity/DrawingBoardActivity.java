@@ -208,7 +208,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         //初始化调色板窗口
         checkColorPopWin = new CheckColorPopWin(this);
         //初始化图片窗口
-        takePhotoPopWin = new TakePhotoPopWin(this,"DrawingBoardActivity");
+        takePhotoPopWin = new TakePhotoPopWin(this, "DrawingBoardActivity");
 
         //初始化笔状态
         initPenState();
@@ -407,9 +407,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
-                        mPresenter.queryRecordCount(pageIndex);
                         setTitleText(pageIndex); //更新标题
-                        mPresenter.readDataBasePoint(pageIndex); //读数据库
+                        mPresenter.readDataBasePoint(pageIndex); //读数据库点
+                        mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
                         //清空当页图片，置位编辑状态，置位所有window 
                         resetInsertImage();
                         closeEditInsertImage();
@@ -427,9 +427,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
-                        mPresenter.queryRecordCount(pageIndex);
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
+                        mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
                         //清空当页图片，置位编辑状态，置位所有window 
                         resetInsertImage();
                         closeEditInsertImage();
@@ -813,7 +813,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
         EventBus.getDefault().unregister(this);
         unbindService(connection);
-        if (shareBitmap != null){
+        if (shareBitmap != null) {
             shareBitmap.recycle();
             shareBitmap = null;
         }
@@ -907,7 +907,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onDeviceClick(BluetoothDevice add) {
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
-            EventBus.getDefault().post(new ConnectEvent(add , 0));
+            EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
     }
 }
