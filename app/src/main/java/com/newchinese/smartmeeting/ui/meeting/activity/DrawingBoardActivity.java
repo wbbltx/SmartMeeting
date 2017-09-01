@@ -321,6 +321,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         resetInsertImage();
         closeEditInsertImage();
         mPresenter.readInsertImageFromData(pageIndex);
+        mPresenter.queryRecordCount(pageIndex);
     }
 
     /**
@@ -406,6 +407,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
+                        mPresenter.queryRecordCount(pageIndex);
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
                         //清空当页图片，置位编辑状态，置位所有window 
@@ -425,6 +427,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
+                        mPresenter.queryRecordCount(pageIndex);
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
                         //清空当页图片，置位编辑状态，置位所有window 
