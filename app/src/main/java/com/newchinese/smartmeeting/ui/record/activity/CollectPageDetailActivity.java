@@ -3,7 +3,6 @@ package com.newchinese.smartmeeting.ui.record.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -11,23 +10,18 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.listener.OnShareListener;
 import com.newchinese.smartmeeting.listener.ShareCallBackListener;
-import com.newchinese.smartmeeting.log.XLog;
 import com.newchinese.smartmeeting.model.bean.CollectPage;
-import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
-import com.newchinese.smartmeeting.ui.record.adapter.CollectPageDetailVpAdapter;
+import com.newchinese.smartmeeting.ui.record.adapter.CollectPageAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
 import com.umeng.socialize.ShareAction;
-import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
@@ -56,7 +50,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
     private int selectPosition = 0;
     private CollectPage currentPage;
     private List<CollectPage> collectPageList = new ArrayList<>(); //活动收藏记录表中当前所有收藏页
-    private CollectPageDetailVpAdapter adapter;
+    private CollectPageAdapter adapter;
     private SharePopWindow sharePopWindow;
     private UMImage umImage;
 
@@ -79,13 +73,13 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
         if (collectPageList.size() > 0 && selectPosition < (collectPageList.size())) {
             currentPage = collectPageList.get(selectPosition);
             setTitle(currentPage.getPageIndex(), currentPage.getDate());
-            adapter = new CollectPageDetailVpAdapter(getSupportFragmentManager(), collectPageList);
+            adapter = new CollectPageAdapter(this, collectPageList);
             vpThumnbail.setAdapter(adapter);
             vpThumnbail.setCurrentItem(selectPosition);
 
             String thumbnailPath = currentPage.getThumbnailPath();
             Bitmap bitmapFromPath = getBitmapFromPath(thumbnailPath);
-            umImage = new UMImage(this,bitmapFromPath);
+            umImage = new UMImage(this, bitmapFromPath);
             UMImage thumb = new UMImage(this, bitmapFromPath);
             umImage.setThumb(thumb);
         }
@@ -165,7 +159,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
         }
     }
 
-    private void bgDark(){
+    private void bgDark() {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = 0.7f;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -209,5 +203,11 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
         lp.alpha = 1f;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(lp);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 }
