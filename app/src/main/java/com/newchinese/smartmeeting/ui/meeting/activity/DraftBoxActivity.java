@@ -124,9 +124,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void initView() {
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
-        } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING){
+        } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
             ivPen.setImageResource(R.mipmap.weilianjie);
-        }else {
+        } else {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
         }
     }
@@ -151,8 +151,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
         rvPageList.setAdapter(adapter);
-        //初始化蓝牙图标状态
-        initView();
+//        //初始化蓝牙图标状态
+//        initView();
     }
 
     @Override
@@ -278,7 +278,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            initView();
+            boolean bluetoothOpen = mPresenter.isBluetoothOpen();
+            if (!bluetoothOpen) {
+                bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
+            } else {
+                initView();
+            }
             if (isFirstTime) {
                 XLog.d(TAG, TAG + " onWindowFocusChanged");
                 checkBle(false);
@@ -292,7 +297,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onScanComplete() {
-        XLog.d(TAG, TAG + " onScanComplete "+isFinishing());
+        XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
         if (mPresenter.isConnected() && !isFinishing()) {
             scanResultDialog.show();
             EventBus.getDefault().post(new ScanResultEvent(1));
@@ -428,7 +433,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onDeviceClick(BluetoothDevice add) {
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
-            EventBus.getDefault().post(new ConnectEvent(add , 0));
+            EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
     }
 
@@ -475,6 +480,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onResume() {
         super.onResume();
+        initView();
         //加载数据库当前活动记录的所有页，延迟500ms加载是为了让back时的截图截一会儿才能加载出来
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -490,7 +496,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             isSelectedList.set(i, false);
         }
         adapter.setIsSelectedList(isSelectedList);
-        if (scanResultDialog.isShowing()){
+        if (scanResultDialog.isShowing()) {
             scanResultDialog.dismiss();
         }
     }

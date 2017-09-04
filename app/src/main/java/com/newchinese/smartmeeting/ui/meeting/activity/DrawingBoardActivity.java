@@ -910,4 +910,18 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
+                ivPen.setImageResource(R.mipmap.pen_normal_power);
+            } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
+                ivPen.setImageResource(R.mipmap.weilianjie);
+            } else {
+                ivPen.setImageResource(R.mipmap.pen_disconnect);
+            }
+        }
+    }
 }
