@@ -19,7 +19,9 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
     private EditText mEtContact;
     private EditText mEtContent;
     private Button mBtnSub;
-    private String regexp = "(^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$)|(^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$)";
+    //    private String regexp = "(^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$)|(^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$)";
+    private String regexp = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
+    private String regemail = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
     private MineContract.UpdateIPresenter mPresenter;
     private ProgressDialog mPd;
 
@@ -59,15 +61,14 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
         String content = mEtContent.getText().toString().trim();
         if (TextUtils.isEmpty(content)) {
             CustomizedToast.showShort(this, "请填写反馈内容");
-            return ;
+            return;
         }
 
         String contact = mEtContact.getText().toString().trim();
-        if (!contact.matches(regexp)) {
+        if (!contact.matches(regexp) && !contact.matches(regemail)) {
             CustomizedToast.showShort(this, "联系方式不正确");
-            return ;
+            return;
         }
-
         mPresenter.feedBack(content, contact);
     }
 
@@ -86,7 +87,7 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     @Override
     public void jumpLogin() {
-        
+
     }
 
     @Override
