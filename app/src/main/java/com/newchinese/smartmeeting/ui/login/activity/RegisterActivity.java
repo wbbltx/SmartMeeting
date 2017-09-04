@@ -1,20 +1,13 @@
 package com.newchinese.smartmeeting.ui.login.activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -29,10 +22,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.model.bean.BaseResult;
 import com.newchinese.smartmeeting.model.bean.LoginData;
@@ -40,11 +32,13 @@ import com.newchinese.smartmeeting.net.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.widget.EditView;
+import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -57,14 +51,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.os.Build.VERSION_CODES.M;
-
 public class RegisterActivity extends AppCompatActivity implements LoginContract.LoginIView<BaseResult<LoginData>>, EditView.OnEditViewListener, View.OnClickListener {
-
     public static final int UI_TYPE_REG = 0;//注册界面
     public static final int UI_TYPE_FOR = 1;//忘记密码
     public static final int UI_TYPE_UPD = 2;//完善资料
-    private static final int CAMERA_CODE = 1001;
     private String mBtnTitles[] = {"注 册", "确 定", "完 成"};
     private String mTitles[] = {"注册", "忘记密码", "完善个人资料"};
     private EditView mEvPhone, mEvCode, mEvPass;
@@ -77,9 +67,12 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private ImageView mIvIcon;
     private RelativeLayout mRlIcon;
     private EditText mEtNick;
-    private File mFile;
     private ByteArrayOutputStream mBaos = new ByteArrayOutputStream();
     private ProgressDialog mPd;
+    private TakePhotoPopWin takePhotoPopWin;
+    private Bitmap headerBitmap;
+    private File headerFile;
+    private static String path = "/sdcard/myHead/";//sd路径
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +143,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         }
 
         mBtnReg.setText(mBtnTitles[mUi]);
+
+        takePhotoPopWin = new TakePhotoPopWin(this, "RegisterActivity");
     }
 
     @Override
@@ -252,70 +247,112 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                     }
                                 });
                     } else {
-                        CustomizedToast.showShort(this,"请填写正确资料");
+                        CustomizedToast.showShort(this, "请填写正确资料");
                     }
                 }
                 break;
             case R.id.iv_regist_icon:
-                new AlertDialog.Builder(this)
-                        .setItems(getResources().getStringArray(R.array.selectIcon), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                selectIcon(which);
-                            }
-                        })
-                        .create()
-                        .show();
+                takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
         }
-    }
-
-    private void selectIcon(int which) {
-        Intent intent = new Intent();
-        switch (which) {
-            case 0:
-                if (Build.VERSION.SDK_INT >= M && checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_CODE);
-                } else {
-                    mFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsoluteFile(), "icon.jpg");
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
-                }
-                break;
-            case 1:
-                intent.setAction(Intent.ACTION_PICK);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                break;
-        }
-        startActivityForResult(intent, which);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-            Glide.with(this)
-                    .load(mFile)
-                    .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
-                    .into(mIvIcon);
-            Observable.just(mFile)
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constant.SELECT_PIC_KITKAT: //选择照片返回
+                    cropPhoto(data.getData());//裁切图片
+                    break;
+                case Constant.TAKEPHOTO_SAVE_MYPATH: //拍照返回
+                    File file = new File(Environment.getExternalStorageDirectory() + "/image.jpg");
+                    cropPhoto(Uri.fromFile(file));//裁剪图片
+                    break;
+                case Constant.CROP_HEADER: //裁剪返回
+                    if (headerBitmap != null && !headerBitmap.isRecycled()) {
+                        headerBitmap.recycle();
+                        headerBitmap = null;
+                        System.gc();
+                    }
+                    if (data != null) {
+                        Bundle extras = data.getExtras();
+                        headerBitmap = extras.getParcelable("data");
+                        if (headerBitmap != null) {
+                            String fileName = setPicToView(headerBitmap);//保存到SD卡中
+                            if (!TextUtils.isEmpty(fileName)) {
+                                headerFile = new File(fileName);
+                                chansformHeaderFile();
+                                Glide.with(this)
+                                        .load(headerFile)
+                                        .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
+                                        .into(mIvIcon);
+                                takePhotoPopWin.dismiss();
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 调用系统的裁剪
+     */
+    public void cropPhoto(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, 3);
+    }
+
+    /**
+     * 头像存SD卡
+     */
+    private String setPicToView(Bitmap mBitmap) {
+        String sdStatus = Environment.getExternalStorageState();
+        if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+            return "";
+        }
+        FileOutputStream b = null;
+        File file = new File(path);
+        file.mkdirs();// 创建文件夹
+        String fileName = path + "header.png";//图片名字
+        try {
+            b = new FileOutputStream(fileName);
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 80, b);// 把数据写入文件
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //关闭流
+                b.flush();
+                b.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return fileName;
+    }
+
+    /**
+     * 头像文件转换为Byte数组再转换为String
+     */
+    private void chansformHeaderFile() {
+        if (headerFile != null) {
+            Observable.just(headerFile)
                     .observeOn(Schedulers.io())
                     .subscribe(new Consumer<File>() {
                         @Override
                         public void accept(File file) throws Exception {
                             mBaos = file2Byte(file);
-                        }
-                    });
-        } else if (requestCode == 1 && data != null) {
-            Glide.with(this)
-                    .asBitmap()
-                    .load(data.getData())
-                    .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                            resource.compress(Bitmap.CompressFormat.PNG, 100, mBaos);
-                            mIvIcon.setImageBitmap(resource);
                         }
                     });
         }
@@ -342,26 +379,14 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         return null;
     }
 
-    private String byte2String (byte[] src) {
+    private String byte2String(byte[] src) {
         return new String(Base64.encode(src, Base64.DEFAULT));
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_CODE) {
-            Intent intent = new Intent();
-            mFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsoluteFile(), "icon.jpg");
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
-            startActivityForResult(intent, 0);
-        }
     }
 
     @Override
     public void showLoading(String msg) {
         mPd = mPd == null ? new ProgressDialog(this) : mPd;
-        if (!TextUtils.isEmpty(msg)) {
+        if (!TextUtils.isEmpty(msg) && !mPd.isShowing()) {
             mPd.setMessage(msg);
             mPd.show();
         } else {

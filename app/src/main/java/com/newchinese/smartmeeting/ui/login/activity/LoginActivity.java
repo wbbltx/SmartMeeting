@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -78,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     public void updateView(BaseResult<LoginData> data) {
         if (!NetUrl.DYNAMIC_PASS.equals(data.url)) {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 
@@ -138,7 +140,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         if (mPd != null && mPd.isShowing()) {
             mPd.dismiss();
         }
-        System.exit(0);
         super.onDestroy();
     }
 

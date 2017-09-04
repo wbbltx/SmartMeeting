@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
+import com.newchinese.smartmeeting.ui.login.activity.RegisterActivity;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.mine.activity.SettingActivity;
 
@@ -85,6 +86,8 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
                     ((SettingActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
                 else if ("DrawingBoardActivity".equals(type))
                     ((DrawingBoardActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
+                else if ("RegisterActivity".equals(type))
+                    ((RegisterActivity) mContext).startActivityForResult(intent, Constant.TAKEPHOTO_SAVE_MYPATH);
                 break;
             case R.id.btn_pick_photo:
                 Intent albmIntent = new Intent(Intent.ACTION_PICK);
@@ -94,6 +97,8 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
                     ((SettingActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
                 else if ("DrawingBoardActivity".equals(type))
                     ((DrawingBoardActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
+                else if ("RegisterActivity".equals(type))
+                    ((RegisterActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
                 break;
             case R.id.btn_cancel_photo:
                 this.dismiss();

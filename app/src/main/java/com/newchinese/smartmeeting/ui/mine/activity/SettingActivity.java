@@ -3,12 +3,9 @@ package com.newchinese.smartmeeting.ui.mine.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -23,8 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
@@ -37,7 +32,6 @@ import com.newchinese.smartmeeting.net.NetUrl;
 import com.newchinese.smartmeeting.net.XApi;
 import com.newchinese.smartmeeting.ui.login.activity.LoginActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
-import com.newchinese.smartmeeting.util.ImageUtil;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
 import org.reactivestreams.Publisher;
@@ -48,12 +42,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -140,11 +130,17 @@ public class SettingActivity extends BaseSimpleActivity {
                 startActivity(intent);
                 break;
             case R.id.btn_exit_login: //退出登录
-                //清空用户LoginData表
-                GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //清空用户LoginData表
+                        GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
+                    }
+                }).start();
                 intent = new Intent(SettingActivity.this, LoginActivity.class);
+                //清空所有栈中Activity
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                finish();
                 break;
         }
     }
@@ -292,6 +288,7 @@ public class SettingActivity extends BaseSimpleActivity {
      * 上传图片
      */
     private void updateHeader(String icon) {
+        mPd.setMessage("正在请求...");
         mPd.show();
         loginData.setIcon(icon).setIcon_format("png");
         observable = mServices.updateIcon(loginData)
@@ -358,7 +355,9 @@ public class SettingActivity extends BaseSimpleActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (mPd.isShowing()) {
+            mPd.dismiss();
+        }
         if (headerBitmap != null && !headerBitmap.isRecycled()) {
             headerBitmap.recycle();
             headerBitmap = null;
@@ -373,5 +372,6 @@ public class SettingActivity extends BaseSimpleActivity {
             }
         }
         System.gc();
+        super.onDestroy();
     }
 }
