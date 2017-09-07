@@ -1,10 +1,12 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -116,6 +118,10 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        InputMethodManager imm = (InputMethodManager) findViewById(R.id.rl_draw_base).getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(findViewById(R.id.rl_draw_base).getApplicationWindowToken(), 0);
+        }
         ivBack.setVisibility(View.GONE);
         ivPen.setVisibility(View.GONE);
         switch (checkedId) {

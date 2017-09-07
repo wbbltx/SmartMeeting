@@ -62,8 +62,8 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
         GreenDaoUtil.getInstance().getDaoSession().clear();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
         data.setId(null).setTel(null).setNickname(null);
-        mLoginModel.updateNick(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
         mLoginModel.updateIcon(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
+        mLoginModel.updateNick(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
     }
 
     @Override
@@ -137,7 +137,7 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
-    public void loading() {//加载总
+    public void loading() { //加载中
         if (mV != null) {
             mV.showLoading("正在请求...");
         }
@@ -147,6 +147,6 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     public void complete() {
         if (mV != null) {
             mV.showLoading(null);
-        }
+        } 
     }
 }
