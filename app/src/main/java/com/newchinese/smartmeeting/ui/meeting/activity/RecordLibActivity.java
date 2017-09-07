@@ -1,34 +1,27 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.RecordLibContract;
-import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.meeting.RecordLibPresenter;
-import com.newchinese.smartmeeting.ui.meeting.adapter.DraftPageRecyAdapter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.RecordLibAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.Flowable;
-import io.reactivex.functions.Consumer;
 
 import static com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity.TAG_PAGE_INDEX;
 

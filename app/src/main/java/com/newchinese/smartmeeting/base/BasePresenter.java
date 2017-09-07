@@ -44,6 +44,4 @@ public abstract class BasePresenter<T extends BaseView> implements BaseSimplePre
             mCompositeDisposable.clear();
         }
     }
-
-
 }

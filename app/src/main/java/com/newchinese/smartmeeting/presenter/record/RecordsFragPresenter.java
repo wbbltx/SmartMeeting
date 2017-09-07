@@ -4,10 +4,9 @@ import android.util.Log;
 
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.RecordsFragContract;
-import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package com.newchinese.smartmeeting.contract;
 
-import com.newchinese.smartmeeting.base.IToolbar;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.FeedBack;
-import com.newchinese.smartmeeting.model.bean.LoginData;
+import com.newchinese.smartmeeting.base.BaseToolbar;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.FeedBack;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
 
 /**
  * Created by Administrator on 2017-08-30.
@@ -11,7 +11,7 @@ import com.newchinese.smartmeeting.model.bean.LoginData;
 
 public interface MineContract {
 
-    interface UpdateIVIew extends IToolbar {
+    interface UpdateIVIew extends BaseToolbar {
 
         void showLoading(String msg);
 

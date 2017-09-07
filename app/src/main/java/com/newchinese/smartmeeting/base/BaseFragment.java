@@ -1,11 +1,6 @@
 package com.newchinese.smartmeeting.base;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.View;
-
-import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 
 /**
  * Description:   基于MVP的基本Fragment

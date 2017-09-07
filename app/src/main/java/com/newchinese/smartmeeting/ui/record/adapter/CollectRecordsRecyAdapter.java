@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
-import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.ui.record.activity.CollectRecordFilterActivity;
 import com.newchinese.smartmeeting.util.DateUtils;
 

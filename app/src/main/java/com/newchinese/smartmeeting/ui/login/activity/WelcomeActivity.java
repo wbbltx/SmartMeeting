@@ -1,14 +1,13 @@
 package com.newchinese.smartmeeting.ui.login.activity;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.WelcomeActContract;
 import com.newchinese.smartmeeting.database.LoginDataDao;
-import com.newchinese.smartmeeting.model.bean.LoginData;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;

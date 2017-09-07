@@ -10,8 +10,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.Constant;
-import com.newchinese.smartmeeting.model.event.ColorEvent;
+import com.newchinese.smartmeeting.constant.Constant;
+import com.newchinese.smartmeeting.entity.event.ColorEvent;
 import com.newchinese.smartmeeting.ui.meeting.adapter.HorizontalListViewAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;

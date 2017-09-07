@@ -8,7 +8,8 @@ import android.os.Build;
 import android.os.StrictMode;
 
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
-import com.newchinese.smartmeeting.listener.ActivityLife;
+import com.newchinese.smartmeeting.constant.Constant;
+import com.newchinese.smartmeeting.entity.listener.ActivityLife;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.umeng.socialize.PlatformConfig;

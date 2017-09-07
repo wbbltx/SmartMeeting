@@ -1,7 +1,6 @@
 package com.newchinese.smartmeeting.ui.mine.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,11 +10,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
-import com.newchinese.smartmeeting.model.bean.LoginData;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.ui.mine.activity.AboutActivity;
 import com.newchinese.smartmeeting.ui.mine.activity.FBActivity;
 import com.newchinese.smartmeeting.ui.mine.activity.SettingActivity;

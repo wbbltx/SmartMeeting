@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.base.IToolbar;
+import com.newchinese.smartmeeting.base.BaseToolbar;
 import com.newchinese.smartmeeting.contract.MineContract;
 import com.newchinese.smartmeeting.presenter.mine.UpdatePresenterImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 
-public class FBActivity extends AppCompatActivity implements MineContract.UpdateIVIew, IToolbar, View.OnClickListener {
+public class FBActivity extends AppCompatActivity implements MineContract.UpdateIVIew, BaseToolbar, View.OnClickListener {
 
     private EditText mEtContact;
     private EditText mEtContent;

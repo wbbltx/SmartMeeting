@@ -2,7 +2,7 @@ package com.newchinese.smartmeeting.contract;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 
 import java.util.List;
 

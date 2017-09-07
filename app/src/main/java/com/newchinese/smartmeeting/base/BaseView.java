@@ -1,6 +1,6 @@
 package com.newchinese.smartmeeting.base;
 
-import com.newchinese.smartmeeting.listener.PopWindowListener;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 
 /**
  * Description:   MVP中的基本view接口类

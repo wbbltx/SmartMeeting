@@ -8,13 +8,13 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
-import com.newchinese.smartmeeting.model.bean.CollectPage;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
-import com.newchinese.smartmeeting.model.bean.LoginData;
-import com.newchinese.smartmeeting.model.bean.NotePage;
-import com.newchinese.smartmeeting.model.bean.NotePoint;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
-import com.newchinese.smartmeeting.model.bean.NoteStroke;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NotePoint;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;

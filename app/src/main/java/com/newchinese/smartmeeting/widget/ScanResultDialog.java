@@ -1,19 +1,15 @@
 package com.newchinese.smartmeeting.widget;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.listener.OnDeviceItemClickListener;
+import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.ui.meeting.adapter.BleListAdapter;
 
 import java.util.List;

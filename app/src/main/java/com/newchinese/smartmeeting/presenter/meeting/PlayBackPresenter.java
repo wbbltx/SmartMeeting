@@ -8,13 +8,12 @@ import com.newchinese.smartmeeting.contract.PlayBackContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
-import com.newchinese.smartmeeting.model.bean.NotePage;
-import com.newchinese.smartmeeting.model.bean.NotePoint;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
-import com.newchinese.smartmeeting.model.bean.NoteStroke;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NotePoint;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
-import com.newchinese.smartmeeting.util.PlayBackUtil;
 
 import java.util.ArrayList;
 import java.util.List;

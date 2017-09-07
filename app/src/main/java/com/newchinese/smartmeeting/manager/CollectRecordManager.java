@@ -1,9 +1,8 @@
 package com.newchinese.smartmeeting.manager;
 
 import com.newchinese.smartmeeting.database.CollectRecordDao;
-import com.newchinese.smartmeeting.database.NoteRecordDao;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 
 import java.util.List;
 

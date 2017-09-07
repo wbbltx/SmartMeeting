@@ -8,21 +8,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.database.LoginDataDao;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.LoginData;
-import com.newchinese.smartmeeting.net.ApiService;
-import com.newchinese.smartmeeting.net.NetProviderImpl;
-import com.newchinese.smartmeeting.net.NetUrl;
-import com.newchinese.smartmeeting.net.XApi;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.http.ApiService;
+import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
+import com.newchinese.smartmeeting.entity.http.NetUrl;
+import com.newchinese.smartmeeting.entity.http.XApi;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

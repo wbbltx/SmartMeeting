@@ -1,7 +1,7 @@
 package com.newchinese.smartmeeting.manager;
 
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
-import com.newchinese.smartmeeting.model.bean.NoteStroke;
+import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 
 /**
  * Description:   线表操作类

@@ -6,11 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.Constant;
-import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.constant.Constant;
+import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 
 import java.util.List;
 

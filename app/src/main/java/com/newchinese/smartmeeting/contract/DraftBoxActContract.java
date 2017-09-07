@@ -1,13 +1,10 @@
 package com.newchinese.smartmeeting.contract;
 
 import android.bluetooth.BluetoothDevice;
-import android.view.View;
-import android.widget.TextView;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
-import com.newchinese.smartmeeting.listener.PopWindowListener;
-import com.newchinese.smartmeeting.model.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
 
 import java.util.List;
 

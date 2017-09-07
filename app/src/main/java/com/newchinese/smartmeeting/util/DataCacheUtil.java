@@ -3,11 +3,11 @@ package com.newchinese.smartmeeting.util;
 import android.bluetooth.BluetoothDevice;
 
 import com.newchinese.coolpensdk.entity.NotePoint;
-import com.newchinese.smartmeeting.app.Constant;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
-import com.newchinese.smartmeeting.model.bean.NotePage;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
+import com.newchinese.smartmeeting.constant.Constant;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 
 import java.util.ArrayList;
 import java.util.HashSet;

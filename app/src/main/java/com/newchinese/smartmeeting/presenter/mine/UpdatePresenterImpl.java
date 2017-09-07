@@ -2,10 +2,10 @@ package com.newchinese.smartmeeting.presenter.mine;
 
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.MineContract;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.FeedBack;
-import com.newchinese.smartmeeting.model.bean.LoginData;
-import com.newchinese.smartmeeting.model.model.UpdateModelImpl;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.FeedBack;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.model.UpdateModelImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 

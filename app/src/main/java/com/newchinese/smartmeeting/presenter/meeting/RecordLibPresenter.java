@@ -3,8 +3,8 @@ package com.newchinese.smartmeeting.presenter.meeting;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.RecordLibContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
-import com.newchinese.smartmeeting.model.bean.NotePage;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 

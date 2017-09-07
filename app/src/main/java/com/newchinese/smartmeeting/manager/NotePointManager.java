@@ -1,7 +1,7 @@
 package com.newchinese.smartmeeting.manager;
 
 import com.newchinese.smartmeeting.database.NotePointDao;
-import com.newchinese.smartmeeting.model.bean.NotePoint;
+import com.newchinese.smartmeeting.entity.bean.NotePoint;
 
 /**
  * Description:   点表操作类

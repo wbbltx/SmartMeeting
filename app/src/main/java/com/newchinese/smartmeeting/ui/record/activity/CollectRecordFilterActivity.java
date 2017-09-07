@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.CollectRecordFilterActContract;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
-import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.record.CollectRecordFilterActPresenter;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**

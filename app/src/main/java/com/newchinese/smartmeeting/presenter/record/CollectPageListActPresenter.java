@@ -5,8 +5,8 @@ import android.util.Log;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.CollectPageListActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 

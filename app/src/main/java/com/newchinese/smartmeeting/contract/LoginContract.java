@@ -4,9 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.base.BaseView;
-import com.newchinese.smartmeeting.base.IToolbar;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.LoginData;
+import com.newchinese.smartmeeting.base.BaseToolbar;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
 
 /**
  * Created by Administrator on 2017-08-24.
@@ -14,7 +14,7 @@ import com.newchinese.smartmeeting.model.bean.LoginData;
 
 public interface LoginContract {
 
-    interface LoginIView<E> extends IToolbar {
+    interface LoginIView<E> extends BaseToolbar {
 
         void skipWhat();
 
@@ -24,7 +24,7 @@ public interface LoginContract {
     }
 
 
-    abstract class  LoginIView1<E> extends AppCompatActivity implements BaseView<E>, IToolbar {
+    abstract class  LoginIView1<E> extends AppCompatActivity implements BaseView<E>, BaseToolbar {
         abstract void skipRegist();
         abstract void skipForget(String user);
         abstract void skipLogin();

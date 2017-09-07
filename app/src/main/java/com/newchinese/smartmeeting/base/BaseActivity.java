@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
 import com.newchinese.smartmeeting.app.App;
-import com.newchinese.smartmeeting.listener.PopWindowListener;
-import com.newchinese.smartmeeting.log.XLog;
-import com.newchinese.smartmeeting.model.event.ConnectEvent;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
+import com.newchinese.smartmeeting.util.log.XLog;
+import com.newchinese.smartmeeting.entity.event.ConnectEvent;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
@@ -32,14 +32,12 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     private AlertDialog.Builder mBuilder;
     private AlertDialog mAlertDialog;
     protected ScanResultDialog scanResultDialog;
-//    public Animation animation;
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         scanResultDialog = new ScanResultDialog(this);
         //初始化Presenter
         mPresenter = initPresenter();
-//        animation = AnimationUtils.loadAnimation(this, R.anim.pen_loading);
         //给Presenter绑定View
         if (mPresenter != null) {
             mPresenter.attachView(this);
@@ -161,5 +159,4 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                 })
                 .create().show();
     }
-
 }

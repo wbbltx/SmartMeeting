@@ -14,7 +14,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.Constant;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.ui.login.activity.RegisterActivity;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.mine.activity.SettingActivity;

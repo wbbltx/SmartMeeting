@@ -2,23 +2,17 @@ package com.newchinese.smartmeeting.ui.meeting.fragment;
 
 import android.content.Intent;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.app.Constant;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
-import com.newchinese.smartmeeting.model.bean.NoteRecord;
-import com.newchinese.smartmeeting.model.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
-import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;

@@ -16,7 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
 import com.newchinese.smartmeeting.ui.meeting.activity.RecordLibActivity;
 
 import java.util.ArrayList;

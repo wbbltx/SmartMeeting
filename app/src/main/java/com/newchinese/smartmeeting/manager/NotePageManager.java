@@ -2,7 +2,7 @@ package com.newchinese.smartmeeting.manager;
 
 
 import com.newchinese.smartmeeting.database.NotePageDao;
-import com.newchinese.smartmeeting.model.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
 
 import java.util.List;
 import java.util.Objects;

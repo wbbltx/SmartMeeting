@@ -2,7 +2,6 @@ package com.newchinese.smartmeeting.ui.meeting.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.model.event.ColorEvent;
+import com.newchinese.smartmeeting.entity.event.ColorEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

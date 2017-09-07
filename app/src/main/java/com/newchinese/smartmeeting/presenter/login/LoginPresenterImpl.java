@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.LoginContract;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.LoginData;
-import com.newchinese.smartmeeting.model.model.LoginModelImpl;
-import com.newchinese.smartmeeting.net.NetUrl;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.model.LoginModelImpl;
+import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 

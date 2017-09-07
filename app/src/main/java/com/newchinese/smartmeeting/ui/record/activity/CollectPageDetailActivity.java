@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
-import com.newchinese.smartmeeting.listener.OnShareListener;
-import com.newchinese.smartmeeting.listener.ShareCallBackListener;
-import com.newchinese.smartmeeting.model.bean.CollectPage;
+import com.newchinese.smartmeeting.entity.listener.OnShareListener;
+import com.newchinese.smartmeeting.entity.listener.ShareCallBackListener;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectPageAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;

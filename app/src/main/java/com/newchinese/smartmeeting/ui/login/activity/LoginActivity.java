@@ -7,15 +7,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.contract.LoginContract;
-import com.newchinese.smartmeeting.model.bean.BaseResult;
-import com.newchinese.smartmeeting.model.bean.LoginData;
-import com.newchinese.smartmeeting.net.NetUrl;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
+import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;

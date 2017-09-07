@@ -3,7 +3,7 @@ package com.newchinese.smartmeeting.presenter.record;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.CollectRecordFilterActContract;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
-import com.newchinese.smartmeeting.model.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 
 import java.util.List;

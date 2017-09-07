@@ -2,7 +2,6 @@ package com.newchinese.smartmeeting.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -10,8 +9,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
-import com.newchinese.smartmeeting.listener.PopWindowListener;
-import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 
 /**
  * Description:   弹出是否开启蓝牙的框

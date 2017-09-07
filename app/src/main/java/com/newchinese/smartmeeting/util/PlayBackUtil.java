@@ -3,7 +3,7 @@ package com.newchinese.smartmeeting.util;
 
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
-import com.newchinese.smartmeeting.log.XLog;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.util.ArrayList;
 
