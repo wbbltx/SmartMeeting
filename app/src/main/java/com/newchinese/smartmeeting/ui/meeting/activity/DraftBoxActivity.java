@@ -65,7 +65,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         DraftBoxActContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
         OnItemClickedListener, View.OnClickListener {
     private static final String TAG = "DraftBoxActivity";
-    private static boolean isFirstTime = true;
+    //    private static boolean isFirstTime = true;
     @BindView(R.id.iv_empty)
     ImageView ivEmpty; //空页面背景
     @BindView(R.id.iv_back)
@@ -277,6 +277,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().isFirstTime());
         if (hasFocus) {
             boolean bluetoothOpen = mPresenter.isBluetoothOpen();
             if (!bluetoothOpen) {
@@ -284,10 +285,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             } else {
                 initView();
             }
-            if (isFirstTime) {
+            if (DataCacheUtil.getInstance().isFirstTime()) {
                 XLog.d(TAG, TAG + " onWindowFocusChanged");
                 checkBle(false);
-                isFirstTime = false;
+                DataCacheUtil.getInstance().setFirstTime(false);
+//                isFirstTime = false;
             }
         }
     }
@@ -299,9 +301,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onScanComplete() {
         XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
         if (mPresenter.isConnected() && !isFinishing()) {
+            XLog.d(TAG, TAG + " 123123 ");
             scanResultDialog.show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
+            XLog.d(TAG, TAG + " 456456 ");
             EventBus.getDefault().post(new ScanResultEvent(0));
             onComplete();
         }
@@ -325,12 +329,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
         } else {
             if (mPresenter.isConnected() && !isClick) {
-                XLog.d("haha", "连接状态" + mPresenter.isConnected());
+                XLog.d(TAG, TAG + " 11111");
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
             } else {
-//                mPresenter.scanBlueDevice();
-                EventBus.getDefault().post(new ScanEvent());
-                mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
+                if (!mPresenter.isScanning()) {
+                    XLog.d(TAG, TAG + " 22222");
+                    EventBus.getDefault().post(new ScanEvent());
+                    mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
+                }
             }
         }
     }
@@ -370,10 +376,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onSuccess() {
+        XLog.d(TAG, TAG + "onSuccess");
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
-        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
-//        ivPen.setImageResource(R.mipmap.pen_normal_power);
+//        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
+        ivPen.setImageResource(R.mipmap.pen_normal_power);
 //        开启定时任务获取电量
         mPresenter.startTimer();
     }
@@ -394,10 +401,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onDisconnected() {
-        XLog.d(TAG, TAG + "中的onDisconnected被调用1");
+        XLog.d(TAG, TAG + " onDisconnected");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
-        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
-//        ivPen.setBackgroundResource(R.mipmap.pen_disconnect);
+//        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
+        if (ivPen != null)
+            ivPen.setImageResource(R.mipmap.pen_disconnect);
         mPresenter.stopTimer();
     }
 

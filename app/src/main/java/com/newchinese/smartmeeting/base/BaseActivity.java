@@ -90,6 +90,7 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
         if (count == 0) {//如果没有搜索到笔，提示
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
         } else {
+            XLog.d(TAG, TAG + " onComplete 设备不为0");
             for (BluetoothDevice device : devices) {
                 if (device.getAddress().equals(address)) {
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {

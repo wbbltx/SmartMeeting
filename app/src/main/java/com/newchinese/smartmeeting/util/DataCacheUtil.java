@@ -39,6 +39,15 @@ public class DataCacheUtil {
     private List<String> recordPathList;  //当页的录屏文件路径集合
     private String thumbPath;      //最近的缩略图的路径
     private BluetoothDevice device;//保存蓝牙的临时变量
+    private boolean isFirstTime = true; //b草稿箱界面是否需要初始化蓝牙标志
+
+    public boolean isFirstTime() {
+        return isFirstTime;
+    }
+
+    public void setFirstTime(boolean firstTime) {
+        isFirstTime = firstTime;
+    }
 
     public BluetoothDevice getDevice() {
         return device;
