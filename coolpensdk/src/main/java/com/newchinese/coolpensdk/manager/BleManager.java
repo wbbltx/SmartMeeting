@@ -33,14 +33,14 @@ public class BleManager {
 
     private Context context;
 
-    private static final String TAG = BluetoothLe.class.getName();
+    private static final String TAG = "BleManager";
     private static final int DEFAULT_COUNT = 1;
     private static final int DEFAULT_TIMEOUT = 800;
 
     private boolean mRetryConnectEnable = false;
     private boolean isServiceDiscovered;
     private boolean isConnected = false;
-    private boolean isScanning;
+    private boolean isScanning = false;
 
     private int connectTimeoutMillis = DEFAULT_TIMEOUT;
     private int mRetryConnectCount = DEFAULT_COUNT;
@@ -215,8 +215,8 @@ public class BleManager {
             public void run() {
                 if (getConnected() == false){
                     Log.i(TAG, "connect timeout...");
-                    isConnected = true;
-                    disconnect();
+//                    isConnected = true;
+//                    disconnect();
                     onConnectListener.onFailed(0);
                 }
             }
@@ -353,7 +353,7 @@ public class BleManager {
     void close() {
         if (gatt != null) {
             cancelReadRssiTimerTask();
-//            Log.i(TAG, "gatt不为空，执行关闭置空gatt");
+            Log.i(TAG, "gatt not null，close gatt");
             isConnected = false;
             isServiceDiscovered = false;
             gatt.close();
@@ -366,7 +366,7 @@ public class BleManager {
             cancelReadRssiTimerTask();
             isConnected = false;
             isServiceDiscovered = false;
-//            mHandler.removeCallbacksAndMessages(null);
+            mHandler.removeCallbacksAndMessages(null);
             Log.e(TAG, "final disconnect is called");
             gatt.disconnect();
         }
@@ -434,12 +434,10 @@ public class BleManager {
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
-            Log.i(TAG, "扫描到设备：");
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (onBleScanListener != null) {
-                        Log.i(TAG, "扫描到设备回调");
                         onBleScanListener.onScanResult(device, rssi, scanRecord);
                     }
                 }

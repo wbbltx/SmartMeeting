@@ -1,19 +1,13 @@
 package com.newchinese.coolpensdk.manager;
 
-import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.listener.OnBleScanListener;
@@ -334,7 +328,7 @@ public class BluetoothLe {
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "onConnectionStateChange STATE_DISCONNECTED called");
-                isServiceDiscovered = false;
+                bleManager.close();
                 bleManager.setIsConnected(false);
                 if (status == 133) {
                     Log.i(TAG, "onConnectionStateChange 133 " + errorCount);

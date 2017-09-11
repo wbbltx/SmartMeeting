@@ -88,12 +88,15 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
         List<BluetoothDevice> devices = scanResultDialog.getDevices();
         String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
         if (count == 0) {//如果没有搜索到笔，提示
+            XLog.d(TAG, TAG + " 请开启酷神笔！");
             CustomizedToast.showShort(App.getAppliction(), "请开启酷神笔！");
         } else {
             XLog.d(TAG, TAG + " onComplete 设备不为0");
             for (BluetoothDevice device : devices) {
                 if (device.getAddress().equals(address)) {
+                    XLog.d(TAG, TAG + " onComplete 遍历设备 与本地保存上次连接设备相同");
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
+                        XLog.d(TAG, TAG + " onComplete 连接设备");
                         EventBus.getDefault().post(new ConnectEvent(device, 0));
                     }
                     return;
@@ -102,6 +105,7 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
 //            if (count == 1) {
 //                showDialog(devices.get(0));
 //            } else {
+            XLog.d(TAG, TAG + " 显示设备列表");
             if (scanResultDialog != null)
                 scanResultDialog.show();
 //            }

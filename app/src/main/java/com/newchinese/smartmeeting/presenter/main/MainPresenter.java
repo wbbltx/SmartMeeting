@@ -39,6 +39,7 @@ import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.File;
 import java.util.List;
@@ -52,6 +53,7 @@ import java.util.concurrent.Executors;
  */
 
 public class MainPresenter extends BasePresenter<MainActContract.View> implements MainActContract.Presenter {
+    private static final java.lang.String TAG = "MainPresenter";
     private NoteRecordDao noteRecordDao;
     private NotePageDao notePageDao;
     private NoteStrokeDao noteStrokeDao;
@@ -342,7 +344,8 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
 
     @Override
     public void disconnect() {
-//        退出应用是蓝牙断开 状态初始化为断开
-        BluetoothLe.getDefault().disconnectBleDevice();
+//        退出应用 蓝牙断开 状态初始化为断开
+        if (dataCacheUtil.getPenState() == BluCommonUtils.PEN_CONNECTED)
+            BluetoothLe.getDefault().disconnectBleDevice();
     }
 }

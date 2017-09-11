@@ -233,7 +233,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 i = R.mipmap.pen_disconnect;
                 break;
         }
-        if (mView != null) {//当在main界面的时候 如果处于连接状态，还会发送电量信息，当电量小于30，笔的状态会设置相应的图标，但此时该界面是没有笔图标控件的，会导致空指针，需进行判空
+        if (mView != null) {
             mView.setState(i);
         }
     }

@@ -76,7 +76,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     TextView tvTitle; //标题
     @BindView(R.id.tv_right)
     TextView tvRight; //全选/全不选
-    @BindView(R.id.iv_pen)
+    //    @BindView(R.id.iv_pen)
     ImageView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
@@ -109,6 +109,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         viewCreateRecord = LayoutInflater.from(this).inflate(R.layout.layout_create_record, null);
         tvCancel = (TextView) viewCreateRecord.findViewById(R.id.tv_cancel);
         tvCreate = (TextView) viewCreateRecord.findViewById(R.id.tv_create);
+        ivPen = (ImageView) findViewById(R.id.iv_pen);
         //初始化PopupWindow
         pwCreateRecord = new PopupWindow(viewCreateRecord, RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -123,11 +124,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     private void initView() {
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
-            ivPen.setImageResource(R.mipmap.pen_normal_power);
+            setState(R.mipmap.pen_normal_power);
         } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
-            ivPen.setImageResource(R.mipmap.weilianjie);
+            setState(R.mipmap.weilianjie);
         } else {
-            ivPen.setImageResource(R.mipmap.pen_disconnect);
+            setState(R.mipmap.pen_disconnect);
         }
     }
 
@@ -251,7 +252,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hintbuilder = new FirstTimeHintDialog.Builder(this);
         hintbuilder.setPositiveButton(new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mPresenter.scanBlueDevice();
+                EventBus.getDefault().post(new ScanEvent());
+                XLog.d(TAG, TAG + "中去请求扫描");
                 CustomizedToast.showShort(DraftBoxActivity.this, "扫描蓝牙笔");
                 dialog.dismiss();
             }
@@ -300,12 +302,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onScanComplete() {
         XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
-        if (mPresenter.isConnected() && !isFinishing()) {
-            XLog.d(TAG, TAG + " 123123 ");
+        if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
             scanResultDialog.show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
-            XLog.d(TAG, TAG + " 456456 ");
             EventBus.getDefault().post(new ScanResultEvent(0));
             onComplete();
         }
@@ -318,7 +318,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void showResult(BluetoothDevice s) {
-        XLog.d(TAG, TAG + " onScanComplete");
+        XLog.d(TAG, TAG + " showResult " + s.getAddress());
         scanResultDialog.addDevice(s);
         EventBus.getDefault().post(new AddDeviceEvent(s));
     }
@@ -328,12 +328,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (!bluetoothOpen) {
             bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
         } else {
-            if (mPresenter.isConnected() && !isClick) {
-                XLog.d(TAG, TAG + " 11111");
+            if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isClick) {
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
             } else {
                 if (!mPresenter.isScanning()) {
-                    XLog.d(TAG, TAG + " 22222");
                     EventBus.getDefault().post(new ScanEvent());
                     mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
                 }
@@ -348,7 +346,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Subscribe
     public void onEvent(ConnectEvent type) {//重新连接
-        if (mPresenter.isConnected()) {
+        if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
             mPresenter.disConnect();
         }
         mPresenter.connectDevice(type.getDevice());
@@ -376,11 +374,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onSuccess() {
-        XLog.d(TAG, TAG + "onSuccess");
+        XLog.d(TAG, TAG + " onSuccess");
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
-        ivPen.setImageResource(R.mipmap.pen_normal_power);
+        setState(R.mipmap.pen_normal_power);
 //        开启定时任务获取电量
         mPresenter.startTimer();
     }
@@ -389,14 +387,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onFailed() {
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
-//        ivPen.setBackgroundResource(R.mipmap.pen_disconnect);
     }
 
     @Override
     public void onConnecting() {
         EventBus.getDefault().post(new CheckBlueStateEvent(0));
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTING);
-//        ivPen.setBackgroundResource(R.mipmap.pen_loading);
     }
 
     @Override
@@ -404,8 +400,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         XLog.d(TAG, TAG + " onDisconnected");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
-        if (ivPen != null)
-            ivPen.setImageResource(R.mipmap.pen_disconnect);
+        setState(R.mipmap.pen_disconnect);
         mPresenter.stopTimer();
     }
 
@@ -420,7 +415,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void setState(int id) {
-        ivPen.setImageResource(id);
+        if (ivPen != null)
+            ivPen.setImageResource(id);
     }
 
     @Override
@@ -542,5 +538,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Subscribe
     public void onEvent(ScanEvent scanEvent) {
         mPresenter.scanBlueDevice();
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 }

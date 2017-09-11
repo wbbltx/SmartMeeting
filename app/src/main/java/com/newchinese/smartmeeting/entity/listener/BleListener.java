@@ -107,7 +107,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onFailed(int i) {
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_FAILED);
         mView.onFailed();
-        XLog.d(TAG, "连接失败");
+        XLog.d(TAG, "连接失败"+i);
     }
 
     @Override
