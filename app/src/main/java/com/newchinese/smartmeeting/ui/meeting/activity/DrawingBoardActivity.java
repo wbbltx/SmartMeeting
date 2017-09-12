@@ -373,9 +373,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 获取到数据库的点
      */
     @Override
-    public void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth) {
-        //转换点对象为SDK所需格式并绘制
-        drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
+    public void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth, int cachePageIndex) {
+        if (pageIndex == cachePageIndex) { //当前页的点才绘制，防止当前页还未加载完点时翻到下一页，造成点数据绘制错乱
+            //转换点对象为SDK所需格式并绘制
+            drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
+        }
     }
 
     /**
@@ -402,6 +404,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                         //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+//                        mPresenter.shutDownExecutorThread(); //中断当前页的加载点线程
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
@@ -420,8 +423,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position >= 0 && position < (activeNotePageList.size() - 1)) {
                         //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
-                        //截图
+                        //截图 
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
+//                        mPresenter.shutDownExecutorThread(); //中断当前页的加载点线程
                         drawViewMeeting.clearCanvars(); //换页清空画布
                         DrawingboardAPI.getInstance().clearCache(); //清空点缓存
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码

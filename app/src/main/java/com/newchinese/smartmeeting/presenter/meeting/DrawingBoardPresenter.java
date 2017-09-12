@@ -49,8 +49,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -89,6 +91,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     private List<String> strings = new ArrayList<>();
     private Matrix cacheMatrix;
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
+//    private Callable<String> threadCall;
+//    private Future<String> future;
 
     @Override
     public void onPresenterCreated() {
@@ -100,6 +104,13 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         //初始化线程池
         singleThreadExecutor = Executors.newSingleThreadExecutor();
+//        threadCall = new Callable<String>() {
+//            @Override
+//            public String call() throws Exception {
+//                return "true";
+//            }
+//        };
+//        future = singleThreadExecutor.submit(threadCall);
     }
 
     @Override
@@ -334,7 +345,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                                             new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
                                                     notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
                                                     notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
-                                    mView.getDataBasePoint(sdkPoint, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth());
+                                    mView.getDataBasePoint(sdkPoint, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth(), pageIndex);
                                 }
                             } else Log.e("test_greendao", "currentNotePointListData当前点集合为空");
                         }
@@ -699,6 +710,15 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     public void shutDownExecutor() {
         singleThreadExecutor.shutdownNow();
     }
+
+//    /**
+//     * 中断线程池中线程
+//     */
+//    public void shutDownExecutorThread() {
+//        future.isCancelled();
+//        future.isDone();
+//        future.cancel(true);
+//    }
 
     public String timeParse(long duration) {
         String time = "";

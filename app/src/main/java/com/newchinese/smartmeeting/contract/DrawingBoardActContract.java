@@ -23,7 +23,8 @@ import io.reactivex.disposables.Disposable;
 
 public interface DrawingBoardActContract {
     interface View<E> extends BaseView<E> {
-        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor, float strokeWidth);
+        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor,
+                              float strokeWidth, int cachePageIndex);
 
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
