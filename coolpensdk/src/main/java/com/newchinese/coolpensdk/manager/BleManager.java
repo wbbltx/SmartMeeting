@@ -33,14 +33,14 @@ public class BleManager {
 
     private Context context;
 
-    private static final String TAG = BluetoothLe.class.getName();
+    private static final String TAG = "BleManager";
     private static final int DEFAULT_COUNT = 1;
     private static final int DEFAULT_TIMEOUT = 800;
 
     private boolean mRetryConnectEnable = false;
     private boolean isServiceDiscovered;
     private boolean isConnected = false;
-    private boolean isScanning;
+    private boolean isScanning = false;
 
     private int connectTimeoutMillis = DEFAULT_TIMEOUT;
     private int mRetryConnectCount = DEFAULT_COUNT;
@@ -50,7 +50,8 @@ public class BleManager {
     private Handler mHandler;
     private Timer mTimer;
     private TimerTask mTimerTask;
-    private int delayTime = 15000;
+    private int delayTime = 20000;
+    private OnBleScanListener onBleScanListener;
 
     BleManager(Context context, Handler handler) {
         this.context = context;
@@ -133,10 +134,11 @@ public class BleManager {
 
     //        BluetoothLeScanner
     //扫描
-    void scanLeDevice(UUID[] serviceUUID, int scanPeriod, final BluetoothAdapter.LeScanCallback mLeScanCallback, final OnBleScanListener onBleScanListener) {
-        stopScanLeDevice(mLeScanCallback);
+    void scanLeDevice(UUID[] serviceUUID, int scanPeriod) {
+        Log.i(TAG, "start scan");
+        stopScanLeDevice();
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (null == serviceUUID || 0 == serviceUUID.length) {
+        if (null == serviceUUID || 0 == serviceUUID.length || Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             bluetoothAdapter.startLeScan(mLeScanCallback);
         } else {
 //            bluetoothAdapter.startLeScan(serviceUUID, mLeScanCallback);
@@ -150,9 +152,7 @@ public class BleManager {
             @Override
             public void run() {
                 if (isScanning) {
-                    onBleScanListener.onScanCompleted();
-                    stopScanLeDevice(mLeScanCallback);
-                    Log.i(TAG, "stopScanLeDevice");
+                    stopScanLeDevice();
                 }
             }
         }, scanPeriod);
@@ -160,11 +160,19 @@ public class BleManager {
 
 
     //停止扫描  正在扫描时才可以停止扫描
-    void stopScanLeDevice(BluetoothAdapter.LeScanCallback mLeScanCallback) {
+    void stopScanLeDevice() {
         if (isScanning == true) {
             Log.i(TAG, "stop scan");
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             bluetoothAdapter.stopLeScan(mLeScanCallback);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (onBleScanListener != null) {
+                        onBleScanListener.onScanCompleted();
+                    }
+                }
+            });
             isScanning = false;
         }
     }
@@ -189,7 +197,7 @@ public class BleManager {
 //        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice remoteDevice = getBluetoothDevice(remote);
 
-        Log.i(TAG, "start connect" + System.currentTimeMillis());
+        Log.i(TAG, "start connect:" + remoteDevice.getAddress());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             gatt = remoteDevice.connectGatt(context, autoConnect, bluetoothGattCallback, TRANSPORT_LE);
@@ -207,8 +215,8 @@ public class BleManager {
             public void run() {
                 if (getConnected() == false){
                     Log.i(TAG, "connect timeout...");
-                    isConnected = true;
-                    disconnect();
+//                    isConnected = true;
+//                    disconnect();
                     onConnectListener.onFailed(0);
                 }
             }
@@ -242,14 +250,11 @@ public class BleManager {
      * @param bluetoothGattCallback
      */
     private void checkConnected(final Object address, final boolean autoConnect, final BluetoothGattCallback bluetoothGattCallback, final OnConnectListener onConnectListener) {
-        Log.i(TAG, mRetryConnectEnable + "------" + mRetryConnectCount + "------" + connectTimeoutMillis);
         if (mRetryConnectEnable && mRetryConnectCount > 0 && connectTimeoutMillis > 0) {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    Log.i(TAG, "决定是否进入重连---" + isConnected);
                     if (isConnected == false) {
-//                        Log.i(TAG, mRetryConnectCount + "---进入重连---" + isConnected + "---" + connectTimeoutMillis + "以后在执行");
                         connect(address, autoConnect, bluetoothGattCallback, onConnectListener);
                         mRetryConnectCount = mRetryConnectCount - 1;
                     }
@@ -348,7 +353,7 @@ public class BleManager {
     void close() {
         if (gatt != null) {
             cancelReadRssiTimerTask();
-//            Log.i(TAG, "gatt不为空，执行关闭置空gatt");
+            Log.i(TAG, "gatt not null，close gatt");
             isConnected = false;
             isServiceDiscovered = false;
             gatt.close();
@@ -361,6 +366,7 @@ public class BleManager {
             cancelReadRssiTimerTask();
             isConnected = false;
             isServiceDiscovered = false;
+            mHandler.removeCallbacksAndMessages(null);
             Log.e(TAG, "final disconnect is called");
             gatt.disconnect();
         }
@@ -420,6 +426,27 @@ public class BleManager {
         } else {
             Log.i(TAG, "please make sure the bluetooth device is connected");
         }
+    }
+
+    /**
+     * 扫描回调
+     */
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (onBleScanListener != null) {
+                        onBleScanListener.onScanResult(device, rssi, scanRecord);
+                    }
+                }
+            });
+        }
+    };
+
+    public void setOnBleScanListener(OnBleScanListener onBleScanListener){
+        this.onBleScanListener = onBleScanListener;
     }
 
     boolean getScanning() {

@@ -34,5 +34,7 @@ public interface MainActContract {
         void createSDCardDirectory();
 
         void saveRecordPage(int i);
+
+        void disconnect();
     }
 }

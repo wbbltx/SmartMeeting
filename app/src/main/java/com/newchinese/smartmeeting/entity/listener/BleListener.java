@@ -98,6 +98,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onDisconnected() {
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_DISCONNECTED);
+        DataCacheUtil.getInstance().setFirstTime(true);
         mView.onDisconnected();
         XLog.d(TAG, TAG + " 连接断开");
     }
@@ -106,7 +107,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onFailed(int i) {
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_FAILED);
         mView.onFailed();
-        XLog.d(TAG, "连接失败");
+        XLog.d(TAG, "连接失败"+i);
     }
 
     @Override

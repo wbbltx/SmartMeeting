@@ -90,7 +90,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
 
     @Override
     public void scanBlueDevice() {
-        BluetoothLe.getDefault().setScanPeriod(5000).startScan();
+        BluetoothLe
+                .getDefault()
+                .setScanPeriod(5000).startScan();
     }
 
     @Override
@@ -197,7 +199,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     public void connectDevice(BluetoothDevice device) {
         //去连接设备时 将mac地址放在临时变量中
         DataCacheUtil.getInstance().setDevice(device);
-        BluetoothLe.getDefault().connectBleDevice(device.getAddress());
+        BluetoothLe.getDefault()
+//                .setConnectTimeOut(8000)   //设置连接超时
+                .connectBleDevice(device.getAddress());
     }
 
     @Override
@@ -229,9 +233,14 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 i = R.mipmap.pen_disconnect;
                 break;
         }
-        if (mView != null) {//当在main界面的时候 如果处于连接状态，还会发送电量信息，当电量小于30，笔的状态会设置相应的图标，但此时该界面是没有笔图标控件的，会导致空指针，需进行判空
+        if (mView != null) {
             mView.setState(i);
         }
+    }
+
+    @Override
+    public boolean isScanning() {
+        return BluetoothLe.getDefault().getScanning();
     }
 
 }

@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.constants.PointType;
+import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
@@ -32,11 +33,13 @@ import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.File;
 import java.util.List;
@@ -50,6 +53,7 @@ import java.util.concurrent.Executors;
  */
 
 public class MainPresenter extends BasePresenter<MainActContract.View> implements MainActContract.Presenter {
+    private static final java.lang.String TAG = "MainPresenter";
     private NoteRecordDao noteRecordDao;
     private NotePageDao notePageDao;
     private NoteStrokeDao noteStrokeDao;
@@ -119,6 +123,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     @Override
     public void onPresenterDestroy() {
         singleThreadExecutor.shutdown();
+        disconnect();
     }
 
     /**
@@ -335,5 +340,12 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
         if (DataCacheUtil.getInstance().isRecording()) {
             DataCacheUtil.getInstance().addPages(i);
         }
+    }
+
+    @Override
+    public void disconnect() {
+//        退出应用 蓝牙断开 状态初始化为断开
+        if (dataCacheUtil.getPenState() == BluCommonUtils.PEN_CONNECTED)
+            BluetoothLe.getDefault().disconnectBleDevice();
     }
 }

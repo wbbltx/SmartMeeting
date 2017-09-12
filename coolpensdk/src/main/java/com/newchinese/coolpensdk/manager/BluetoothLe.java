@@ -1,19 +1,13 @@
 package com.newchinese.coolpensdk.manager;
 
-import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.listener.OnBleScanListener;
@@ -36,7 +30,7 @@ public class BluetoothLe {
     private int scanPeriod = 30000;
     private int errorCount = 1;
     private UUID[] serviceUUID = {BluUUIDUtils.BtSmartUuid.UUID_SERVICE.getUuid()};
-    private OnBleScanListener onBleScanListener;
+//    private OnBleScanListener onBleScanListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private boolean is_Receive_No_Key_Write_Success_State;
     private boolean is_Receive_Have_Key_Write_Success_State;
@@ -130,22 +124,22 @@ public class BluetoothLe {
         return bleManager.isBluetoothOpen();
     }
 
-    /**
-     * 扫描回调
-     */
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (onBleScanListener != null) {
-                        onBleScanListener.onScanResult(device, rssi, scanRecord);
-                    }
-                }
-            });
-        }
-    };
+//    /**
+//     * 扫描回调
+//     */
+//    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+//        @Override
+//        public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
+//            mHandler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (onBleScanListener != null) {
+//                        onBleScanListener.onScanResult(device, rssi, scanRecord);
+//                    }
+//                }
+//            });
+//        }
+//    };
 
     /**
      * @param scanPeriod 设置扫描时长 不设置默认为10秒
@@ -170,7 +164,7 @@ public class BluetoothLe {
      */
     public void startScan() {
         if (isBluetoothOpen()) {
-            bleManager.scanLeDevice(serviceUUID, scanPeriod, mLeScanCallback,onBleScanListener);
+            bleManager.scanLeDevice(serviceUUID, scanPeriod);
         } else {
             Log.i(TAG, "please turn on bluetooth first");
         }
@@ -180,15 +174,15 @@ public class BluetoothLe {
      * 停止扫描
      */
     public void stopScan() {
-        bleManager.stopScanLeDevice(mLeScanCallback);
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (onBleScanListener != null) {
-                    onBleScanListener.onScanCompleted();
-                }
-            }
-        });
+        bleManager.stopScanLeDevice();
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (onBleScanListener != null) {
+//                    onBleScanListener.onScanCompleted();
+//                }
+//            }
+//        });
     }
 
     /**
@@ -225,22 +219,22 @@ public class BluetoothLe {
     }
 
     //    设置是否允许重连 默认不允许
-    public BluetoothLe setRetryConnectEnable(boolean b) {
-        bleManager.setRetryConnectEnable(b);
-        return this;
-    }
+//    public BluetoothLe setRetryConnectEnable(boolean b) {
+//        bleManager.setRetryConnectEnable(b);
+//        return this;
+//    }
 
     //    设置连接次数 重连状态为FALSE 设置无效 默认一次
-    public BluetoothLe setRetryConnectCount(int i) {
-        bleManager.setRetryConnectCount(i);
-        return this;
-    }
+//    public BluetoothLe setRetryConnectCount(int i) {
+//        bleManager.setRetryConnectCount(i);
+//        return this;
+//    }
 
     //    设置连接超时 重连状态为FALSE 设置无效 默认5秒
-    public BluetoothLe setConnectTimeOut(int i) {
-        bleManager.setConnectTimeOut(i);
-        return this;
-    }
+//    public BluetoothLe setConnectTimeOut(int i) {
+//        bleManager.setConnectTimeOut(i);
+//        return this;
+//    }
 
     //    允许重连功能开启之后 重连参数有所改变，再次连接以后有可能导致133错误，需要复位 ??
     public void resetRetryConfig() {
@@ -305,7 +299,7 @@ public class BluetoothLe {
             super.onConnectionStateChange(gatt, status, newState);
             Log.i(TAG, "onConnectionStateChange---" + status + "-------" + newState);
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.i(TAG, "connected 1 level" + System.currentTimeMillis());
+                Log.i(TAG, "connected 1 level");
 //                bleManager.setIsConnected(true);
                 errorCount = 1;
                 mHandler.postDelayed(new Runnable() {
@@ -334,7 +328,7 @@ public class BluetoothLe {
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "onConnectionStateChange STATE_DISCONNECTED called");
-                isServiceDiscovered = false;
+                bleManager.close();
                 bleManager.setIsConnected(false);
                 if (status == 133) {
                     Log.i(TAG, "onConnectionStateChange 133 " + errorCount);
@@ -705,7 +699,8 @@ public class BluetoothLe {
     }
 
     public void setOnBleScanListener(OnBleScanListener onBleScanListener){
-        this.onBleScanListener = onBleScanListener;
+        bleManager.setOnBleScanListener(onBleScanListener);
+//        this.onBleScanListener = onBleScanListener;
     }
 
     public void setOnCharacterReadListener(OnCharacterReadListener onCharacterReadListener) {
@@ -728,7 +723,8 @@ public class BluetoothLe {
         return bleManager.getConnected();
     }
 
-    public BluetoothLe setDelayTime(int delayTime){
+    //超时设置 默认10s
+    public BluetoothLe setConnectTimeOut(int delayTime){
         bleManager.setDelayTime(delayTime);
         return this;
     }

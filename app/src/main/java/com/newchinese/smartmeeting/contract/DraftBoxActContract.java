@@ -67,5 +67,7 @@ public interface DraftBoxActContract {
         void stopTimer();
 
         void updatePenState(int state);
+
+        boolean isScanning();
     }
 }
