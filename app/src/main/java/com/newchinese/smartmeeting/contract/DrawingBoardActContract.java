@@ -36,9 +36,9 @@ public interface DrawingBoardActContract {
 
         void setRecordCount(int i);
 
-        void setInsertViewBitmap(Bitmap insertBitmap);
+        void setInsertViewBitmap(Bitmap insertBitmap, int cachePageIndex);
 
-        void setInsertViewMatrix(Matrix matrix);
+        void setInsertViewMatrix(Matrix matrix, int cachePageIndex);
 
         void hideTakePhotoWindow();
 
@@ -64,9 +64,9 @@ public interface DrawingBoardActContract {
 
         void isCurrentPageHasInsertImage(int pageIndex);
 
-        String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data);
+        String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data, int cachePageIndex);
 
-        void loadCacheMatrix();
+        void loadCacheMatrix(int cachePageIndex);
 
         boolean isBluetoothOpen();
 

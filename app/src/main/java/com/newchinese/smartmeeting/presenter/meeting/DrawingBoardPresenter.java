@@ -88,11 +88,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     private NotePointDao notePointDao;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private RecordService recordService;
-    private List<String> strings = new ArrayList<>();
     private Matrix cacheMatrix;
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
-//    private Callable<String> threadCall;
-//    private Future<String> future;
 
     @Override
     public void onPresenterCreated() {
@@ -104,13 +101,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         //初始化线程池
         singleThreadExecutor = Executors.newSingleThreadExecutor();
-//        threadCall = new Callable<String>() {
-//            @Override
-//            public String call() throws Exception {
-//                return "true";
-//            }
-//        };
-//        future = singleThreadExecutor.submit(threadCall);
     }
 
     @Override
@@ -217,15 +207,17 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 if (currentSelectPage != null) {
                     NotePage notePage = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()), NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
                     List<String> screenPathList = notePage.getScreenPathList();
-                    if (screenPathList == null) {
-                        mView.setRecordCount(0);
-                    } else {
-                        //没有视频文件，集合有可能不为空，在这种情况下会默认有一个""的元素，是的界面显示异常
-                        if (screenPathList.size() == 1 && screenPathList.get(0) == "") {
+                    if (mView != null) {
+                        if (screenPathList == null) {
                             mView.setRecordCount(0);
                         } else {
-                            mView.setRecordCount(screenPathList.size());
-                            dataCacheUtil.setRecordPathList(screenPathList);
+                            //没有视频文件，集合有可能不为空，在这种情况下会默认有一个""的元素，是的界面显示异常
+                            if (screenPathList.size() == 1 && screenPathList.get(0) == "") {
+                                mView.setRecordCount(0);
+                            } else {
+                                mView.setRecordCount(screenPathList.size());
+                                dataCacheUtil.setRecordPathList(screenPathList);
+                            }
                         }
                     }
                 }
@@ -322,7 +314,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      */
     @Override
     public void readDataBasePoint(final int pageIndex) {
-        mView.clearCanvars(); //清屏防止有上一页缓存
+        if (mView != null) {
+            mView.clearCanvars(); //清屏防止有上一页缓存
+        }
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord(); //当前活动的分类记录表
         Log.i("test_active", "readDataBasePoint：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable readDataRunnable = new Runnable() {
@@ -345,7 +339,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                                             new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
                                                     notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
                                                     notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
-                                    mView.getDataBasePoint(sdkPoint, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth(), pageIndex);
+                                    if (mView != null)
+                                        mView.getDataBasePoint(sdkPoint, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth(), pageIndex);
                                 }
                             } else Log.e("test_greendao", "currentNotePointListData当前点集合为空");
                         }
@@ -416,7 +411,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      * 操作插入图片，计算，配置
      */
     @Override
-    public String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data) {
+    public String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data,
+                                    int cachePageIndex) {
         insertImagePath = "";
         float matrixValue[] = new float[9];
         matrix.getValues(matrixValue);
@@ -444,7 +440,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageWidth = insertBitmap.getWidth();
                     insertImageHeight = insertBitmap.getHeight();
                     matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 120);
-                    mView.setInsertViewMatrix(matrix);
+                    mView.setInsertViewMatrix(matrix, cachePageIndex);
                     float imageMatrixValue[] = new float[9];
                     matrix.getValues(imageMatrixValue);
                     insertImageX = imageMatrixValue[2];
@@ -453,7 +449,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageHeight = imageMatrixValue[4];
                     cacheMatrix = matrix;
 
-                    mView.setInsertViewBitmap(insertBitmap);
+                    mView.setInsertViewBitmap(insertBitmap, cachePageIndex);
                     mView.hideTakePhotoWindow();
                     mView.openEditInsertImage();
                 }
@@ -478,7 +474,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageWidth = insertBitmap.getWidth();
                     insertImageHeight = insertBitmap.getHeight();
                     matrix.postTranslate((w_screen / 2) - (insertImageWidth / 2), (h_screen / 2) - (insertImageHeight / 2) - 120);
-                    mView.setInsertViewMatrix(matrix);
+                    mView.setInsertViewMatrix(matrix, cachePageIndex);
                     float imageMatrixValue[] = new float[9];
                     matrix.getValues(imageMatrixValue);
                     insertImageX = imageMatrixValue[2];
@@ -487,7 +483,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageHeight = imageMatrixValue[4];
                     cacheMatrix = matrix;
 
-                    mView.setInsertViewBitmap(insertBitmap);
+                    mView.setInsertViewBitmap(insertBitmap, cachePageIndex);
                     mView.hideTakePhotoWindow();
                     mView.openEditInsertImage();
                 }
@@ -593,8 +589,10 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     matrixValue[5] = insertImageY;
                     insertImageMatrix.setValues(matrixValue);
                     cacheMatrix = insertImageMatrix;
-                    mView.setInsertViewMatrix(insertImageMatrix);
-                    mView.setInsertViewBitmap(insertBitmap);
+                    if (mView != null) {
+                        mView.setInsertViewMatrix(insertImageMatrix, pageIndex);
+                        mView.setInsertViewBitmap(insertBitmap, pageIndex);
+                    }
                 } else {
                     Log.e("test_greendao", "saveInsertImageToData：currentPage为空");
                     //换页时若无图片清空相关数据
@@ -645,9 +643,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      * 加载缓存的Matrix用于取消编辑时使用
      */
     @Override
-    public void loadCacheMatrix() {
+    public void loadCacheMatrix(int cachePageIndex) {
         if (cacheMatrix != null) {
-            mView.setInsertViewMatrix(cacheMatrix);
+            mView.setInsertViewMatrix(cacheMatrix, cachePageIndex);
             float imageMatrixValue[] = new float[9];
             cacheMatrix.getValues(imageMatrixValue);
             insertImageX = imageMatrixValue[2];
@@ -668,7 +666,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 NotePage currentPage = notePageDao.queryBuilder()
                         .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
                                 NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
-                if (currentPage != null && !currentPage.getInsertPicPath().isEmpty()) {
+                if (currentPage != null && !currentPage.getInsertPicPath().isEmpty() && mView != null) {
                     mView.openEditInsertImage();
                 }
             }
