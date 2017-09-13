@@ -48,6 +48,7 @@
                     android:maxLength="18"
                     android:text="工作会议"
                     android:textColor="#3D82E0"
+                    android:textCursorDrawable="@drawable/shape_cursor_color"
                     android:textSize="15sp" />
 
                 <View

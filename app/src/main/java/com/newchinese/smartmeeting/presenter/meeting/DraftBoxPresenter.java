@@ -65,7 +65,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         //活动记录
         activeNoteRecord = DataCacheUtil.getInstance().getActiveNoteRecord();
         //当前分类
-        classifyName = activeNoteRecord.getClassifyName();
+        if (activeNoteRecord != null)
+            classifyName = activeNoteRecord.getClassifyName();
         isSelectedList = new ArrayList<>();
         notePageList = new ArrayList<>();
     }
@@ -117,7 +118,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
 
     @Override
     public void stopTimer() {
-        if (timer != null && timerTask != null){
+        if (timer != null && timerTask != null) {
             timerTask.cancel();
             timer.cancel();
         }

@@ -355,11 +355,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (i == 0) {
-                    rlRecordCount.setVisibility(View.GONE);
-                } else {
-                    rlRecordCount.setVisibility(View.VISIBLE);
-                    recordCount.setText(i + "");
+                closeEditInsertImage(); //关闭图片编辑模式容错
+                if (rlRecordCount != null && recordCount != null) {
+                    if (i == 0) {
+                        rlRecordCount.setVisibility(View.GONE);
+                    } else {
+                        rlRecordCount.setVisibility(View.VISIBLE);
+                        recordCount.setText(i + "");
+                    }
                 }
             }
         });
@@ -378,9 +381,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 获取到数据库的点
      */
     @Override
-    public void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth) {
-        //转换点对象为SDK所需格式并绘制
-        drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
+    public void getDataBasePoint(NotePoint notePoint, int strokeColor, float strokeWidth, int cachePageIndex) {
+        if (pageIndex == cachePageIndex && drawViewMeeting != null) { //当前页的点才绘制，防止当前页还未加载完点时翻到下一页，造成点数据绘制错乱
+            //转换点对象为SDK所需格式并绘制
+            drawViewMeeting.drawDataBase(notePoint, strokeColor, strokeWidth);
+        }
     }
 
     /**
@@ -404,18 +409,18 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     //读下一页的数据库数据
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position > 0 && position <= (activeNotePageList.size() - 1)) {
-                        //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
                         //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        DrawingboardAPI.getInstance().clearCache(); //清空点缓存
+                        //清空当页图片，置位编辑状态，置位所有window 
+                        resetInsertImage();
+                        closeEditInsertImage();
+                        //清空点缓存
+                        DrawingboardAPI.getInstance().clearCache();
                         pageIndex = activeNotePageList.get(position - 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库点
                         mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
-                        //清空当页图片，置位编辑状态，置位所有window 
-                        resetInsertImage();
-                        closeEditInsertImage();
                         mPresenter.readInsertImageFromData(pageIndex);
                     }
                 } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 150)) {
@@ -424,18 +429,18 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     //读上一页的数据库数据
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position >= 0 && position < (activeNotePageList.size() - 1)) {
-                        //mPresenter.shutDownExecutor(); //关闭上一页未读取玩的数据库线程
-                        //截图
+                        //截图 
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        DrawingboardAPI.getInstance().clearCache(); //清空点缓存
+                        //清空当页图片，置位编辑状态，置位所有window 
+                        resetInsertImage();
+                        closeEditInsertImage();
+                        //清空点缓存
+                        DrawingboardAPI.getInstance().clearCache();
                         pageIndex = activeNotePageList.get(position + 1).getPageIndex(); //更新页码
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
                         mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
-                        //清空当页图片，置位编辑状态，置位所有window 
-                        resetInsertImage();
-                        closeEditInsertImage();
                         mPresenter.readInsertImageFromData(pageIndex);
                     }
                 }
@@ -474,7 +479,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 closeEditInsertImage();
                 break;
             case R.id.iv_image_cancle: //取消插入图片
-                mPresenter.loadCacheMatrix();
+                mPresenter.loadCacheMatrix(pageIndex);
                 closeEditInsertImage();
                 break;
             case R.id.iv_image_confirm: //确认插入图片
@@ -578,7 +583,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 startTimeDown = true;
                 dataCacheUtil.addPages(pageIndex);
             } else if (requestCode == Constant.SELECT_PIC_KITKAT || requestCode == Constant.TAKEPHOTO_SAVE_MYPATH) {
-                mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data);
+                mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data, pageIndex);
             }
         } else {
             UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
@@ -589,28 +594,35 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 设置插入图片View的Bitmap
      */
     @Override
-    public void setInsertViewBitmap(Bitmap insertBitmap) {
-        this.insertBitmap = insertBitmap;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ivInsertImage.setVisibility(View.VISIBLE);
-                ivInsertImage.setImageBitmap(DrawingBoardActivity.this.insertBitmap);
-            }
-        });
+    public void setInsertViewBitmap(Bitmap insertBitmap, int cachePageIndex) {
+        if (pageIndex == cachePageIndex) {
+            this.insertBitmap = insertBitmap;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (ivInsertImage != null) {
+                        ivInsertImage.setVisibility(View.VISIBLE);
+                        ivInsertImage.setImageBitmap(DrawingBoardActivity.this.insertBitmap);
+                    }
+                }
+            });
+        }
     }
 
     /**
      * 设置插入图片View的Matrix
      */
     @Override
-    public void setInsertViewMatrix(final Matrix matrix) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ivInsertImage.setImageMatrix(matrix);
-            }
-        });
+    public void setInsertViewMatrix(final Matrix matrix, int cachePageIndex) {
+        if (pageIndex == cachePageIndex) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (ivInsertImage != null)
+                        ivInsertImage.setImageMatrix(matrix);
+                }
+            });
+        }
     }
 
 
@@ -667,10 +679,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ivMenuBtn.setVisibility(View.GONE);
-                llInsertOperate.setVisibility(View.VISIBLE);
-                ivInsertImage.bringToFront();
-                llInsertOperate.bringToFront();
+                if (ivMenuBtn != null && llInsertOperate != null && ivInsertImage != null) {
+                    ivMenuBtn.setVisibility(View.GONE);
+                    llInsertOperate.setVisibility(View.VISIBLE);
+                    ivInsertImage.bringToFront();
+                    llInsertOperate.bringToFront();
+                }
             }
         });
     }
@@ -812,7 +826,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void onDestroy() {
         if (pageIndex != 0) {
-            mPresenter.loadCacheMatrix();
+            mPresenter.loadCacheMatrix(pageIndex);
             closeEditInsertImage();
             mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
         }
@@ -822,6 +836,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             shareBitmap.recycle();
             shareBitmap = null;
         }
+        mPresenter.shutDownExecutor();
         super.onDestroy();
     }
 

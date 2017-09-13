@@ -89,7 +89,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     protected void initListener() {
         rgMain.setOnCheckedChangeListener(this);
         drawingboardAPI.setOnPointListener(this);
-//        mPresenter.initListener();
     }
 
     /**

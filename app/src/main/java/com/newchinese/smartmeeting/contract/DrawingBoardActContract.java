@@ -23,7 +23,8 @@ import io.reactivex.disposables.Disposable;
 
 public interface DrawingBoardActContract {
     interface View<E> extends BaseView<E> {
-        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor, float strokeWidth);
+        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor,
+                              float strokeWidth, int cachePageIndex);
 
         void getFirstStrokeCachePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
@@ -35,9 +36,9 @@ public interface DrawingBoardActContract {
 
         void setRecordCount(int i);
 
-        void setInsertViewBitmap(Bitmap insertBitmap);
+        void setInsertViewBitmap(Bitmap insertBitmap, int cachePageIndex);
 
-        void setInsertViewMatrix(Matrix matrix);
+        void setInsertViewMatrix(Matrix matrix, int cachePageIndex);
 
         void hideTakePhotoWindow();
 
@@ -63,9 +64,9 @@ public interface DrawingBoardActContract {
 
         void isCurrentPageHasInsertImage(int pageIndex);
 
-        String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data);
+        String operateInsertImag(Activity activity, int requestCode, Matrix matrix, Intent data, int cachePageIndex);
 
-        void loadCacheMatrix();
+        void loadCacheMatrix(int cachePageIndex);
 
         boolean isBluetoothOpen();
 

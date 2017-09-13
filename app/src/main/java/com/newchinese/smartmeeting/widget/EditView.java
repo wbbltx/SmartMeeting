@@ -100,7 +100,7 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
     }
 
     public EditView configure(String hint, String end) {
-        mTil.setHint(hint);
+        mEt.setHint(hint);
         mTv.setText(end);
         mTv.setVisibility(end != null && !TextUtils.isEmpty(end) ? VISIBLE : GONE);
         return this;

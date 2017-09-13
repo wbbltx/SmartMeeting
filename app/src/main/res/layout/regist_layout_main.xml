@@ -1,87 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="15dp">
 
-    <com.newchinese.smartmeeting.widget.EditView
-        android:id="@+id/ev_regist_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.newchinese.smartmeeting.widget.EditView
-        android:id="@+id/ev_regist_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="@+id/ev_regist_1"
-        app:layout_constraintRight_toRightOf="@+id/ev_regist_1"
-        app:layout_constraintTop_toBottomOf="@+id/ev_regist_1" />
-
-    <com.newchinese.smartmeeting.widget.EditView
-        android:id="@+id/ev_regist_3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintLeft_toLeftOf="@+id/ev_regist_2"
-        app:layout_constraintRight_toRightOf="@+id/ev_regist_2"
-        app:layout_constraintTop_toBottomOf="@+id/ev_regist_2">
-
-    </com.newchinese.smartmeeting.widget.EditView>
-
-    <com.newchinese.smartmeeting.widget.EditView
-        android:id="@+id/ev_regist_4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="@+id/ev_regist_3"
-        app:layout_constraintRight_toRightOf="@+id/ev_regist_3"
-        app:layout_constraintTop_toBottomOf="@+id/ev_regist_3" />
-
-    <Button
-        android:id="@+id/btn_regist_sub"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/btn_corner_bg"
-        android:text="@string/regist_title"
-        android:textColor="@color/colorWhite"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="@+id/ev_regist_4"
-        app:layout_constraintRight_toRightOf="@+id/ev_regist_4"
-        app:layout_constraintTop_toBottomOf="@+id/ev_regist_4" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_regist_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textSize="13sp"
-        app:layout_constraintLeft_toLeftOf="@+id/btn_regist_sub"
-        app:layout_constraintRight_toRightOf="@+id/btn_regist_sub"
-        app:layout_constraintTop_toBottomOf="@+id/btn_regist_sub" />
+        <com.newchinese.smartmeeting.widget.EditView
+            android:id="@+id/ev_regist_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.newchinese.smartmeeting.widget.EditView
+            android:id="@+id/ev_regist_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <com.newchinese.smartmeeting.widget.EditView
+            android:id="@+id/ev_regist_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <com.newchinese.smartmeeting.widget.EditView
+            android:id="@+id/ev_regist_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_regist_sub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/btn_corner_bg"
+            android:text="@string/regist_title"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_regist_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_regist_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="30dp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_regist_icon"
@@ -114,4 +91,4 @@
             android:layout_marginTop="5dp"
             android:background="#313131" />
     </RelativeLayout>
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
