@@ -37,7 +37,7 @@ public class CollectRecordFilterActivity extends BaseActivity<CollectRecordFilte
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
-    TextView ivPen;
+    ImageView ivPen;
     @BindView(R.id.rv_collect_record_filter)
     RecyclerView rvCollectRecordFilter;
     private CollectRecordsRecyAdapter adapter;
