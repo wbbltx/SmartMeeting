@@ -9,20 +9,4 @@ import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
  */
 
 public interface BaseView<T> {
-
-    void onScanComplete();
-
-    void showResult(T t);
-
-    void onSuccess();
-
-    void onFailed();
-
-    void onConnecting();
-
-    void onDisconnected();
-
-    void onHistoryDetected(String str, PopWindowListener popWindowListener);
-
-    void onElecReceived(String ele);
 }

@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.meeting.fragment;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -16,6 +17,8 @@ import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,7 @@ public class MeetingFragment extends BaseSimpleFragment {
     private List<String> classifyNameList;
     private MeetingClassifyRecyAdapter adapter;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
+    private static final String TAG = "MeetingFragment";
 
     @Override
     protected int getLayoutId() {
@@ -87,6 +91,7 @@ public class MeetingFragment extends BaseSimpleFragment {
                 if (position == (classifyNameList.size() - 2)) { //点的加号，添加Item
 //                    adapter.addItem(position, "学术报告");
                 } else {
+                    MobclickAgent.onEvent(getActivity(),"classify_name",classifyNameList.get(position));
                     Intent intent = new Intent(mActivity, DraftBoxActivity.class);
                     intent.putExtra("classify_name", classifyNameList.get(position));
                     startActivity(intent);

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseToolbar;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by Administrator on 2017-08-24.
@@ -47,12 +48,12 @@ public class ActivityLife implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
-
+        MobclickAgent.onResume(activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        MobclickAgent.onPause(activity);
     }
 
     @Override

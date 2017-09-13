@@ -206,17 +206,17 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
 
     @Override
     public void initListener() {
-        BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView));
-        BluetoothLe.getDefault().setOnConnectListener(BleListener.getDefault().init(mView));
-        BluetoothLe.getDefault().setOnKeyListener(BleListener.getDefault().init(mView));
-        BluetoothLe.getDefault().setOnElectricityRequestListener(BleListener.getDefault().init(mView));
-        BluetoothLe.getDefault().setOnLeNotificationListener(BleListener.getDefault().init(mView));
+        BluetoothLe.getDefault().setOnBleScanListener(BleListener.getDefault().init(mView.initBluListener()));
+        BluetoothLe.getDefault().setOnConnectListener(BleListener.getDefault().init(mView.initBluListener()));
+        BluetoothLe.getDefault().setOnKeyListener(BleListener.getDefault().init(mView.initBluListener()));
+        BluetoothLe.getDefault().setOnElectricityRequestListener(BleListener.getDefault().init(mView.initBluListener()));
+        BluetoothLe.getDefault().setOnLeNotificationListener(BleListener.getDefault().init(mView.initBluListener()));
     }
 
     @Override
     public void updatePenState(int state) {
         int i = R.mipmap.pen_disconnect;
-        XLog.d(TAG, "设置图标状态 " + state);
+        XLog.d(TAG, TAG+" 设置图标状态 " + state);
         switch (state) {
             case BSTATE_CONNECTED_LOW:
                 i = R.mipmap.pen_low_power;

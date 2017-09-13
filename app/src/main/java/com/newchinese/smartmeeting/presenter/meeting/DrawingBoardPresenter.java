@@ -715,4 +715,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
         time += second;
         return time;
     }
+
+    public boolean isScanning() {
+        return BluetoothLe.getDefault().getScanning();
+    }
 }

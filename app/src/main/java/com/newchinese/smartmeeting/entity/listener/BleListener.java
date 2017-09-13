@@ -10,7 +10,9 @@ import com.newchinese.coolpensdk.listener.OnLeNotificationListener;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseView;
+import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
@@ -28,7 +30,7 @@ import io.reactivex.functions.Consumer;
 
 public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyListener, OnLeNotificationListener, OnElectricityRequestListener, PopWindowListener {
 
-    private BaseView mView;
+    private DraftBoxActivity mView;
     private boolean isInited;
     private static String TAG = "BleListener";
 
@@ -63,7 +65,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         return BleListenerHolder.BLE_LISTENER;
     }
 
-    public BleListener init(BaseView iView) {
+    public BleListener init(DraftBoxActivity iView) {
         if (!isInited) {
             mView = iView;
             isInited = true;
@@ -146,7 +148,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onHistroyInfoDetected() {
         XLog.d(TAG, TAG + " onHistroyInfoDetected");
-        mView.onHistoryDetected(App.getAppliction().getResources().getString(R.string.read_channel), this);
+        mView.onHistoryDetected(this);
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.newchinese.smartmeeting.ui.record.activity.CollectPageDetailActivity;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -34,6 +35,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onResult(SHARE_MEDIA platform) {
+        MobclickAgent.onEvent(context,"share",platform.toString());
         Toast.makeText(context, "分享成功", Toast.LENGTH_LONG).show();
     }
 
