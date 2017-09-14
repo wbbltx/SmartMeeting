@@ -194,7 +194,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 if (!isSelectEmpty) {
                     createDialog();
                 } else {
-                    Toast.makeText(this, "请选择要生成的会议记录页", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "请选择要生成的会议档案页", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -480,10 +480,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             @Override
             public void run() {
                 Log.i("test_greendao", "" + notePageList.toString());
+                adapter.setNotePageList(notePageList); //使用RecyclerView数据保持一致
                 if (notePageList != null && notePageList.size() > 0) {
                     ivRight.setVisibility(View.VISIBLE);
                     ivEmpty.setVisibility(View.GONE);
-                    adapter.setNotePageList(notePageList);
                     //初始化是否被选择的集合
                     initIsSelectedStatus(notePageList);
                     //显示提示框

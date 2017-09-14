@@ -182,7 +182,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                         notePageDao.delete(selectPage);
                     }
                 }
-                mView.showToast("生成记录成功");
+                mView.showToast("生成会议档案成功");
                 //存完刷新页面
                 loadActivePageList();
             }
