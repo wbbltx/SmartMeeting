@@ -21,8 +21,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 友盟分享 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-
-    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:name=".app.App"
@@ -74,36 +73,35 @@
         <activity android:name=".ui.meeting.activity.PlayBackActivity" />
         <activity android:name=".ui.meeting.activity.RecordLibActivity" />
 
-        <!--分享需要的activity-->
+        <!-- 分享需要的activity -->
         <activity android:name=".wxapi.WXEntryActivity" />
-
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!--<activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"-->
-        <!--android:configChanges="keyboardHidden|orientation"-->
-        <!--android:exported="false"-->
-        <!--android:windowSoftInputMode="adjustResize">-->
+        <!-- <activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity" -->
+        <!-- android:configChanges="keyboardHidden|orientation" -->
+        <!-- android:exported="false" -->
+        <!-- android:windowSoftInputMode="adjustResize"> -->
 
-        <!--</activity>-->
+
+        <!-- </activity> -->
         <activity
             android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.umeng.qq.tencent.AuthActivity"
             android:launchMode="singleTask"
             android:noHistory="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -113,13 +111,11 @@
                 <data android:scheme="tencent100424468" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.umeng.qq.tencent.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
         <activity
             android:name=".ui.mine.activity.FBActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -157,5 +153,8 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="Channel ID" />
+
+        <activity android:name=".ui.login.activity.GuideActivity"></activity>
     </application>
+
 </manifest>

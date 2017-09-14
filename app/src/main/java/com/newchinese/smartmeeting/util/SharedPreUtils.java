@@ -90,6 +90,14 @@ public class SharedPreUtils {
         editor.commit();
     }
 
+    public static void setBoolean(String key, boolean value) {
+        SharedPreferences sp = App.getAppliction().getApplicationContext().getSharedPreferences(
+                SHARED_PREFERANCE_NAME, Context.MODE_PRIVATE);
+        Editor editor = sp.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
     public static boolean getBoolean(Context context, String key,
                                      boolean defaultValue) {
         SharedPreferences sp = context.getSharedPreferences(
@@ -97,4 +105,10 @@ public class SharedPreUtils {
         return sp.getBoolean(key, defaultValue);
     }
 
+    public static boolean getBoolean(String key,
+                                     boolean defaultValue) {
+        SharedPreferences sp = App.getAppliction().getApplicationContext().getSharedPreferences(
+                SHARED_PREFERANCE_NAME, Context.MODE_PRIVATE);
+        return sp.getBoolean(key, defaultValue);
+    }
 }

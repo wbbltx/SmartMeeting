@@ -1,8 +1,5 @@
 package com.newchinese.smartmeeting.contract;
 
-import android.app.Activity;
-import android.content.Context;
-
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 

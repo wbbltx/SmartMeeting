@@ -18,6 +18,7 @@ import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 /**
  * Description:   欢迎页
@@ -81,13 +82,17 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
     @Override
     public void jumpActivity() {
         Intent intent;
-        LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
-        LoginData loginData = loginDataDao.queryBuilder().unique();
-        //判断是否登录过
-        if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
-            intent = new Intent(WelcomeActivity.this, MainActivity.class);
+        if (SharedPreUtils.getBoolean("isFirstInstall", true)) { //首次安装则跳引导页
+            intent = new Intent(WelcomeActivity.this, GuideActivity.class);
         } else {
-            intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+            LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
+            LoginData loginData = loginDataDao.queryBuilder().unique();
+            //判断是否登录过
+            if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
+                intent = new Intent(WelcomeActivity.this, MainActivity.class);
+            } else {
+                intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+            }
         }
         startActivity(intent);
         finish();
