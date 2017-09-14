@@ -24,19 +24,18 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DraftBoxActContract;
-import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
-import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
-import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
-import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.entity.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.entity.event.ConnectEvent;
 import com.newchinese.smartmeeting.entity.event.ElectricityReceivedEvent;
+import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OpenBleEvent;
 import com.newchinese.smartmeeting.entity.event.ScanEvent;
 import com.newchinese.smartmeeting.entity.event.ScanResultEvent;
+import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 import com.newchinese.smartmeeting.presenter.meeting.DraftBoxPresenter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.DraftPageRecyAdapter;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
@@ -44,6 +43,7 @@ import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
@@ -85,6 +85,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     ImageView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
+    @BindView(R.id.rl_remind)
+    RelativeLayout rlRemind;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
@@ -198,7 +200,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.iv_right})
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.iv_right, R.id.iv_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -227,6 +229,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 tvRight.setVisibility(View.VISIBLE);
                 pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
+            case R.id.iv_close:
+                rlRemind.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -242,7 +247,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 if (builder.getInputText().isEmpty()) {
                     Toast.makeText(DraftBoxActivity.this, "请输入记录标题名称", Toast.LENGTH_SHORT).show();
                 } else {
-                    MobclickAgent.onEvent(DraftBoxActivity.this,"create_archives");
+                    MobclickAgent.onEvent(DraftBoxActivity.this, "create_archives");
                     mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
                     dialog.dismiss();
                     resetEditMode();
@@ -422,7 +427,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
-        XLog.d(TAG, TAG + " onElecReceived "+i);
+        XLog.d(TAG, TAG + " onElecReceived " + i);
         if (i <= 30) {//默认图标是电量正常，只有小于30才进行设置
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
             mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
@@ -481,6 +486,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     adapter.setNotePageList(notePageList);
                     //初始化是否被选择的集合
                     initIsSelectedStatus(notePageList);
+                    //显示提示框
+                    rlRemind.setVisibility(View.VISIBLE);
                 } else {
                     ivRight.setVisibility(View.GONE);
                     ivEmpty.setVisibility(View.VISIBLE);
@@ -535,11 +542,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onClick(View view, int position) {
         if (!isEditMode) { //不是编辑状态点击则跳转详情
-            NotePage selectNotePage = adapter.getItem(position);
-            DataCacheUtil.getInstance().setActiveNotePage(selectNotePage); //更新活动页
-            Intent intent = new Intent(this, DrawingBoardActivity.class);
-            intent.putExtra(DrawingBoardActivity.TAG_PAGE_INDEX, selectNotePage.getPageIndex());
-            startActivity(intent);
+            if (!notePageList.isEmpty()) {
+                NotePage selectNotePage = adapter.getItem(position);
+                DataCacheUtil.getInstance().setActiveNotePage(selectNotePage); //更新活动页
+                Intent intent = new Intent(this, DrawingBoardActivity.class);
+                intent.putExtra(DrawingBoardActivity.TAG_PAGE_INDEX, selectNotePage.getPageIndex());
+                startActivity(intent);
+            }
         } else { //编辑状态点击则为相反选中效果
             isSelectedList.set(position, !adapter.getIsSelectedList().get(position));
             adapter.setIsSelectedList(isSelectedList);

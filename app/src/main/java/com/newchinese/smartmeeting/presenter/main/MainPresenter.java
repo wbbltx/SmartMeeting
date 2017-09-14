@@ -143,10 +143,11 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                     noteRecordManager.insertNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_OTHER,
                             Constant.SD_DIRECTORY_OTHER);
                 }
+                //默认放其他分类
                 NoteRecord otherRecord = noteRecordManager.getNoteRecord(noteRecordDao, Constant.CLASSIFY_NAME_OTHER);
                 dataCacheUtil.setActiveNoteRecord(otherRecord);
-                //判断是否过0点了，收藏与删除
-                collectAndClearAllRecord();
+                //判断是否过0点了，收藏与删除，去除此功能
+//                collectAndClearAllRecord();
             }
         };
         singleThreadExecutor.execute(insertRecordRunnable);
