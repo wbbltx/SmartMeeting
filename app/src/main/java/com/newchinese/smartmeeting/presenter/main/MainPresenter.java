@@ -1,20 +1,14 @@
 package com.newchinese.smartmeeting.presenter.main;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.app.App;
-import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.MainActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
@@ -22,16 +16,16 @@ import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
+import com.newchinese.smartmeeting.entity.bean.CollectRecord;
+import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
+import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.manager.CollectPageManager;
 import com.newchinese.smartmeeting.manager.CollectRecordManager;
 import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.manager.NotePointManager;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.manager.NoteStrokeManager;
-import com.newchinese.smartmeeting.entity.bean.CollectRecord;
-import com.newchinese.smartmeeting.entity.bean.NotePage;
-import com.newchinese.smartmeeting.entity.bean.NoteRecord;
-import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
@@ -39,7 +33,6 @@ import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
-import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.File;
 import java.util.List;
@@ -71,23 +64,6 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     private PointCacheUtil pointCacheUtil;
     private ExecutorService singleThreadExecutor;
     private List<NotePage> activeNotePageList;
-    // 要申请的权限
-    private String[] permissions = {Manifest.permission.INTERNET,
-            Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.WAKE_LOCK,
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.READ_LOGS,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.SET_DEBUG_APP,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
-            Manifest.permission.GET_ACCOUNTS,
-            Manifest.permission.WRITE_APN_SETTINGS
-    };
 
     /**
      * 获取当前线程池对象
@@ -124,25 +100,6 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     public void onPresenterDestroy() {
         singleThreadExecutor.shutdown();
         disconnect();
-    }
-
-    /**
-     * 6.0及以上主动请求权限
-     */
-    @Override
-    public void requestPermissing(Activity activity) {
-        // 版本判断。当手机系统大于 23 时，才有必要去判断权限是否获取
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (String permission : permissions) {
-                int permissionStatus = ContextCompat.checkSelfPermission(activity, permission);
-                // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
-                if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    // 如果没有授予该权限，就去提示用户请求
-                    ActivityCompat.requestPermissions(activity, permissions, 321);
-                    break;
-                }
-            }
-        }
     }
 
     @Override

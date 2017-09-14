@@ -63,8 +63,6 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
 
     @Override
     protected void initStateAndData() {
-        //6.0以上主动请求权限
-        mPresenter.requestPermissing(this);
         //初始化7张分类记录表
         mPresenter.initNoteRecord();
         //初始化SD卡目录

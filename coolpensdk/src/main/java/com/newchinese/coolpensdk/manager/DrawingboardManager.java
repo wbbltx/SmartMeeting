@@ -1,10 +1,15 @@
 package com.newchinese.coolpensdk.manager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,6 +17,7 @@ import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.listener.OnPointListener;
+import com.newchinese.coolpensdk.utils.GetAddressUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -274,11 +280,12 @@ class DrawingboardManager {
             @Override
             public void run() {
                 String appKey = controller.getAppKey();
-                String macAddress = getMacAddress();
+                String address = GetAddressUtil.getIMEIAddress(context);
+                Log.e("test_address", "IMEIAddress:" + address);
                 //appKey,手机唯一识别码，android传1
                 String[] parameter = {"userToken", "phoneId", "phonetype"};
 //                String[] parameterValue = {"1308e911d0841bf20922d075dfaab229", "1502342411324566026", "0"};
-                String[] parameterValue = {appKey, macAddress, "1"};
+                String[] parameterValue = {appKey, address, "1"};
                 try {
                     //通过openConnection 连接  
                     URL url = new URL(Constant.CONFIRM_URL + "/user/testToken");
@@ -327,55 +334,6 @@ class DrawingboardManager {
             }
         }).start();
     }
-
-    /**
-     * 获取设备Mac地址
-     */
-    private String getMacAddress() {
-        String macAddress = null;
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = (null == wifiManager ? null : wifiManager.getConnectionInfo());
-        if (!wifiManager.isWifiEnabled()) {
-            //必须先打开，才能获取到MAC地址
-            wifiManager.setWifiEnabled(true);
-            wifiManager.setWifiEnabled(false);
-        }
-        if (null != info) {
-            macAddress = info.getMacAddress();
-        }
-        if ("02:00:00:00:00:00".equals(macAddress)) {
-            return get6MacAddress();
-        }
-        return macAddress;
-    }
-
-    /**
-     * 获取6.0及以上设备Mac地址
-     */
-    private String get6MacAddress() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(String.format("%02X:", b));
-                }
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception e) {
-            Log.e("coolPenError", "11008:获取Mac地址失败");
-        }
-        return "02:00:00:00:00:00";
-    }
-
 
     /**
      * 检测网络状态

@@ -19,8 +19,6 @@ public interface MainActContract {
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
-        void requestPermissing(Activity activity);
-
         void initListener();
 
         void checkjumpDrawingBoard(com.newchinese.coolpensdk.entity.NotePoint notePoint);
