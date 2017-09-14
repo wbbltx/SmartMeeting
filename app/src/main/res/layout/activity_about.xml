@@ -12,13 +12,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/app_icon" />
+        android:src="@mipmap/about_us_icon" />
 
     <Button
         android:id="@+id/btn_deal"

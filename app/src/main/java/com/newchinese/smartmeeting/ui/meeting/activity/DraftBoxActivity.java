@@ -179,6 +179,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         switch (view.getId()) {
             case R.id.tv_cancel: //取消
                 resetEditMode();
+                adapter.setIsSelectedList(isSelectedList);
                 break;
             case R.id.tv_create: //生成记录
                 //先判断是否未选择
@@ -244,7 +245,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     MobclickAgent.onEvent(DraftBoxActivity.this,"create_archives");
                     mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
                     dialog.dismiss();
-                    resetEditMode1();
+                    resetEditMode();
                 }
             }
         });
@@ -275,19 +276,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      * 重置为非编辑模式
      */
     private void resetEditMode() {
-        isEditMode = false;
-        ivRight.setVisibility(View.VISIBLE);
-        tvRight.setVisibility(View.GONE);
-        pwCreateRecord.dismiss();
-        for (int i = 0; i < isSelectedList.size(); i++) {
-            isSelectedList.set(i, false);
-        }
-        adapter.setIsSelectedList(isSelectedList);
-    }
-    /**
-     * 重置为非编辑模式
-     */
-    private void resetEditMode1() {
         isEditMode = false;
         ivRight.setVisibility(View.VISIBLE);
         tvRight.setVisibility(View.GONE);
