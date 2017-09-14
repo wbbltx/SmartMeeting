@@ -41,6 +41,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
+import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.OnShareListener;
@@ -160,6 +161,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
+        dataCacheUtil = DataCacheUtil.getInstance();
+        //初始化笔状态
+        initPenState();
         initStrokeWidthWindow();
         ivInsertImage.setBackgroundColor(Color.TRANSPARENT);
         ivShare.setVisibility(View.VISIBLE);
@@ -184,7 +188,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
         //获取当前活动本所有页
-        dataCacheUtil = DataCacheUtil.getInstance();
         activeNotePageList = dataCacheUtil.getActiveNotePageList();
         //加载第一笔缓存
         mPresenter.loadFirstStokeCache();
@@ -208,9 +211,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         //初始化图片窗口
         takePhotoPopWin = new TakePhotoPopWin(this, "DrawingBoardActivity");
 
-        //初始化笔状态
-        initPenState();
-
 //        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
         sharePopWindow = new SharePopWindow(this, this);
@@ -229,7 +229,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             ivPen.setImageResource(R.mipmap.pen_normal_power);
         } else if (penState == BluCommonUtils.PEN_DISCONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
-        } else if (penState == BluCommonUtils.PEN_CONNECTING) {
+        } else if (penState == BluCommonUtils.PEN_CONNECTING || mPresenter.isScanning()) {
             ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
@@ -320,6 +320,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         closeEditInsertImage();
         mPresenter.readInsertImageFromData(pageIndex);
         mPresenter.queryRecordCount(pageIndex);
+    }
+
+    @Subscribe
+    public void onEvent(HisInfoEvent infoEvent){
+        showDialog(infoEvent.getListener(),findViewById(R.id.rl_draw_base));
     }
 
     /**
@@ -784,9 +789,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Subscribe
     public void onEvent(ScanResultEvent scanResultEvent) {
+        XLog.d(TAG, TAG + " onScanComplete ");
         int flag = scanResultEvent.getFlag();
         if (flag == 0) {//如果是断开状态进行的搜索，应该判断
-            onComplete();
+            onComplete(this);
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
             scanResultDialog.show();
         }
@@ -799,6 +805,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Subscribe
     public void onEvent(AddDeviceEvent addDeviceEvent) {
+        XLog.d(TAG, TAG + " showResult ");
         scanResultDialog.addDevice(addDeviceEvent.getBluetoothDevice());
     }
 
@@ -840,6 +847,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
+        XLog.d(TAG, TAG + " onSuccess");
         int flag = stateEvent.getFlag();
         if (flag == 0) {
             ivPen.setImageResource(R.mipmap.weilianjie);
@@ -928,6 +936,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
+            XLog.d(TAG, TAG + "onWindowFocusChanged "+DataCacheUtil.getInstance().getPenState());
             if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
                 ivPen.setImageResource(R.mipmap.pen_normal_power);
             } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {

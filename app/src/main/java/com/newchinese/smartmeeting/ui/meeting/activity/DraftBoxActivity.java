@@ -24,6 +24,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DraftBoxActContract;
+import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 import com.newchinese.smartmeeting.util.log.XLog;
@@ -123,12 +124,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void initView() {
-        if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
-            setState(R.mipmap.pen_normal_power);
-        } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
-            setState(R.mipmap.weilianjie);
-        } else {
-            setState(R.mipmap.pen_disconnect);
+        switch (DataCacheUtil.getInstance().getPenState()) {
+            case BluCommonUtils.PEN_CONNECTED:
+                setState(R.mipmap.pen_normal_power);
+                break;
+            case BluCommonUtils.PEN_CONNECTING:
+                setState(R.mipmap.weilianjie);
+                break;
+            default:
+                setState(R.mipmap.pen_disconnect);
+            break;
         }
     }
 
@@ -307,7 +312,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
             EventBus.getDefault().post(new ScanResultEvent(0));
-            onComplete();
+            onComplete(this);
         }
     }
 
@@ -414,6 +419,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     @Override
+    public DraftBoxActivity initBluListener() {
+        return this;
+    }
+
+    @Override
     public void setState(int id) {
         if (ivPen != null)
             ivPen.setImageResource(id);
@@ -503,6 +513,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (scanResultDialog.isShowing()) {
             scanResultDialog.dismiss();
         }
+        if (hisInfoWindow != null && hisInfoWindow.isShowing()) {
+            hisInfoWindow.dismiss();
+        }
     }
 
     /**
@@ -537,6 +550,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Subscribe
     public void onEvent(ScanEvent scanEvent) {
+//        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_SCANNING);
+        XLog.d(TAG, TAG + " 将蓝牙状态设置为扫描");
         mPresenter.scanBlueDevice();
     }
 
@@ -544,5 +559,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onHistoryDetected(PopWindowListener listener) {
+        XLog.d(TAG, TAG + " onHistoryDetected");
+        EventBus.getDefault().post(new HisInfoEvent(listener));
+        showDialog(listener, root_view);
     }
 }

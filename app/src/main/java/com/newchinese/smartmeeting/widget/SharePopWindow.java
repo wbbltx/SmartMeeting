@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
@@ -43,7 +44,8 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener{
         //设置PopupWindow的View
         this.setContentView(mView);
         //设置PopupWindow弹出窗体的宽
-        this.setWidth(width*2/3);
+//        this.setWidth(width*2/3);
+        this.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         //设置PopupWindow弹出窗体的高
 //        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setHeight(height/2);

@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
+import com.newchinese.smartmeeting.entity.listener.BleListener;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
+import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 
 import java.util.List;
 
@@ -22,21 +25,23 @@ public interface DraftBoxActContract {
         
         void showToast(String toastContent);
         
-//        void onScanComplete();
+        void onScanComplete();
 //
-//        void showResult(E e);
+        void showResult(E e);
 //
-//        void onSuccess();
+        void onSuccess();
 //
-//        void onFailed();
+        void onFailed();
 //
-//        void onConnecting();
+        void onConnecting();
 //
-//        void onDisconnected();
+        void onDisconnected();
 //
-//        void onHistoryDetected(String str, PopWindowListener popWindowListener);
+        void onHistoryDetected(PopWindowListener popWindowListener);
 //
-//        void onElecReceived(String ele);
+        void onElecReceived(String ele);
+
+        DraftBoxActivity initBluListener();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {

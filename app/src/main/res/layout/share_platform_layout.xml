@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="20dp"
+            android:padding="10dp"
             android:gravity="center"
             android:textSize="20sp"
             android:text="分享到"/>
@@ -26,45 +26,60 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
-            <ImageView
-                android:padding="20dp"
+            <TextView
+                android:padding="10dp"
                 android:id="@+id/share_wechat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/share_wechat"/>
+                android:gravity="center"
+                android:text="微信"
+                android:drawablePadding="5dp"
+                android:drawableTop="@mipmap/share_wechat"/>
 
-            <ImageView
-                android:padding="20dp"
+            <TextView
+                android:padding="10dp"
                 android:id="@+id/share_moments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/share_moments"/>
+                android:drawableTop="@mipmap/share_moments"
+                android:drawablePadding="5dp"
+                android:text="朋友圈"
+                />
 
-            <ImageView
+            <TextView
                 android:id="@+id/share_qq"
-                android:padding="20dp"
+                android:padding="10dp"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/share_qq"/>
+                android:drawableTop="@mipmap/share_qq"
+                android:drawablePadding="5dp"
+                android:text="QQ"/>
 
-            <ImageView
+            <TextView
                 android:id="@+id/share_qzone"
-                android:padding="20dp"
+                android:padding="10dp"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/share_wechat"
-                android:src="@mipmap/share_qzone"/>
+                android:drawableTop="@mipmap/share_qzone"
+                android:drawablePadding="5dp"
+                android:text="QQ空间"/>
 
-            <ImageView
+            <TextView
                 android:id="@+id/share_weibo"
-                android:padding="20dp"
+                android:padding="10dp"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/share_moments"
                 android:layout_alignLeft="@id/share_moments"
-                android:src="@mipmap/share_weibo"/>
+                android:drawableTop="@mipmap/share_weibo"
+                android:drawablePadding="5dp"
+                android:text="微博"/>
         </RelativeLayout>
     </LinearLayout>
 
