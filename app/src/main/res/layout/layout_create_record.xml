@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="生成本次记录"
+            android:text="生成本次档案"
             android:textColor="@color/gray6"
             android:textSize="14sp" />
     </LinearLayout>
