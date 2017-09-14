@@ -15,6 +15,7 @@ import com.newchinese.smartmeeting.entity.event.ColorEvent;
 import com.newchinese.smartmeeting.ui.meeting.adapter.HorizontalListViewAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,6 +76,7 @@ public class CheckColorPopWin extends PopupWindow {
         hListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MobclickAgent.onEvent(mContext,"color",position+"");
                 if (position <= 5) {
                     if (position == 5) {
                         Constant.colors[5] = colors[5];

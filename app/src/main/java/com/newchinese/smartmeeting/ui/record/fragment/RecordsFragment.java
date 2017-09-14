@@ -19,6 +19,7 @@ import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
 import com.newchinese.smartmeeting.ui.record.activity.CollectPageListActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +138,7 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      */
     @Override
     public void onClick(View view, int position) {
+        MobclickAgent.onEvent(getActivity(),"book_res",collectRecordList.get(position).getCollectRecordName());
         DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
         startActivity(new Intent(mActivity, CollectPageListActivity.class));
     }
