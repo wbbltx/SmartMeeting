@@ -47,15 +47,19 @@ import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Description:
@@ -133,7 +137,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 break;
             default:
                 setState(R.mipmap.pen_disconnect);
-            break;
+                break;
         }
     }
 
@@ -237,6 +241,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 if (builder.getInputText().isEmpty()) {
                     Toast.makeText(DraftBoxActivity.this, "请输入记录标题名称", Toast.LENGTH_SHORT).show();
                 } else {
+                    MobclickAgent.onEvent(DraftBoxActivity.this,"create_archives");
                     mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
                     dialog.dismiss();
                     resetEditMode();
@@ -258,7 +263,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hintbuilder.setPositiveButton(new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 EventBus.getDefault().post(new ScanEvent());
-                XLog.d(TAG, TAG + "中去请求扫描");
                 CustomizedToast.showShort(DraftBoxActivity.this, "扫描蓝牙笔");
                 dialog.dismiss();
             }
@@ -368,7 +372,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (b) {//第一次启动应用，弹出如何使用对话框
             createHintDialog();
         } else {//不是第一次启动该应用，不弹出，直接打开蓝牙
-            mPresenter.openBle();
+            Flowable.timer(3, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
+                @Override
+                public void accept(Long aLong) throws Exception {
+                    EventBus.getDefault().post(new ScanEvent());
+                }
+            });
+            mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
         }
     }
 
@@ -412,6 +422,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
+        XLog.d(TAG, TAG + " onElecReceived "+i);
         if (i <= 30) {//默认图标是电量正常，只有小于30才进行设置
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
             mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);

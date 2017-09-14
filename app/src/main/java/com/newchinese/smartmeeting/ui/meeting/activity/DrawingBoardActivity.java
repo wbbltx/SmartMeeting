@@ -69,6 +69,7 @@ import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -323,8 +324,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @Subscribe
-    public void onEvent(HisInfoEvent infoEvent){
-        showDialog(infoEvent.getListener(),findViewById(R.id.rl_draw_base));
+    public void onEvent(HisInfoEvent infoEvent) {
+        showDialog(infoEvent.getListener(), findViewById(R.id.rl_draw_base));
     }
 
     /**
@@ -483,6 +484,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 closeEditInsertImage();
                 break;
             case R.id.iv_image_confirm: //确认插入图片
+                MobclickAgent.onEvent(this,"insert_image");
                 mPresenter.saveInsertImageToData(pageIndex, ivInsertImage.getImageMatrix());
                 closeEditInsertImage();
                 break;
@@ -496,14 +498,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_review: //笔记回放
                 hideMenu();
+                MobclickAgent.onEvent(this,"review");
                 Intent intent = new Intent(DrawingBoardActivity.this, PlayBackActivity.class);
                 intent.putExtra(TAG_PAGE_INDEX, pageIndex);
                 startActivity(intent);
                 break;
             case R.id.save_record://保存结束录屏
+                MobclickAgent.onEvent(this,"record");
                 stopRecord();
                 break;
             case R.id.rl_record_count://录屏图标
+                MobclickAgent.onEvent(this,"play_record");
                 Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
                 intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
                 startActivity(intent1);
@@ -540,6 +545,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        MobclickAgent.onEvent(this, "pen_width", checkedId + "");
         switch (checkedId) {
             case R.id.rb_pop_stroke_width1:
                 drawViewMeeting.setStrokeWidth(0);
@@ -936,7 +942,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            XLog.d(TAG, TAG + "onWindowFocusChanged "+DataCacheUtil.getInstance().getPenState());
+            XLog.d(TAG, TAG + "onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
             if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
                 ivPen.setImageResource(R.mipmap.pen_normal_power);
             } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {

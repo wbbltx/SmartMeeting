@@ -110,7 +110,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         timerTask = new TimerTask() {
             @Override
             public void run() {
-//                requestElectricity();
+                requestElectricity();
             }
         };
         timer.schedule(timerTask, 2000, 30000);

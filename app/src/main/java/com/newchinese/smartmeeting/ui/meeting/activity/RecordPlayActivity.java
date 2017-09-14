@@ -12,6 +12,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.RecordPlayContracr;
 import com.newchinese.smartmeeting.presenter.meeting.RecordPlayPresenter;
+import com.umeng.analytics.MobclickAgent;
 import com.xw.repo.BubbleSeekBar;
 
 import butterknife.BindView;
@@ -43,6 +44,7 @@ public class RecordPlayActivity extends BaseActivity<RecordPlayPresenter, View> 
 
     @Override
     protected void initStateAndData() {
+        MobclickAgent.onEvent(this,"play_record");
         tv_title.setText("录屏播放");
         iv_pen.setVisibility(View.GONE);
         Intent intent = getIntent();
