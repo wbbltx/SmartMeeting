@@ -239,7 +239,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 } else {
                     mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
                     dialog.dismiss();
-                    resetEditMode();
+                    resetEditMode1();
                 }
             }
         });
@@ -279,6 +279,18 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             isSelectedList.set(i, false);
         }
         adapter.setIsSelectedList(isSelectedList);
+    }
+    /**
+     * 重置为非编辑模式
+     */
+    private void resetEditMode1() {
+        isEditMode = false;
+        ivRight.setVisibility(View.VISIBLE);
+        tvRight.setVisibility(View.GONE);
+        pwCreateRecord.dismiss();
+        for (int i = 0; i < isSelectedList.size(); i++) {
+            isSelectedList.set(i, false);
+        }
     }
 
     @Override

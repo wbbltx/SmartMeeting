@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
@@ -35,6 +36,8 @@ import butterknife.BindView;
 public class MeetingFragment extends BaseSimpleFragment {
     @BindView(R.id.rv_meeting_classify)
     RecyclerView rvMeetingClassify;
+    @BindView(R.id.iv_study)
+    ImageView ivStudy;
     private List<String> classifyNameList;
     private MeetingClassifyRecyAdapter adapter;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
@@ -76,11 +79,9 @@ public class MeetingFragment extends BaseSimpleFragment {
         classifyNameList.add(Constant.CLASSIFY_NAME_WORK);
         classifyNameList.add(Constant.CLASSIFY_NAME_PROJECT);
         classifyNameList.add(Constant.CLASSIFY_NAME_EXPLORE);
-        classifyNameList.add(Constant.CLASSIFY_NAME_STUDY);
         classifyNameList.add(Constant.CLASSIFY_NAME_REPORT);
-        classifyNameList.add(Constant.CLASSIFY_NAME_REVIEW);
-        classifyNameList.add("+");
         classifyNameList.add(Constant.CLASSIFY_NAME_OTHER);
+        classifyNameList.add(Constant.CLASSIFY_NAME_REVIEW);
     }
 
     @Override
@@ -88,19 +89,25 @@ public class MeetingFragment extends BaseSimpleFragment {
         adapter.setOnItemClickedListener(new OnItemClickedListener() {
             @Override
             public void onClick(View view, int position) {
-                if (position == (classifyNameList.size() - 2)) { //点的加号，添加Item
-//                    adapter.addItem(position, "学术报告");
-                } else {
-                    MobclickAgent.onEvent(getActivity(),"classify_name",classifyNameList.get(position));
-                    Intent intent = new Intent(mActivity, DraftBoxActivity.class);
-                    intent.putExtra("classify_name", classifyNameList.get(position));
-                    startActivity(intent);
-                    setActiveNoteRecord(classifyNameList.get(position));
-                }
+                MobclickAgent.onEvent(getActivity(), "classify_name", classifyNameList.get(position));
+                Intent intent = new Intent(mActivity, DraftBoxActivity.class);
+                intent.putExtra("classify_name", classifyNameList.get(position));
+                startActivity(intent);
+                setActiveNoteRecord(classifyNameList.get(position));
             }
 
             @Override
             public void onLongClick(View view, int position) {
+            }
+        });
+        ivStudy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(getActivity(), "classify_name", Constant.CLASSIFY_NAME_STUDY);
+                Intent intent = new Intent(mActivity, DraftBoxActivity.class);
+                intent.putExtra("classify_name", Constant.CLASSIFY_NAME_STUDY);
+                startActivity(intent);
+                setActiveNoteRecord(Constant.CLASSIFY_NAME_STUDY);
             }
         });
     }
