@@ -95,7 +95,9 @@ public class GuideActivity extends BaseSimpleActivity {
         LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         LoginData loginData = loginDataDao.queryBuilder().unique();
         //判断是否登录过
-        if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
+        boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
+        if (loginData != null && isLogin) {
+//        if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
             intent = new Intent(this, MainActivity.class);
         } else {
             intent = new Intent(this, LoginActivity.class);

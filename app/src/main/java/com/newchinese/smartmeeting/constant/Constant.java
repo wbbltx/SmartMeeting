@@ -67,4 +67,6 @@ public class Constant {
     public static final int SELECT_PIC_KITKAT = 0; //选择照片请求码
     public static final int TAKEPHOTO_SAVE_MYPATH = 2; //照相请求码
     public static final int CROP_HEADER = 3; //裁切请求码
+    //是否登录标志
+    public static final String IS_LOGIN = "is_login"; //裁切请求码
 }

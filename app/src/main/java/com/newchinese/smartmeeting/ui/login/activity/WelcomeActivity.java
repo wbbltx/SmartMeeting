@@ -12,6 +12,7 @@ import android.view.View;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BaseActivity;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.WelcomeActContract;
 import com.newchinese.smartmeeting.database.LoginDataDao;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
@@ -88,7 +89,9 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
             LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
             LoginData loginData = loginDataDao.queryBuilder().unique();
             //判断是否登录过
-            if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
+            boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
+            if (loginData != null && isLogin) {
+//                if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
                 intent = new Intent(WelcomeActivity.this, MainActivity.class);
             } else {
                 intent = new Intent(WelcomeActivity.this, LoginActivity.class);

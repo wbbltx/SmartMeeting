@@ -32,6 +32,7 @@ import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.entity.http.XApi;
 import com.newchinese.smartmeeting.ui.login.activity.LoginActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
 import org.reactivestreams.Publisher;
@@ -118,16 +119,22 @@ public class SettingActivity extends BaseSimpleActivity {
                 finish();
                 break;
             case R.id.rl_header: //修改头像
-                takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                    takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                }
                 break;
             case R.id.rl_nick_name: //修改昵称
-                intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
-                startActivity(intent);
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                    intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.rl_change_pwd: //修改密码
-                intent = new Intent(SettingActivity.this, UpdateActivity.class);
-                intent.putExtra("type", 1);
-                startActivity(intent);
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                    intent = new Intent(SettingActivity.this, UpdateActivity.class);
+                    intent.putExtra("type", 1);
+                    startActivity(intent);
+                }
                 break;
             case R.id.btn_exit_login: //退出登录
                 new Thread(new Runnable() {
@@ -137,6 +144,7 @@ public class SettingActivity extends BaseSimpleActivity {
                         GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
                     }
                 }).start();
+                SharedPreUtils.setBoolean(Constant.IS_LOGIN, false);
                 intent = new Intent(SettingActivity.this, LoginActivity.class);
                 //清空所有栈中Activity
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -185,9 +193,10 @@ public class SettingActivity extends BaseSimpleActivity {
                                 headerFile = new File(fileName);
                                 chansformHeaderFile();
                                 Glide.with(this)
-                                        .load(headerFile)
+                                        .load(headerBitmap)
                                         .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
                                         .into(ivHeader);
+                                ivHeader.setImageBitmap(headerBitmap);
                                 takePhotoPopWin.dismiss();
                             }
                         }

@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
@@ -20,6 +21,8 @@ import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
+import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.EditView;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -86,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     public void updateView(BaseResult<LoginData> data) {
         if (!NetUrl.DYNAMIC_PASS.equals(data.url)) {
             startActivity(new Intent(this, MainActivity.class));
+            SharedPreUtils.setBoolean(Constant.IS_LOGIN, true);
             finish();
         }
     }
@@ -159,6 +163,27 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
             Log.e("test_login", "" + data.toString());
+            GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
+            LoginData loginData = new LoginData();
+//            switch (platform) {
+//                case QQ:
+                    loginData.setId(null);
+                    loginData.setIcon(data.get("iconurl"));
+                    loginData.setNickname(data.get("name"));
+                    loginData.setTel("");
+//                    break;
+//                case WEIXIN:
+//                    loginData.setId(null);
+//                    loginData.setIcon(data.get("iconurl"));
+//                    loginData.setNickname(data.get("name"));
+//                    loginData.setTel("");
+//                    break;
+//            }
+            // TODO: 2017/9/18 服务器需要的code怎么整
+            GreenDaoUtil.getInstance().getLoginDataDao().insert(loginData);
+            SharedPreUtils.setBoolean(Constant.IS_LOGIN,true);
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            finish();
         }
 
         /**
