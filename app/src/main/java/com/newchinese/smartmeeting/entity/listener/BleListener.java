@@ -17,6 +17,7 @@ import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -86,6 +87,8 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onConnected() {
         XLog.d(TAG, TAG + " 已连接");
+        //友盟统计
+        MobclickAgent.onEvent(App.getAppliction(),"connect_success");
         //连接成功将临时变量中的地址和名称放入sp中
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, DataCacheUtil.getInstance().getDevice().getAddress());
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME, DataCacheUtil.getInstance().getDevice().getName());

@@ -484,7 +484,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 closeEditInsertImage();
                 break;
             case R.id.iv_image_confirm: //确认插入图片
-                MobclickAgent.onEvent(this,"insert_image");
+                MobclickAgent.onEvent(this, "insert_image");
                 mPresenter.saveInsertImageToData(pageIndex, ivInsertImage.getImageMatrix());
                 closeEditInsertImage();
                 break;
@@ -498,17 +498,17 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_review: //笔记回放
                 hideMenu();
-                MobclickAgent.onEvent(this,"review");
+                MobclickAgent.onEvent(this, "review");
                 Intent intent = new Intent(DrawingBoardActivity.this, PlayBackActivity.class);
                 intent.putExtra(TAG_PAGE_INDEX, pageIndex);
                 startActivity(intent);
                 break;
             case R.id.save_record://保存结束录屏
-                MobclickAgent.onEvent(this,"record");
+                MobclickAgent.onEvent(this, "record");
                 stopRecord();
                 break;
             case R.id.rl_record_count://录屏图标
-                MobclickAgent.onEvent(this,"play_record");
+                MobclickAgent.onEvent(this, "play_record");
                 Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
                 intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
                 startActivity(intent1);
@@ -581,6 +581,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 101) {
                 mediaProjection = projectionManager.getMediaProjection(resultCode, data);
@@ -592,7 +593,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data, pageIndex);
             }
         } else {
-            UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 101)
+                recordBar.setVisibility(View.GONE);
         }
     }
 
