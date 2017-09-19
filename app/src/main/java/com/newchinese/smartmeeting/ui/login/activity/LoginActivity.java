@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.newchinese.coolpensdk.utils.GetAddressUtil;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
@@ -28,6 +29,14 @@ import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +56,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     private Disposable mDisposable;
     private ProgressDialog mPd;
     private UMShareAPI umShareAPI;
+    private LoginData loginData;
+    private String sms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     @Override
     public void onInnerClick(final View v, int position) {
         if (position == 0) {//获取动态密码
+            Toast.makeText(this, "验证码已发送", Toast.LENGTH_SHORT).show();
             mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(new Consumer<Long>() {
@@ -112,7 +124,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                         }
                     })
                     .subscribe();
-            mPresenter.dynamicPass((String) v.getTag(R.id.ev_regist_1));
+//            mPresenter.dynamicPass((String) v.getTag(R.id.ev_regist_1));
+            String tel = (String) v.getTag(R.id.ev_regist_1);
+            reQuestPermission(tel); //请求验证码
         } else {//忘记密码
             Intent intent = new Intent(this, RegisterActivity.class);
             intent.putExtra("ui", RegisterActivity.UI_TYPE_FOR);
@@ -120,11 +134,110 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         }
     }
 
+    private void reQuestPermission(final String tel) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String[] parameter = {"tel"};
+                String[] parameterValue = {tel};
+                try {
+                    //通过openConnection 连接  
+                    URL url = new URL(NetUrl.DYNAMIC_PASS);
+                    HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+
+                    //设置输入和输出流   
+                    urlConn.setRequestMethod("POST");
+                    urlConn.setDoOutput(true);
+                    urlConn.setDoInput(true);
+                    urlConn.setUseCaches(false);
+                    urlConn.setInstanceFollowRedirects(false);
+                    urlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                    urlConn.connect();
+
+                    //设置请求参数
+                    DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+                    JSONObject o = new JSONObject();
+                    for (int i = 0; i < parameter.length; i++) {
+                        o.put(parameter[i], parameterValue[i]);
+                    }
+                    Log.i("requestData", "请求参数" + o.toString());
+                    out.writeBytes(o.toString());
+                    out.flush();
+                    out.close();
+
+                    //接收返回结果
+                    if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
+                        BufferedReader buffer = new BufferedReader(in);
+                        String inputLine = null;
+                        String resultData = "";
+                        while (((inputLine = buffer.readLine()) != null)) {
+                            resultData += inputLine + "\n";
+                        }
+                        Log.e("resultData", "返回结果:" + resultData);
+                        analysisResult(resultData, tel);
+                        in.close();
+                    } else {
+                        Log.e("coolPenError", "11006:网络请求失败");
+                    }
+                    urlConn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("coolPenError", "11006:网络请求失败");
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 解析服务器返回的json结果
+     */
+    private void analysisResult(String resultData, String tel) {
+        try {
+            JSONObject jsonObject = new JSONObject(resultData);
+            String no = jsonObject.getString("no");
+            if (!TextUtils.isEmpty(no) && no.equals("100000")) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                loginData = new LoginData();
+                if (data != null) {
+                    loginData.setCode(String.valueOf(data.getInt("code")));
+                    loginData.setIcon(data.getString("icon"));
+                    loginData.setNickname(data.getString("nickname"));
+                    loginData.setTel(data.getString("tel"));
+                } else {
+                    loginData.setNickname(tel);
+                    loginData.setTel(tel);
+                }
+                sms = jsonObject.getString("sms");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static final String REGEX_MOBILE = "^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
+
     @Override
     public void onLogin(String phone, String pass, int position) {
         if (mPresenter != null) {
             if (position == 0) {
-                mPresenter.loginQuick(phone, pass);
+//                mPresenter.loginQuick(phone, pass);
+                // 判断动态密码是否一致,一致直接登录，不一致吐司
+                if (loginData != null && !sms.isEmpty()) {
+                    if (!phone.matches(REGEX_MOBILE)) {
+                        Toast.makeText(this, "手机号有误", Toast.LENGTH_SHORT).show();
+                    } else if (!pass.equals(sms)) {
+                        Toast.makeText(this, "验证码有误", Toast.LENGTH_SHORT).show();
+                    } else {
+                        GreenDaoUtil.getInstance().getLoginDataDao().insert(loginData); //存登录数据
+                        SharedPreUtils.setBoolean(Constant.IS_LOGIN, true); //设置登录状态
+                        Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(this, "请获取验证码", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 mPresenter.loginPhone(phone, pass);
             }
@@ -167,10 +280,10 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
             LoginData loginData = new LoginData();
 //            switch (platform) {
 //                case QQ:
-                    loginData.setId(null);
-                    loginData.setIcon(data.get("iconurl"));
-                    loginData.setNickname(data.get("name"));
-                    loginData.setTel("");
+            loginData.setId(null);
+            loginData.setIcon(data.get("iconurl"));
+            loginData.setNickname(data.get("name"));
+            loginData.setTel("");
 //                    break;
 //                case WEIXIN:
 //                    loginData.setId(null);
@@ -181,8 +294,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
 //            }
             // TODO: 2017/9/18 服务器需要的code怎么整
             GreenDaoUtil.getInstance().getLoginDataDao().insert(loginData);
-            SharedPreUtils.setBoolean(Constant.IS_LOGIN,true);
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            SharedPreUtils.setBoolean(Constant.IS_LOGIN, true);
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
 

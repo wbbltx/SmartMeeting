@@ -12,7 +12,7 @@ public interface NetUrl {
     String HOST = "http://182.92.99.12:9005";
 
     String QUICK_LOGIN = HOST + "";
-    String DYNAMIC_PASS = HOST + "";
+    String DYNAMIC_PASS = HOST + "/user/m/fastLogin";
 
     String LOGIN_NORMAL = HOST + "/user/m/login";
     String REGIST = HOST + "/user/m/register";
