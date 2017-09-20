@@ -231,37 +231,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      */
     @Override
     public void playBack(final DrawingBoardView drawingBoardView) {
-        progressMax = 0;
-        playBackList = new ArrayList<>();
-        Runnable playBackRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (currentSelectPage != null) { //防止当前页为空
-                    List<NoteStroke> noteStrokeListData = noteStrokeDao.queryBuilder()
-                            .where(NoteStrokeDao.Properties.PageId.eq(currentSelectPage.getId())).list();
-                    if (noteStrokeListData != null && noteStrokeListData.size() > 0) { //线集合不为空
-                        for (NoteStroke noteStroke : noteStrokeListData) {
-                            List<NotePoint> notePointListData = notePointDao.queryBuilder()
-                                    .where(NotePointDao.Properties.StrokeId.eq(noteStroke.getId())).list();
-                            if (notePointListData != null && notePointListData.size() > 0) { //点集合不为空
-                                for (NotePoint notePoint : notePointListData) {
-                                    //将所有点存入集合，
-                                    com.newchinese.coolpensdk.entity.NotePoint sdkPoint =
-                                            new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
-                                                    notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
-                                                    notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
-                                    progressMax++;
-                                    playBackList.add(sdkPoint);
-                                }
-                            } else Log.e("test_greendao", "currentNotePointListData当前点集合为空");
-                        }
-                        dataCacheUtil.setProgressMax(progressMax);
-                    } else Log.e("test_greendao", "currentNoteStrokeListData当前线集合为空");
-                } else Log.e("test_greendao", "activeNotePage当前页为空");
-                PlayBackUtil.getInstance().addAllNewsBrief(null, playBackList, drawingBoardView);
-            }
-        };
-        singleThreadExecutor.execute(playBackRunnable);
     }
 
     private ServiceConnection connection = new ServiceConnection() {

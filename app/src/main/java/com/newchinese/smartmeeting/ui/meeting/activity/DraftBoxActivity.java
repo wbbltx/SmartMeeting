@@ -117,6 +117,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         tvCancel = (TextView) viewCreateRecord.findViewById(R.id.tv_cancel);
         tvCreate = (TextView) viewCreateRecord.findViewById(R.id.tv_create);
         ivPen = (ImageView) findViewById(R.id.iv_pen);
+        initView();
         //初始化PopupWindow
         pwCreateRecord = new PopupWindow(viewCreateRecord, RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -132,7 +133,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void initView() {
         switch (DataCacheUtil.getInstance().getPenState()) {
             case BluCommonUtils.PEN_CONNECTED:
-                setState(R.mipmap.pen_normal_power);
+                if (DataCacheUtil.getInstance().isLowPower()) {
+                    setState(R.mipmap.pen_low_power);
+                } else {
+                    setState(R.mipmap.pen_normal_power);
+                }
                 break;
             case BluCommonUtils.PEN_CONNECTING:
                 setState(R.mipmap.weilianjie);
@@ -428,9 +433,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
         XLog.d(TAG, TAG + " onElecReceived " + i);
-        if (i <= 30) {//默认图标是电量正常，只有小于30才进行设置
+        if (i <= 30) {//默认图标是电量正常，小于30才更换图标
+            DataCacheUtil.getInstance().setLowPower(true);
             EventBus.getDefault().post(new ElectricityReceivedEvent(s));
             mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
+        } else {
+            DataCacheUtil.getInstance().setLowPower(false);
         }
     }
 
@@ -512,7 +520,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onResume() {
         super.onResume();
-        initView();
         //加载数据库当前活动记录的所有页，延迟500ms加载是为了让back时的截图截一会儿才能加载出来
         new Handler().postDelayed(new Runnable() {
             @Override

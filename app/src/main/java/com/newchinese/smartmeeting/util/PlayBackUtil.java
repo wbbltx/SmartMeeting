@@ -3,6 +3,10 @@ package com.newchinese.smartmeeting.util;
 
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
+import com.newchinese.smartmeeting.constant.Constant;
+import com.newchinese.smartmeeting.database.NotePointDao;
+import com.newchinese.smartmeeting.database.NoteStrokeDao;
+import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.util.ArrayList;
@@ -14,7 +18,6 @@ import java.util.ArrayList;
 public class PlayBackUtil implements Runnable {
 
     private static final java.lang.String TAG = "PlayBackUtil";
-    private ArrayList<NotePoint> lastNotePoints = new ArrayList<>();
     private ArrayList<NotePoint> drawingPointList = new ArrayList<>();
     private DrawingBoardView canvarView;
 
@@ -23,6 +26,8 @@ public class PlayBackUtil implements Runnable {
     //IObtainData为一个接口，因为很多程序在用，因此拿Map存储；
     private int currentPage = 0;
     private boolean isPause = false;
+    private NoteStrokeDao noteStrokeDao;
+    private long id = -1;
 
     private PlayBackUtil() {
     }
@@ -43,10 +48,10 @@ public class PlayBackUtil implements Runnable {
      * @param notePoints
      */
     public synchronized void addAllNewsBrief(ArrayList<NotePoint> lastNotePoints, ArrayList<NotePoint> notePoints, DrawingBoardView canvarView) {
-        XLog.d(TAG,"将集合设置进来："+notePoints.size());
-        this.lastNotePoints = lastNotePoints;
+//        XLog.d(TAG,"将集合设置进来："+notePoints.size());
         drawingPointList = notePoints;
         this.canvarView = canvarView;
+        noteStrokeDao = GreenDaoUtil.getInstance().getNoteStrokeDao();
         //有数据要处理时唤醒线程
 //            this.notify();
     }
@@ -121,7 +126,7 @@ public class PlayBackUtil implements Runnable {
     @Override
     public void run() {
         if (drawingPointList != null && drawingPointList.size() > 0) {
-            XLog.d(TAG,"playbackutil中的run方法被调用");
+//            XLog.d(TAG,"playbackutil中的run方法被调用");
 //            for (int i = 0; i < lastNotePoints.size(); i++) {
 //                if (lastNotePoints.get(i).getId() == drawingPointList.get(0).getId()) {
 //                    canvarView.setIsDown(true);//关闭开线点许可
@@ -131,9 +136,14 @@ public class PlayBackUtil implements Runnable {
 //            }
 
 //            MyLog.e("notePointArrayList。Size()", "-----" + drawingPointList.size());
-
+            if (id != drawingPointList.get(0).getId()) {
+                id = drawingPointList.get(0).getId();
+                NoteStroke unique = noteStrokeDao.queryBuilder().where(NoteStrokeDao.Properties.Id.eq(drawingPointList.get(0).getId())).unique();
+                if (unique != null) {
+                    canvarView.setPaintColor(unique.getStrokeColor());
+                }
+            }
             canvarView.drawLine(drawingPointList.get(0));
-
             drawingPointList.remove(drawingPointList.get(0));
         }
 

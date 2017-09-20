@@ -80,7 +80,7 @@ public class PlayBackPresenter extends BasePresenter<PlayBackContract.View> impl
                                     com.newchinese.coolpensdk.entity.NotePoint sdkPoint =
                                             new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
                                                     notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
-                                                    notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
+                                                    notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType(), notePoint.getStrokeId());
                                     progressMax++;
                                     playBackList.add(sdkPoint);
                                 }

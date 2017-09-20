@@ -14,6 +14,7 @@ public class NotePoint implements java.io.Serializable {
     private Float press;
     private Integer pageIndex;
     private Integer pointType; //down:1 move:2 up:3
+    private long id;//对应的笔画stroke id
 
     public NotePoint() {
     }
@@ -26,6 +27,25 @@ public class NotePoint implements java.io.Serializable {
         this.press = press;
         this.pageIndex = pageIndex;
         this.pointType = pointType;
+    }
+
+    public NotePoint(Float pX, Float pY, Float testTime, Float firstPress, Float press, Integer pageIndex, Integer pointType, long id) {
+        this.pX = pX;
+        this.pY = pY;
+        this.testTime = testTime;
+        this.firstPress = firstPress;
+        this.press = press;
+        this.pageIndex = pageIndex;
+        this.pointType = pointType;
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Float getPX() {

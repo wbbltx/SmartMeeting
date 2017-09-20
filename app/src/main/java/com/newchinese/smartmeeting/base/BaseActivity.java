@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.base;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
+import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.entity.event.ConnectEvent;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
@@ -88,7 +90,12 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     }
 
     public void showDialog(final PopWindowListener listener,View view) {
-        hisInfoWindow = new HisInfoWindow(this,listener);
-        hisInfoWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+//        ComponentName topActivity = App.getAppliction().getTopActivity();
+//        if (DraftBoxActivity.class.getName().equals(topActivity.getClassName())) {
+//        }
+//        if (!isFinishing()){
+            hisInfoWindow = new HisInfoWindow(this, listener);
+            hisInfoWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+//        }
     }
 }

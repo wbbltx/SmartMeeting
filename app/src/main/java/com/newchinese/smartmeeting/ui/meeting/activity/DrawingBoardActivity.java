@@ -227,11 +227,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private void initPenState() {
         int penState = dataCacheUtil.getPenState();
         if (penState == BluCommonUtils.PEN_CONNECTED) {
-            ivPen.setImageResource(R.mipmap.pen_normal_power);
+            setConnState();
         } else if (penState == BluCommonUtils.PEN_DISCONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
         } else if (penState == BluCommonUtils.PEN_CONNECTING || mPresenter.isScanning()) {
             ivPen.setImageResource(R.mipmap.weilianjie);
+        }
+    }
+
+    public void setConnState(){
+        if (dataCacheUtil.isLowPower()) {
+            ivPen.setImageResource(R.mipmap.pen_low_power);
+        } else {
+            ivPen.setImageResource(R.mipmap.pen_normal_power);
         }
     }
 
@@ -860,7 +868,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (flag == 0) {
             ivPen.setImageResource(R.mipmap.weilianjie);
         } else if (flag == 1) {
-            ivPen.setImageResource(R.mipmap.pen_normal_power);
+            setConnState();
         } else if (flag == -1) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
         }
@@ -946,7 +954,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (hasFocus) {
             XLog.d(TAG, TAG + "onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
             if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
-                ivPen.setImageResource(R.mipmap.pen_normal_power);
+                setConnState();
             } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
                 ivPen.setImageResource(R.mipmap.weilianjie);
             } else {

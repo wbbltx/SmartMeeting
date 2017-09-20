@@ -150,44 +150,4 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     public void onLongClick(View view, int position) {
 
     }
-
-//    @Override
-//    public void onScanComplete() {
-//
-//    }
-//
-//    @Override
-//    public void showResult(Object o) {
-//
-//    }
-
-//    @Override
-//    public void onSuccess() {
-//
-//    }
-//
-//    @Override
-//    public void onFailed() {
-//
-//    }
-//
-//    @Override
-//    public void onConnecting() {
-//
-//    }
-//
-//    @Override
-//    public void onDisconnected() {
-//
-//    }
-
-//    @Override
-//    public void onHistoryDetected(String str, PopWindowListener popWindowListener) {
-//
-//    }
-
-//    @Override
-//    public void onElecReceived(String ele) {
-//
-//    }
 }

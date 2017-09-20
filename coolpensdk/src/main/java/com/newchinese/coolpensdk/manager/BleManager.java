@@ -8,6 +8,9 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +22,7 @@ import com.newchinese.coolpensdk.listener.OnBleScanListener;
 import com.newchinese.coolpensdk.listener.OnConnectListener;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -138,6 +142,8 @@ public class BleManager {
         Log.i(TAG, "start scan");
         stopScanLeDevice();
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        BluetoothLeScanner bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
+//        bluetoothLeScanner.startScan(scanCallback);
         if (null == serviceUUID || 0 == serviceUUID.length || Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             bluetoothAdapter.startLeScan(mLeScanCallback);
         } else {
@@ -442,6 +448,23 @@ public class BleManager {
                     }
                 }
             });
+        }
+    };
+
+    private ScanCallback scanCallback  = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
         }
     };
 

@@ -40,6 +40,15 @@ public class DataCacheUtil {
     private String thumbPath;      //最近的缩略图的路径
     private BluetoothDevice device;//保存蓝牙的临时变量
     private boolean isFirstTime = true; //b草稿箱界面是否需要初始化蓝牙标志
+    private boolean isLowPower = false;  //是否低电量
+
+    public boolean isLowPower() {
+        return isLowPower;
+    }
+
+    public void setLowPower(boolean lowPower) {
+        isLowPower = lowPower;
+    }
 
     public boolean isFirstTime() {
         return isFirstTime;

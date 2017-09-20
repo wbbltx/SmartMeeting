@@ -173,8 +173,10 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
 
     @Override
     protected void onDestroy() {
-        timer.cancel();
-        timerTask.cancel();
+        if (timer != null && timerTask != null) {
+            timer.cancel();
+            timerTask.cancel();
+        }
         super.onDestroy();
     }
 }
