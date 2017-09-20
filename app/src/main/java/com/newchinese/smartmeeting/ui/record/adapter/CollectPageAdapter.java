@@ -75,6 +75,8 @@ public class CollectPageAdapter extends PagerAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, RecordLibActivity.class);
                     intent.putExtra("selectPageIndex", collectPage.getPageIndex());
+                    intent.putExtra("currentPage",collectPage);
+                    intent.putExtra("fromFlag","2");
                     context.startActivity(intent);
                 }
             });

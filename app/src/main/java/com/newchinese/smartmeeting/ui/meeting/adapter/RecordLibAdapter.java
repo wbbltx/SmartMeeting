@@ -24,14 +24,16 @@ import butterknife.ButterKnife;
  */
 
 public class RecordLibAdapter extends RecyclerView.Adapter<RecordLibAdapter.MyViewHolder> {
+    private final List<String> recordPathList;
     private Context context;
     private List<String> notePageList = new ArrayList<>();
     private List<Boolean> isSelectedList = new ArrayList<>();
     private LayoutInflater inflater;
     private OnItemClickedListener onItemClickedListener;
 
-    public RecordLibAdapter(Context context) {
+    public RecordLibAdapter(Context context,List<String> recordPathList) {
         this.context = context;
+        this.recordPathList = recordPathList;
         inflater = LayoutInflater.from(context);
     }
 
@@ -69,7 +71,7 @@ public class RecordLibAdapter extends RecyclerView.Adapter<RecordLibAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.recordLibTitle.setText(getTitle(DataCacheUtil.getInstance().getRecordPathList().get(position)));
+        holder.recordLibTitle.setText(getTitle(recordPathList.get(position)));
 //        holder.tvDate.setText(DateUtils.formatLongDate1(notePageList.get(position).getDate()));
 //        Glide.with(context)
 //                .load(notePageList.get(position).getThumbnailPath())

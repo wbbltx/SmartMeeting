@@ -20,6 +20,7 @@ import com.newchinese.smartmeeting.entity.bean.CollectPage;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectPageAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
  * Date           2017/8/26 10:43
  */
 public class CollectPageDetailActivity extends BaseSimpleActivity implements OnShareListener, PopupWindow.OnDismissListener {
+    private static final java.lang.String TAG = "CollectPageDetailActivity";
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.iv_share)

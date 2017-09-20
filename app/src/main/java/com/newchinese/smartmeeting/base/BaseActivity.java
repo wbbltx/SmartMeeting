@@ -90,10 +90,7 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     }
 
     public void showDialog(final PopWindowListener listener,View view) {
-//        ComponentName topActivity = App.getAppliction().getTopActivity();
-//        if (DraftBoxActivity.class.getName().equals(topActivity.getClassName())) {
-//        }
-//        if (!isFinishing()){
+//        if (){
             hisInfoWindow = new HisInfoWindow(this, listener);
             hisInfoWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 //        }

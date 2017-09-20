@@ -592,6 +592,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onHistoryDetected(PopWindowListener listener) {
         XLog.d(TAG, TAG + " onHistoryDetected");
         EventBus.getDefault().post(new HisInfoEvent(listener));
-        showDialog(listener, root_view);
+        if (!isFinishing())
+            showDialog(listener, findViewById(android.R.id.content));
     }
 }

@@ -12,11 +12,14 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.RecordLibContract;
+import com.newchinese.smartmeeting.entity.bean.CollectPage;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.meeting.RecordLibPresenter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.RecordLibAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,7 @@ import static com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivi
 
 public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> implements RecordLibContract.View<View>, OnItemClickedListener {
 
+    private static final java.lang.String TAG = "RecordLibActivity";
     @BindView(R.id.record_lib_list)
     RecyclerView recordView;
     @BindView(R.id.iv_back)
@@ -58,20 +62,25 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
     protected void initStateAndData() {
         dataCacheUtil = DataCacheUtil.getInstance();
         Intent intent = getIntent();
-        if (intent.hasExtra(TAG_PAGE_INDEX)) {
-            selectPageIndex = intent.getIntExtra("selectPageIndex", 0);
-            setTitle(selectPageIndex); //设置当前页数
-
+        selectPageIndex = intent.getIntExtra("selectPageIndex", 0);
+        String fromFlag = intent.getStringExtra("fromFlag");
+        CollectPage currentPage = (CollectPage) intent.getSerializableExtra("currentPage");
+        setTitle(selectPageIndex); //设置当前页数
+        if (fromFlag.equals("1")) {
+            XLog.d(TAG, "board传递");
             recordPathList = dataCacheUtil.getRecordPathList();
+        } else {
+            recordPathList = currentPage.getScreenPathList();
+            XLog.d(TAG, "记录本传递 " + recordPathList.size());
         }
         //recycler初始化
         recordView.setHasFixedSize(true);
         recordView.setLayoutManager(new GridLayoutManager(this, 2));
         recordView.setItemAnimator(new DefaultItemAnimator());
 
-        adapter = new RecordLibAdapter(this);
-        recordView.setAdapter(adapter);
+        adapter = new RecordLibAdapter(this, recordPathList);
         initIsSelectedStatus(recordPathList);
+        recordView.setAdapter(adapter);
 
         adapter.setNotePageList(recordPathList);
     }
@@ -132,7 +141,7 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
                 adapter.setIsSelectedList(isSelectedList);
                 break;
             case R.id.tv_create:
-                mPresenter.deleteRecord(recordPathList,isSelectedList,selectPageIndex);
+                mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
                 tvRight.setText("编辑");
                 recordLibOper.setVisibility(View.GONE);
                 break;
@@ -170,12 +179,12 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
     @Override
     public void onClick(View view, int position) {
         int state = getState(tvRight.getText().toString());
-        if (state != 0){
+        if (state != 0) {
             isSelectedList.set(position, !adapter.getIsSelectedList().get(position));
             adapter.setIsSelectedList(isSelectedList);
-        }else {
-            Intent intent = new Intent(this,RecordPlayActivity.class);
-            intent.putExtra("recordPath",adapter.getItem(position));
+        } else {
+            Intent intent = new Intent(this, RecordPlayActivity.class);
+            intent.putExtra("recordPath", adapter.getItem(position));
             startActivity(intent);
         }
     }

@@ -99,6 +99,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     @Override
     public void onPresenterDestroy() {
         singleThreadExecutor.shutdown();
+        DataCacheUtil.getInstance().setFirstTime(true);
         disconnect();
     }
 

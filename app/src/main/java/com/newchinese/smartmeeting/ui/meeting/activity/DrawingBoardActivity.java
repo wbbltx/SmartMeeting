@@ -161,6 +161,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onViewCreated(savedInstanceState);
         dataCacheUtil = DataCacheUtil.getInstance();
         //初始化笔状态
@@ -519,6 +520,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 MobclickAgent.onEvent(this, "play_record");
                 Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
                 intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
+                intent1.putExtra("fromFlag","1");
                 startActivity(intent1);
                 break;
             case R.id.iv_right://分享按钮
