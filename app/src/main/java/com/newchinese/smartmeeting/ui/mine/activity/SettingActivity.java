@@ -119,18 +119,18 @@ public class SettingActivity extends BaseSimpleActivity {
                 finish();
                 break;
             case R.id.rl_header: //修改头像
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
                     takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 }
                 break;
             case R.id.rl_nick_name: //修改昵称
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
                     intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
                     startActivity(intent);
                 }
                 break;
             case R.id.rl_change_pwd: //修改密码
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除三方登录与快捷登录
+                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
                     intent = new Intent(SettingActivity.this, UpdateActivity.class);
                     intent.putExtra("type", 1);
                     startActivity(intent);

@@ -33,8 +33,8 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
-    public void loginQQ() {
-
+    public void loginQQ(String openid, String token) {
+        mLoginModel.loginQQ(new LoginData().setOpenid(openid).setToken(token).setFlag("1"));
     }
 
     @Override
@@ -87,18 +87,19 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
                     mV.skipWhat();
                 }
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 ds.setUnderlineText(false);
             }
-        },start, end, SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-        span.setSpan(new ForegroundColorSpan(tv.getContext().getResources().getColor(R.color.simple_blue)),start, end, SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
+        }, start, end, SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
+        span.setSpan(new ForegroundColorSpan(tv.getContext().getResources().getColor(R.color.simple_blue)), start, end, SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
         tv.setText(span);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
-    public void dynamicPass(String phone){
+    public void dynamicPass(String phone) {
         mLoginModel.dynamic(new LoginData().setTel(phone));
     }
 
@@ -116,23 +117,28 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
-    public void onResult(boolean succ, BaseResult<LoginData> data) {
+    public void onResult(boolean succ, String type, BaseResult<LoginData> data) {
         complete();
-        if (succ && data == null) {
-            CustomizedToast.showLong(App.getAppliction(), "数据异常");
-        } else if (succ) {
-            CustomizedToast.showLong(App.getAppliction(), data.msg);
-            if (data.update && NetUrl.NO_SUCC.equals(data.no)) {
-                if (data.data != null) {
-                    data.data.id = 1L;
-                    GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().insertOrReplaceInTx(data.data);
-                }
-                if (mV != null) {
-                    mV.updateView(data);
-                }
-            }
+        if ("dynamic".equals(type)) { //获取验证码快捷登录单独处理
+            CustomizedToast.showShort(App.getAppliction(), data.msg);
+            mV.getDynamicMsg(data);
         } else {
-            CustomizedToast.showLong(App.getAppliction(), data.msg);
+            if (succ && data == null) {
+                CustomizedToast.showShort(App.getAppliction(), "数据异常");
+            } else if (succ) {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
+                if (data.update && NetUrl.NO_SUCC.equals(data.no)) {
+                    if (data.data != null) {
+                        data.data.id = 1L;
+                        GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().insertOrReplaceInTx(data.data);
+                    }
+                    if (mV != null) {
+                        mV.updateView(data);
+                    }
+                }
+            } else {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
+            }
         }
     }
 
@@ -147,6 +153,6 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     public void complete() {
         if (mV != null) {
             mV.showLoading(null);
-        } 
+        }
     }
 }

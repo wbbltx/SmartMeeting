@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.model;
 
+import android.util.Log;
+
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
@@ -44,7 +46,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
         } else {
             observable = mServices.login(data);
         }
-        invokeRequest(quick ? NetUrl.QUICK_LOGIN : NetUrl.LOGIN_NORMAL, true, observable.map(new Function<BaseResult<LoginData>, BaseResult<LoginData>>() {
+        invokeRequest(quick ? NetUrl.QUICK_LOGIN : NetUrl.LOGIN_NORMAL, true, "login", observable.map(new Function<BaseResult<LoginData>, BaseResult<LoginData>>() {
             @Override
             public BaseResult<LoginData> apply(@NonNull BaseResult<LoginData> result) throws Exception {
                 result.data.setTel(data.getTel());
@@ -53,48 +55,58 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
         }));
     }
 
+    @Override
+    public void loginQQ(LoginData data) {
+        invokeRequest(NetUrl.LOGIN_QQ, true, "loginQQ", mServices.loginQQ(data));
+    }
+
+    @Override
+    public void loginWeChat(LoginData data) {
+
+    }
+
 
     @Override
     public void regist(LoginData data) {
-        invokeRequest(NetUrl.REGIST, true, mServices.regist(data));
+        invokeRequest(NetUrl.REGIST, true, "regist", mServices.regist(data));
     }
 
     @Override
     public void forget(LoginData data) {
-        invokeRequest(NetUrl.FORGET_PASS, true,  mServices.forget(data));
+        invokeRequest(NetUrl.FORGET_PASS, true, "forget", mServices.forget(data));
     }
 
     @Override
     public void verify(LoginData data) {
-        invokeRequest(NetUrl.VERIFY_CODE, false, mServices.verify(data));
+        invokeRequest(NetUrl.VERIFY_CODE, false, "verify", mServices.verify(data));
     }
 
     @Override
     public void dynamic(LoginData data) {
-        invokeRequest(NetUrl.DYNAMIC_PASS, false, mServices.dynamic(data));
+        invokeRequest(NetUrl.DYNAMIC_PASS, false, "dynamic", mServices.dynamic(data));
     }
 
     @Override
     public void updateNick(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_NICK, true, mServices.updateNick(data));
+        invokeRequest(NetUrl.UPDATE_NICK, true, "updateNick", mServices.updateNick(data));
     }
 
     @Override
     public void updateIcon(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_ICON, true, mServices.updateIcon(data)
-        .concatMap(new Function<BaseResult<String>, Publisher<BaseResult<LoginData>>>() {
-            @Override
-            public Publisher<BaseResult<LoginData>> apply(@NonNull BaseResult<String> data) throws Exception {
-                BaseResult<LoginData> result = new BaseResult<>();
-                result.no = data.no;
-                result.msg = data.msg;
-                result.data = new LoginData().setIcon(data.data);
-                return Flowable.just(result);
-            }
-        }));
+        invokeRequest(NetUrl.UPDATE_ICON, true, "updateIcon", mServices.updateIcon(data)
+                .concatMap(new Function<BaseResult<String>, Publisher<BaseResult<LoginData>>>() {
+                    @Override
+                    public Publisher<BaseResult<LoginData>> apply(@NonNull BaseResult<String> data) throws Exception {
+                        BaseResult<LoginData> result = new BaseResult<>();
+                        result.no = data.no;
+                        result.msg = data.msg;
+                        result.data = new LoginData().setIcon(data.data);
+                        return Flowable.just(result);
+                    }
+                }));
     }
 
-    private <T> void invokeRequest(final String url, final boolean update, Flowable<BaseResult<T>> observable) {
+    private <T> void invokeRequest(final String url, final boolean update, final String type, Flowable<BaseResult<T>> observable) {
         observable.subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override
@@ -111,7 +123,8 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
                     protected void onFail(NetError error) {
                         BaseResult<String> result = new BaseResult<>();
                         result.msg = error.getMessage();
-                        mPresenter.onResult(false, result);
+                        Log.e("test_login", "onFail:" + error.getMessage());
+                        mPresenter.onResult(false, type, result);
                     }
 
                     @Override
@@ -119,7 +132,8 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
                         if (mPresenter != null) {
                             loginDataBaseResult.url = url;
                             loginDataBaseResult.update = update;
-                            mPresenter.onResult(true, loginDataBaseResult);
+                            Log.e("test_login", "onNext:" + loginDataBaseResult.toString());
+                            mPresenter.onResult(true, type, loginDataBaseResult);
                         }
                     }
                 });

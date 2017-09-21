@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.ui.mine.fragment;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -90,10 +91,11 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         super.onResume();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
         if (data != null) {
+            Log.e("test_login", "" + data.toString());
             Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop())
                     .into(mIvIcon);
             mTvNick.setText(data.nickname);
-            if (!TextUtils.isEmpty(data.tel)){
+            if (!TextUtils.isEmpty(data.tel)) {
                 String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
                 mTvTel.setText(tel);
             }

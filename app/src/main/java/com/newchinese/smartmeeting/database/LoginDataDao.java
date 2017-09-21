@@ -31,6 +31,7 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
         public final static Property Im_token = new Property(4, String.class, "im_token", false, "IM_TOKEN");
         public final static Property Tel = new Property(5, String.class, "tel", false, "TEL");
         public final static Property Icon = new Property(6, String.class, "icon", false, "ICON");
+        public final static Property Comment = new Property(7, String.class, "comment", false, "COMMENT");
     }
 
 
@@ -52,7 +53,8 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
                 "\"NICKNAME\" TEXT," + // 3: nickname
                 "\"IM_TOKEN\" TEXT," + // 4: im_token
                 "\"TEL\" TEXT," + // 5: tel
-                "\"ICON\" TEXT);"); // 6: icon
+                "\"ICON\" TEXT," + // 6: icon
+                "\"COMMENT\" TEXT);"); // 7: comment
     }
 
     /** Drops the underlying database table. */
@@ -99,6 +101,11 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
         if (icon != null) {
             stmt.bindString(7, icon);
         }
+ 
+        String comment = entity.getComment();
+        if (comment != null) {
+            stmt.bindString(8, comment);
+        }
     }
 
     @Override
@@ -139,6 +146,11 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
         if (icon != null) {
             stmt.bindString(7, icon);
         }
+ 
+        String comment = entity.getComment();
+        if (comment != null) {
+            stmt.bindString(8, comment);
+        }
     }
 
     @Override
@@ -155,7 +167,8 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // nickname
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // im_token
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // tel
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // icon
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // icon
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // comment
         );
         return entity;
     }
@@ -169,6 +182,7 @@ public class LoginDataDao extends AbstractDao<LoginData, Long> {
         entity.setIm_token(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTel(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setIcon(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setComment(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

@@ -32,7 +32,7 @@ public interface ApiService {
 
     //动态密码
     @POST(NetUrl.DYNAMIC_PASS)
-    Flowable<BaseResult<String>> dynamic(@Body LoginData data);
+    Flowable<BaseResult<LoginData>> dynamic(@Body LoginData data);
 
     //验证码
     @POST(NetUrl.VERIFY_CODE)
@@ -52,4 +52,7 @@ public interface ApiService {
 
     @POST(NetUrl.UPDATE_PASS)
     Flowable<BaseResult<LoginData>> updatePass(@Body LoginData data);
+
+    @POST(NetUrl.LOGIN_QQ)
+    Flowable<BaseResult<LoginData>> loginQQ(@Body LoginData data);
 }

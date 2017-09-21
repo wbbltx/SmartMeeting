@@ -18,14 +18,14 @@ public class LoginData {
     @Id(autoincrement = true)
     public Long id;
 
-    public String code, token, nickname, im_token, tel, icon;
+    public String code, token, nickname, im_token, tel, icon, comment;
 
     @Transient
-    public String password, new_password, icon_format;
+    public String password, new_password, icon_format, openid, flag;
 
-    @Generated(hash = 29521069)
+    @Generated(hash = 1612017057)
     public LoginData(Long id, String code, String token, String nickname,
-            String im_token, String tel, String icon) {
+                     String im_token, String tel, String icon, String comment) {
         this.id = id;
         this.code = code;
         this.token = token;
@@ -33,6 +33,7 @@ public class LoginData {
         this.im_token = im_token;
         this.tel = tel;
         this.icon = icon;
+        this.comment = comment;
     }
 
     @Generated(hash = 1578814127)
@@ -129,6 +130,33 @@ public class LoginData {
         return this;
     }
 
+    public String getComment() {
+        return this.comment;
+    }
+
+    public LoginData setComment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public LoginData setOpenid(String openid) {
+        this.openid = openid;
+        return this;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public LoginData setFlag(String flag) {
+        this.flag = flag;
+        return this;
+    }
+
     private String md5(String src) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -160,8 +188,12 @@ public class LoginData {
                 ", im_token='" + im_token + '\'' +
                 ", tel='" + tel + '\'' +
                 ", icon='" + icon + '\'' +
+                ", comment='" + comment + '\'' +
                 ", password='" + password + '\'' +
+                ", new_password='" + new_password + '\'' +
                 ", icon_format='" + icon_format + '\'' +
+                ", openid='" + openid + '\'' +
+                ", flag='" + flag + '\'' +
                 '}';
     }
 }

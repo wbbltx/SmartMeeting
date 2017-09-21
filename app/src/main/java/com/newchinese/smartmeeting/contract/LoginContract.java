@@ -21,15 +21,17 @@ public interface LoginContract {
         void updateView(E e);
 
         void showLoading(String msg);
+
+        void getDynamicMsg(BaseResult<LoginData> data);
     }
 
 
-    abstract class  LoginIView1<E> extends AppCompatActivity implements BaseView<E>, BaseToolbar {
+    abstract class LoginIView1<E> extends AppCompatActivity implements BaseView<E>, BaseToolbar {
         abstract void skipRegist();
+
         abstract void skipForget(String user);
+
         abstract void skipLogin();
-
-
     }
 
     interface LoginIPresenter<V> {
@@ -38,7 +40,7 @@ public interface LoginContract {
 
         void loginWechat();
 
-        void loginQQ();
+        void loginQQ(String openid, String token);
 
         void regist(String phone, String pass, String code);
 
@@ -58,7 +60,7 @@ public interface LoginContract {
 
         void getSpan(TextView tv, String txt);
 
-        void onResult(boolean succ, BaseResult<LoginData> data);
+        void onResult(boolean succ, String type, BaseResult<LoginData> data);
 
         void loading();
 
@@ -67,7 +69,13 @@ public interface LoginContract {
 
     interface LoginIModel {
         void login(LoginData data, boolean quick);
+
+        void loginQQ(LoginData data);
+
+        void loginWeChat(LoginData data);
+
         void regist(LoginData data);
+
         void forget(LoginData data);
 
         void verify(LoginData data);

@@ -401,4 +401,9 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
             }
         }
     }
+
+    @Override
+    public void getDynamicMsg(BaseResult<LoginData> data) {
+        
+    }
 }

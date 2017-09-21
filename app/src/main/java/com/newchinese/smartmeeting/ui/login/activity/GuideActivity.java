@@ -10,11 +10,7 @@ import android.widget.ImageButton;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.constant.Constant;
-import com.newchinese.smartmeeting.database.LoginDataDao;
-import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.ui.login.adapter.GuidePicVpAdapter;
-import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
-import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
 import java.util.ArrayList;
@@ -86,23 +82,7 @@ public class GuideActivity extends BaseSimpleActivity {
 
     @OnClick(R.id.btn_feel)
     public void onViewClicked() {
-        jumpActivity();
-    }
-
-
-    public void jumpActivity() {
-        Intent intent;
-        LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
-        LoginData loginData = loginDataDao.queryBuilder().unique();
-        //判断是否登录过
-        boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
-        if (loginData != null && isLogin) {
-//        if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
-            intent = new Intent(this, MainActivity.class);
-        } else {
-            intent = new Intent(this, LoginActivity.class);
-        }
-        startActivity(intent);
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 }
