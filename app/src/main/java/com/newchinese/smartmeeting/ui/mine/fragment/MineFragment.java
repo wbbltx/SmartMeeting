@@ -93,8 +93,10 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
             Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop())
                     .into(mIvIcon);
             mTvNick.setText(data.nickname);
-            String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
-            mTvTel.setText(tel);
+            if (!TextUtils.isEmpty(data.tel)){
+                String tel = data.tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+                mTvTel.setText(tel);
+            }
         }
         String penName = SharedPreUtils.getString("connectBluInfo_name");
         mTvPen.setText(TextUtils.isEmpty(penName) ? "未连接" : penName);

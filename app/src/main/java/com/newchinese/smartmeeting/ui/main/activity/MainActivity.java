@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         //初始化bar状态
         ivBack.setVisibility(View.GONE);
         ivPen.setVisibility(View.GONE);
-        tvTitle.setText("会议");
+        tvTitle.setText("会议助手");
         //初始化Radio和Fragment状态
         ((RadioButton) rgMain.getChildAt(1)).setChecked(true);
         fragmentManager = getSupportFragmentManager();
@@ -125,11 +125,11 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         switch (checkedId) {
             case R.id.rb_records:
                 changeFragment(recordsFragment);
-                tvTitle.setText("会议记录");
+                tvTitle.setText("会议簿");
                 break;
             case R.id.rb_meeting:
                 changeFragment(meetingFragemnt);
-                tvTitle.setText("会议");
+                tvTitle.setText("会议助手");
                 break;
             case R.id.rb_mine:
                 changeFragment(mineFragment);
