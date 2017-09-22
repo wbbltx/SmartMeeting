@@ -14,26 +14,26 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-//    signingConfigs {
-//        debugConfig {
-//            storeFile file("../hello.jks")      //签名文件
-//            storePassword "123456"
-//            keyAlias "123456"
-//            keyPassword "123456"  //签名密码
-//        }
-//        release {
-//            storeFile file("../hello.jks")      //签名文件
-//            storePassword "123456"
-//            keyAlias "123456"
-//            keyPassword "123456"  //签名密码
-//        }
-//    }
+    signingConfigs {
+        debugConfig {
+            storeFile file("../hello.jks")      //签名文件
+            storePassword "123456"
+            keyAlias "123456"
+            keyPassword "123456"  //签名密码
+        }
+        release {
+            storeFile file("../hello.jks")      //签名文件
+            storePassword "123456"
+            keyAlias "123456"
+            keyPassword "123456"  //签名密码
+        }
+    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

@@ -74,7 +74,7 @@
         <activity android:name=".ui.meeting.activity.RecordLibActivity" />
 
         <!-- 分享需要的activity -->
-        <activity android:name=".wxapi.WXEntryActivity" />
+        <activity android:name=".wxapi.WXEntryActivity" android:exported="true" />
         <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
