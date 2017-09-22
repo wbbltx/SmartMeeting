@@ -49,6 +49,8 @@
     <string name="please_collect">请将以下记录归档！</string>
 
     <!--记录模块-->
+    <string name="search">搜索</string>
+    <string name="page_number">第%d页</string>
 
     <!--我的模块-->
     <string name="save">保存</string>

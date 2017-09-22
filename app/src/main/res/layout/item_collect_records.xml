@@ -29,7 +29,6 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:lines="1"
-            android:text="关于智会议的使用方法"
             android:textColor="@color/gray3"
             android:textSize="14sp" />
 
@@ -38,7 +37,6 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="今天"
             android:textColor="@color/gray6"
             android:textSize="11sp" />
     </LinearLayout>

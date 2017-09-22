@@ -93,31 +93,20 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
             System.err.println("getBitmapFromPath: file not exists");
             return null;
         }
-        // Bitmap bitmap = Bitmap.createBitmap(1366, 768, Config.ARGB_8888);
-        // Canvas canvas = new Canvas(bitmap);
-        // Movie movie = Movie.decodeFile(path);
-        // movie.draw(canvas, 0, 0);
-        //
-        // return bitmap;
-
         byte[] buf = new byte[1024 * 1024];// 1M
         Bitmap bitmap = null;
-
         try {
-
             FileInputStream fis = new FileInputStream(path);
             int len = fis.read(buf, 0, buf.length);
             bitmap = BitmapFactory.decodeByteArray(buf, 0, len);
             if (bitmap == null) {
                 System.out.println("len= " + len);
-                System.err
-                        .println("path: " + path + "  could not be decode!!!");
+                System.err.println("path: " + path + "  could not be decode!!!");
             }
         } catch (Exception e) {
             e.printStackTrace();
 
         }
-
         return bitmap;
     }
 
@@ -145,7 +134,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
      * 设置标题内容
      */
     public void setTitle(int pageIndex, long date) {
-        tvTitle.setText("第" + pageIndex + "页 | " + DateUtils.formatLongDate3(date));
+        tvTitle.setText(getString(R.string.page_number, pageIndex) + " | " + DateUtils.formatLongDate3(date));
     }
 
     @OnClick({R.id.iv_back, R.id.iv_share})
