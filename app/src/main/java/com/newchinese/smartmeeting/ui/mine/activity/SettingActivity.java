@@ -93,13 +93,13 @@ public class SettingActivity extends BaseSimpleActivity {
     protected void onViewCreated(Bundle savedInstanceState) {
         takePhotoPopWin = new TakePhotoPopWin(this, "SettingActivity");
         mPd = new ProgressDialog(this);
-        mPd.setMessage("正在请求...");
+        mPd.setMessage(getString(R.string.loading_request_m));
     }
 
     @Override
     protected void initStateAndData() {
         ivPen.setVisibility(View.GONE);
-        tvTitle.setText("设置");
+        tvTitle.setText(getString(R.string.setting));
         loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         loginData = loginDataDao.queryBuilder().unique();
         XApi.registerProvider(new NetProviderImpl());
@@ -297,7 +297,7 @@ public class SettingActivity extends BaseSimpleActivity {
      * 上传图片
      */
     private void updateHeader(String icon) {
-        mPd.setMessage("正在请求...");
+        mPd.setMessage(getString(R.string.loading_request_m));
         mPd.show();
         loginData.setIcon(icon).setIcon_format("png");
         observable = mServices.updateIcon(loginData)
@@ -317,7 +317,7 @@ public class SettingActivity extends BaseSimpleActivity {
                     @Override
                     public void accept(BaseResult<LoginData> loginDataBaseResult) throws Exception {
                         Log.e("test_http", "" + loginDataBaseResult.toString());
-                        Toast.makeText(SettingActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingActivity.this, getString(R.string.change_success), Toast.LENGTH_SHORT).show();
                         loginData.setIcon(loginDataBaseResult.data.getIcon());
                         loginDataDao.update(loginData);
                         Glide.with(SettingActivity.this)
@@ -329,9 +329,8 @@ public class SettingActivity extends BaseSimpleActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e("test_http", "上传图片结束：" + System.currentTimeMillis());
                         Log.e("test_http", "请求错误：" + throwable.getMessage());
-                        Toast.makeText(SettingActivity.this, "请求错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingActivity.this, getString(R.string.request_failed), Toast.LENGTH_SHORT).show();
                         mPd.dismiss();
                     }
                 });

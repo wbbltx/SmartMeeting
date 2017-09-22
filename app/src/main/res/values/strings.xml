@@ -9,6 +9,7 @@
     <string name="bluetooth_open">开启 下一步</string>
     <string name="bluetooth_stay">不开启</string>
     <string name="read_channel">是否读取存储数据</string>
+    <string name="not_connect">未连接</string>
 
     <!--注册登录模块-->
     <string name="password">密码</string>
@@ -50,9 +51,32 @@
     <!--记录模块-->
 
     <!--我的模块-->
+    <string name="save">保存</string>
+    <string name="header">头像</string>
+    <string name="up_load">提交</string>
+    <string name="setting">设置</string>
+    <string name="nick_name">昵称</string>
     <string name="fb_title">问题反馈</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="au_title">关于我们</string>
     <string name="mine_confirm">确认</string>
+    <string name="exit_login">退出登录</string>
+    <string name="old_password">原密码</string>
+    <string name="new_password">新密码</string>
+    <string name="service">服务条款与协议</string>
+    <string name="wrong_nick">昵称不能为空</string>
+    <string name="change_success">修改成功</string>
+    <string name="request_failed">请求失败</string>
+    <string name="change_password">修改密码</string>
+    <string name="change_nickname">修改昵称</string>
+    <string name="already_new">已经是最新版本</string>
+    <string name="wrong_password">密码格式错误</string>
+    <string name="please_fill_nick">请输入昵称</string>
+    <string name="wrong_connect">联系方式不正确</string>
+    <string name="loading_request_m">正在请求…</string>
+    <string name="please_fill_fb">请填写反馈内容</string>
+    <string name="input_rules">最长包含9个汉字字符</string>
+    <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
+    <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
 
     <string-array name="selectIcon">
         <item>拍照</item>

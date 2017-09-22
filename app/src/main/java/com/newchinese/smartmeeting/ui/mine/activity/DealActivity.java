@@ -32,7 +32,7 @@ public class DealActivity extends BaseSimpleActivity {
 
     @Override
     protected void initStateAndData() {
-        tvTitle.setText("服务条款与协议");
+        tvTitle.setText(getString(R.string.service));
         ivPen.setVisibility(View.GONE);
         tvContract.setText("\n\t\t鉴于用户使用智会议的相关服务，为明确双方之间的权利义务而签订本协议。在本协议中“新国人”是指北京新国人智慧科技股份有限公司及其相关服务可能存在的运营关联单位。“用户”是指使用智会议相关服务的使用人，在本协议中更多地称呼为“您”。智会议是指本服务软件及相关的服务平台。\n" +
                 "\n一、协议范围\n" +

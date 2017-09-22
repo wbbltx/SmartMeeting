@@ -62,8 +62,8 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
     protected void initStateAndData() {
         ivPen.setVisibility(View.GONE);
         tvRight.setVisibility(View.VISIBLE);
-        tvRight.setText("保存");
-        tvTitle.setText("修改昵称");
+        tvRight.setText(getString(R.string.save));
+        tvTitle.setText(getString(R.string.change_nickname));
         loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         loginData = loginDataDao.queryBuilder().unique();
         if (loginData != null) {
@@ -88,7 +88,7 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
             case R.id.tv_right:
                 String nickName = etNickName.getText().toString();
                 if (nickName.isEmpty()) {
-                    Toast.makeText(mContext, "请输入昵称", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getString(R.string.please_fill_nick), Toast.LENGTH_SHORT).show();
                 } else {
                     tvRight.setClickable(false); //防止连续点击
                     loginData.setNickname(nickName);
@@ -100,13 +100,13 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
                                 @Override
                                 public void accept(BaseResult<LoginData> loginDataBaseResult) throws Exception {
                                     Log.e("test_http", "" + loginDataBaseResult.toString());
-                                    Toast.makeText(ChangeNickNameActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChangeNickNameActivity.this, getString(R.string.change_success), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
                             }, new Consumer<Throwable>() {
                                 @Override
                                 public void accept(Throwable throwable) throws Exception {
-                                    Toast.makeText(ChangeNickNameActivity.this, "请求错误", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChangeNickNameActivity.this, getString(R.string.request_failed), Toast.LENGTH_SHORT).show();
                                     tvRight.setClickable(true); //防止连续点击
                                 }
                             });

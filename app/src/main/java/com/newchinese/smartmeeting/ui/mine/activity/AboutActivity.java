@@ -31,7 +31,7 @@ public class AboutActivity extends BaseSimpleActivity {
 
     @Override
     protected void initStateAndData() {
-        tvTitle.setText("关于我们");
+        tvTitle.setText(getString(R.string.au_title));
         ivPen.setVisibility(View.GONE);
     }
 
@@ -50,7 +50,7 @@ public class AboutActivity extends BaseSimpleActivity {
                 startActivity(new Intent(this, DealActivity.class));
                 break;
             case R.id.btn_update:
-                CustomizedToast.showLong(this, "已经是最新版本");
+                CustomizedToast.showLong(this, getString(R.string.already_new));
                 break;
         }
     }

@@ -25,10 +25,10 @@ public class UpdateActivity extends AppCompatActivity implements MineContract.Up
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_update);
-        initIntent();
-        setTitle("修改密码");
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_update);
+        setTitle(getString(R.string.change_password));
+        initIntent();
         initPresenter();
         initView();
         initListener();
@@ -55,9 +55,9 @@ public class UpdateActivity extends AppCompatActivity implements MineContract.Up
         mEv2.setVisibility(mType == 0 ? View.GONE : View.VISIBLE);
         mEv3.setVisibility(mType == 0 ? View.GONE : View.VISIBLE);
 
-        mEv1.configure(mType == 0 ? "最长包含9个汉字字符" : "原密码", null);
-        mEv2.configure(mType == 0 ? "" : "新密码", null);
-        mEv3.configure(mType == 0 ? "" : "再次输入密码", null);
+        mEv1.configure(mType == 0 ? getString(R.string.input_rules) : getString(R.string.old_password), null);
+        mEv2.configure(mType == 0 ? "" : getString(R.string.new_password), null);
+        mEv3.configure(mType == 0 ? "" : getString(R.string.fill_password_again), null);
 
         mEv1.setEditType(mType == 0 ? -1 : EditView.EDIT_TYPE_PASS);
         mEv2.setEditType(EditView.EDIT_TYPE_PASS);
@@ -73,11 +73,11 @@ public class UpdateActivity extends AppCompatActivity implements MineContract.Up
                         if (mEv1.mMatching) {
                             mPresenter.updateNick(mEv1.getText());
                         } else {
-                            CustomizedToast.showShort(this, "昵称不能为空");
+                            CustomizedToast.showShort(this, getString(R.string.wrong_nick));
                         }
                     } else {
                         if (!mEv1.mMatching || !mEv2.mMatching || !mEv2.getText().equals(mEv3.getText())) {
-                            CustomizedToast.showShort(this, "密码格式错误");
+                            CustomizedToast.showShort(this, getString(R.string.wrong_password));
                             break;
                         }
                         mPresenter.updatePass(mEv1.getText(), mEv2.getText());

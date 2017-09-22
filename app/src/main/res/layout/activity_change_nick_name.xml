@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="最长包含9个汉字字符"
+            android:hint="@string/input_rules"
             android:lines="1"
             android:maxLength="9"
             android:textColor="@color/simple_text"

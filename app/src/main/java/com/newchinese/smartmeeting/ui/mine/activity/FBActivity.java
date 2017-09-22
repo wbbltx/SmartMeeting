@@ -60,13 +60,13 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
     private void submit() {
         String content = mEtContent.getText().toString().trim();
         if (TextUtils.isEmpty(content)) {
-            CustomizedToast.showShort(this, "请填写反馈内容");
+            CustomizedToast.showShort(this, getString(R.string.please_fill_fb));
             return;
         }
 
         String contact = mEtContact.getText().toString().trim();
         if (!contact.matches(regexp) && !contact.matches(regemail)) {
-            CustomizedToast.showShort(this, "联系方式不正确");
+            CustomizedToast.showShort(this, getString(R.string.wrong_connect));
             return;
         }
         mPresenter.feedBack(content, contact);

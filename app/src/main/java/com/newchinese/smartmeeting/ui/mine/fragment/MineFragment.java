@@ -100,6 +100,6 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
             }
         }
         String penName = SharedPreUtils.getString("connectBluInfo_name");
-        mTvPen.setText(TextUtils.isEmpty(penName) ? "未连接" : penName);
+        mTvPen.setText(TextUtils.isEmpty(penName) ? getString(R.string.not_connect) : penName);
     }
 }
