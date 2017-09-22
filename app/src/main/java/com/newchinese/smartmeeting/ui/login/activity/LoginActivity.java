@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         mTab.setSelectedTabIndicatorColor(getResources().getColor(R.color.simple_blue));
         mTab.setTabTextColors(getResources().getColor(R.color.gray6), getResources().getColor(R.color.simple_blue));
 
-        mVp.setAdapter(new LoginPageAdapter().setOnPageInnerClickListener(this).setPresenter(mPresenter));
+        mVp.setAdapter(new LoginPageAdapter(this).setOnPageInnerClickListener(this).setPresenter(mPresenter));
         mTab.setupWithViewPager(mVp);
     }
 
@@ -114,13 +114,13 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                     .doOnNext(new Consumer<Long>() {
                         @Override
                         public void accept(Long aLong) throws Exception {
-                            ((EditView) v).setEnd("重新获取(" + (60 - aLong) + ")", false);
+                            ((EditView) v).setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
                         }
                     })
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Exception {
-                            ((EditView) v).setEnd("获取动态密码", true);
+                            ((EditView) v).setEnd(getString(R.string.get_active_password), true);
                         }
                     })
                     .subscribe();
@@ -140,19 +140,19 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                 // 判断动态密码是否一致,一致直接登录，不一致吐司
                 if (loginData != null && !sms.isEmpty()) {
                     if (!phone.matches(REGEX_MOBILE) || !telCache.equals(phone)) {
-                        Toast.makeText(this, "手机号有误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.wrong_tel), Toast.LENGTH_SHORT).show();
                     } else if (!pass.equals(sms)) {
-                        Toast.makeText(this, "验证码有误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.wrong_code), Toast.LENGTH_SHORT).show();
                     } else {
                         GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
                         GreenDaoUtil.getInstance().getLoginDataDao().insert(loginData); //存登录数据
                         SharedPreUtils.setBoolean(Constant.IS_LOGIN, true); //设置登录状态
-                        Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, MainActivity.class));
                         finish();
                     }
                 } else {
-                    Toast.makeText(this, "请获取验证码", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.please_get_confirm_code), Toast.LENGTH_SHORT).show();
                 }
             } else { //普通登录
                 mPresenter.loginPhone(phone, pass);
@@ -202,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
          */
         @Override
         public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            Toast.makeText(LoginActivity.this, "登录失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, getString(R.string.login_failed), Toast.LENGTH_LONG).show();
         }
 
         /**
@@ -212,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
          */
         @Override
         public void onCancel(SHARE_MEDIA platform, int action) {
-            Toast.makeText(LoginActivity.this, "取消登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, getString(R.string.login_cancle), Toast.LENGTH_LONG).show();
         }
     };
 

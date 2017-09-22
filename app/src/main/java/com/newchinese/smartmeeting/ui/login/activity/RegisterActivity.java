@@ -57,8 +57,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     public static final int UI_TYPE_REG = 0;//注册界面
     public static final int UI_TYPE_FOR = 1;//忘记密码
     public static final int UI_TYPE_UPD = 2;//完善资料
-    private String mBtnTitles[] = {"注 册", "确 定", "完 成"};
-    private String mTitles[] = {"注册", "忘记密码", "完善个人资料"};
+    private String[] mBtnTitles;
+    private String[] mTitles;
     private EditView mEvPhone, mEvCode, mEvPass;
     private LoginContract.LoginIPresenter mPresenter;
     private Button mBtnReg;
@@ -81,6 +81,10 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         setContentView(R.layout.activity_register);
         initIntent();
         super.onCreate(savedInstanceState);
+        mBtnTitles = new String[]{getString(R.string.regist_space), getString(R.string.confirm_space),
+                getString(R.string.complete_space)};
+        mTitles = new String[]{getString(R.string.regist_title), getString(R.string.forget_password),
+                getString(R.string.fill_person_message)};
         initPresenter();
         initView();
         updateBtn();
@@ -135,13 +139,13 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPass.setEditType(EditView.EDIT_TYPE_PASS);
         mEvPass2.setEditType(EditView.EDIT_TYPE_PASS);
 
-        mEvPhone.configure("手机号码", "");
-        mEvCode.configure("输入验证码", "获取验证码");
-        mEvPass.configure("密码", "");
-        mEvPass2.configure("再次输入密码", "");
+        mEvPhone.configure(getString(R.string.tel_number), "");
+        mEvCode.configure(getString(R.string.fill_confirm_code), getString(R.string.get_confirm_code));
+        mEvPass.configure(getString(R.string.password), "");
+        mEvPass2.configure(getString(R.string.fill_password_again), "");
 
         if (mPresenter != null) {
-            mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? "已有账号？去登录" : "");
+            mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? getString(R.string.have_account_to_login) : "");
         }
 
         mBtnReg.setText(mBtnTitles[mUi]);
@@ -192,18 +196,18 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                             .doOnNext(new Consumer<Long>() {
                                 @Override
                                 public void accept(Long aLong) throws Exception {
-                                    mEvCode.setEnd("重新获取(" + (60 - aLong) + ")", false);
+                                    mEvCode.setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
                                 }
                             })
                             .doOnComplete(new Action() {
                                 @Override
                                 public void run() throws Exception {
-                                    mEvCode.setEnd("获取验证码", true);
+                                    mEvCode.setEnd(getString(R.string.get_confirm_code), true);
                                 }
                             })
                             .subscribe();
                 } else {
-                    CustomizedToast.showShort(this, "手机号不正确");
+                    CustomizedToast.showShort(this, getString(R.string.wrong_tel));
                 }
                 break;
         }
@@ -249,7 +253,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                     }
                                 });
                     } else {
-                        CustomizedToast.showShort(this, "请填写正确资料");
+                        CustomizedToast.showShort(this, getString(R.string.please_fill_correct_msg));
                     }
                 }
                 break;
@@ -404,6 +408,6 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
 
     @Override
     public void getDynamicMsg(BaseResult<LoginData> data) {
-        
+
     }
 }

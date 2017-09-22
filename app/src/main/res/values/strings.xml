@@ -1,13 +1,56 @@
 <resources>
+    <!--通用-->
     <string name="app_name">智会议</string>
+    <string name="btn_confirm">确认</string>
+    <string name="btn_cancel">取消</string>
+
+    <!--蓝牙模块-->
     <string name="bluetooth_request">酷神笔开启蓝牙！</string>
     <string name="bluetooth_open">开启 下一步</string>
     <string name="bluetooth_stay">不开启</string>
     <string name="read_channel">是否读取存储数据</string>
-    <string name="login_title">登录</string>
-    <string name="regist_title">注册</string>
-    <string name="fb_title">问题反馈</string>
 
+    <!--注册登录模块-->
+    <string name="password">密码</string>
+    <string name="login_title">登录</string>
+    <string name="login_space">登 录</string>
+    <string name="regist_title">注册</string>
+    <string name="regist_space">注 册</string>
+    <string name="confirm_space">确 定</string>
+    <string name="complete_space">完 成</string>
+    <string name="tel_number">手机号码</string>
+    <string name="wrong_data">数据异常</string>
+    <string name="cache_again">重新获取</string>
+    <string name="quick_login">快捷登录</string>
+    <string name="wrong_code">验证码有误</string>
+    <string name="my_nick_name">我的昵称</string>
+    <string name="simple_login">普通登录</string>
+    <string name="wrong_tel">手机号码有误</string>
+    <string name="third_login">第三方登录</string>
+    <string name="login_success">登录成功</string>
+    <string name="login_failed">登录失败</string>
+    <string name="login_cancle">取消登录</string>
+    <string name="active_password">动态密码</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="loading_request">正在请求</string>
+    <string name="get_confirm_code">获取验证码</string>
+    <string name="fill_confirm_code">输入验证码</string>
+    <string name="get_active_password">获取动态密码</string>
+    <string name="fill_person_message">完善个人资料</string>
+    <string name="fill_password_again">再次输入密码</string>
+    <string name="please_get_confirm_code">请获取验证码</string>
+    <string name="please_fill_correct_msg">请填写正确资料</string>
+    <string name="no_account_to_regist">没有账号？ 去注册</string>
+    <string name="have_account_to_login">已有账号？ 去登录</string>
+
+    <!--会议模块-->
+    <string name="change_record_title">变更本次记录标题名称</string>
+    <string name="please_collect">请将以下记录归档！</string>
+
+    <!--记录模块-->
+
+    <!--我的模块-->
+    <string name="fb_title">问题反馈</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="mine_confirm">确认</string>
 

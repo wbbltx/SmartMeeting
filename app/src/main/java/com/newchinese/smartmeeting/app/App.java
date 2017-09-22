@@ -32,6 +32,10 @@ public class App extends Application {
         return appliction;
     }
 
+    public static Context getContext() {
+        return appliction.getApplicationContext();
+    }
+
     public ComponentName getTopActivity() {
         return topActivity;
     }

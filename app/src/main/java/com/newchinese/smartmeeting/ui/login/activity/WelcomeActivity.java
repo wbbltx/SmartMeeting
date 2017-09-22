@@ -91,7 +91,6 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
             //判断是否登录过
             boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
             if (loginData != null && isLogin) {
-//                if (loginData != null && loginData.getCode() != null && !loginData.getCode().isEmpty()) {
                 intent = new Intent(WelcomeActivity.this, MainActivity.class);
             } else {
                 intent = new Intent(WelcomeActivity.this, LoginActivity.class);

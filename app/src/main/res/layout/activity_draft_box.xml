@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="9dp"
                 android:layout_toRightOf="@+id/imageView"
-                android:text="您有未创建的会议档案，请创建"
+                android:text="@string/please_collect"
                 android:textColor="@color/simple_blue"
                 android:textSize="14sp" />
 

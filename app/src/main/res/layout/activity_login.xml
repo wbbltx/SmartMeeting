@@ -41,12 +41,12 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="快捷登录" />
+                android:text="@string/quick_login" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="普通登录" />
+                android:text="@string/simple_login" />
         </android.support.design.widget.TabLayout>
 
         <View
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:text="第三方登录"
+            android:text="@string/third_login"
             android:textColor="#555555"
             android:textSize="13sp" />
 

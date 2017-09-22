@@ -160,6 +160,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         classifyName = getIntent().getStringExtra("classify_name");
         tvTitle.setText(classifyName);
         tvRight.setVisibility(View.GONE);
+        ivRight.setImageResource(R.mipmap.icon_create);
         ivRight.setVisibility(View.GONE);
 
 //        scanResultDialog = new ScanResultDialog(this);

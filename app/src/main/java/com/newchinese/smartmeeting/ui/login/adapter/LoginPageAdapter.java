@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.login.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.view.PagerAdapter;
@@ -19,13 +20,18 @@ import com.newchinese.smartmeeting.widget.EditView;
  */
 
 public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditViewListener, View.OnClickListener {
-
-    private String[] titles = {"快捷登录", "普通登录"};
+    private Context context;
+    private String[] titles;
     private EditView[] mEvPhone = new EditView[2], mEv3 = new EditView[2], mEvPass = new EditView[2], mEv4 = new EditView[2];
     private Button[] mBtnReg = new Button[2];
     private OnPageInnerClickListener mListener;
     private TextView[] mTvSkip = new TextView[2];
     private LoginContract.LoginIPresenter mPresenter;
+
+    public LoginPageAdapter(Context context) {
+        this.context = context;
+        titles = new String[]{context.getString(R.string.quick_login), context.getString(R.string.simple_login)};
+    }
 
     @Override
     public int getCount() {
@@ -70,17 +76,19 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         mEvPhone[position].setEditType(EditView.EDIT_TYPE_PHONE);
         mEvPass[position].setEditType(EditView.EDIT_TYPE_PASS);
 
-        mEvPhone[position].configure("手机号码", "");
-        mEvPass[position].configure(position == 0 ? "动态密码" : "密码", position == 0 ? "获取动态密码" : "忘记密码");
+        mEvPhone[position].configure(context.getString(R.string.tel_number), "");
+        mEvPass[position].configure(position == 0 ? context.getString(R.string.active_password) :
+                context.getString(R.string.password), position == 0 ? context.getString(R.string.get_active_password)
+                : context.getString(R.string.forget_password));
 
         mEvPhone[position].setTag(position);
         mEvPass[position].setTag(position);
         mBtnReg[position].setTag(position);
 
-        mBtnReg[position].setText("登 录");
+        mBtnReg[position].setText(context.getString(R.string.login_space));
 
         if (mPresenter != null) {
-            mPresenter.getSpan(mTvSkip[position], position == 1 ? "没有账号？ 去注册" : "");
+            mPresenter.getSpan(mTvSkip[position], position == 1 ? context.getString(R.string.no_account_to_regist) : "");
         }
 
         updateBtn(position);
@@ -91,6 +99,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         mEvPhone[position].setOnEditViewListener(this);
         mEvPass[position].setOnEditViewListener(this);
     }
+
     @Override
     public void onMatch(EditView view, boolean matching) {
         updateBtn((Integer) view.getTag());
@@ -103,7 +112,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
                 if (mListener != null) {
                     int position = (int) v.getTag();
                     if (position == 0 && !mEvPhone[position].mMatching) {
-                        CustomizedToast.showShort(App.getAppliction(), "手机号有误");
+                        CustomizedToast.showShort(App.getAppliction(), context.getString(R.string.wrong_tel));
                         break;
                     }
                     v.setTag(R.id.ev_regist_1, mEvPhone[position].getText());
@@ -115,7 +124,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
 
     @Override
     public void onEditError(String err) {
-        CustomizedToast.showShort(App.getAppliction(),err);
+        CustomizedToast.showShort(App.getAppliction(), err);
     }
 
     private void updateBtn(int position) {
@@ -124,7 +133,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         ((GradientDrawable) mBtnReg[position].getBackground()).setColor(enabled ? Color.parseColor("#3D82E0") : Color.parseColor("#999999"));
     }
 
-    public LoginPageAdapter setOnPageInnerClickListener (OnPageInnerClickListener listener) {
+    public LoginPageAdapter setOnPageInnerClickListener(OnPageInnerClickListener listener) {
         mListener = listener;
         return this;
     }
@@ -150,6 +159,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
 
         /**
          * position 0: 快捷登录；1：普通登录；
+         *
          * @param v
          * @param position
          */

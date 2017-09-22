@@ -76,7 +76,7 @@
             android:layout_marginTop="22dp"
             android:background="@null"
             android:gravity="center"
-            android:hint="我的昵称"
+            android:hint="@string/my_nick_name"
             android:lines="1"
             android:maxLength="9"
             android:textColor="@color/simple_text"

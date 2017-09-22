@@ -124,7 +124,7 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
             mV.getDynamicMsg(data);
         } else {
             if (succ && data == null) {
-                CustomizedToast.showShort(App.getAppliction(), "数据异常");
+                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_data));
             } else if (succ) {
                 CustomizedToast.showShort(App.getAppliction(), data.msg);
                 if (data.update && NetUrl.NO_SUCC.equals(data.no)) {
@@ -145,7 +145,7 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     @Override
     public void loading() { //加载中
         if (mV != null) {
-            mV.showLoading("正在请求...");
+            mV.showLoading(App.getContext().getString(R.string.loading_request));
         }
     }
 

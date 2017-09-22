@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="53dp"
                 android:gravity="center"
-                android:text="变更本次记录标题名称"
+                android:text="@string/change_record_title"
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
@@ -46,7 +46,6 @@
                     android:gravity="center"
                     android:lines="1"
                     android:maxLength="18"
-                    android:text="工作会议"
                     android:textColor="#3D82E0"
                     android:textCursorDrawable="@drawable/shape_cursor_color"
                     android:textSize="15sp" />
@@ -81,7 +80,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-                    android:text="取消"
+                    android:text="C@string/btn_cancel"
                     android:textColor="@color/gray3"
                     android:textSize="16sp" />
 
@@ -98,7 +97,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-                    android:text="确认"
+                    android:text="@string/btn_confirm"
                     android:textColor="@color/gray3"
                     android:textSize="16sp" />
             </LinearLayout>

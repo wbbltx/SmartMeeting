@@ -91,7 +91,6 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         super.onResume();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
         if (data != null) {
-            Log.e("test_login", "" + data.toString());
             Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop())
                     .into(mIvIcon);
             mTvNick.setText(data.nickname);
