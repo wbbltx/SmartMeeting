@@ -1,8 +1,6 @@
 package com.newchinese.smartmeeting.app;
 
-import android.app.ActivityManager;
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
@@ -12,11 +10,8 @@ import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.entity.listener.ActivityLife;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
-import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
-
-import java.util.List;
 
 /**
  * Description:   自定义Application
@@ -26,7 +21,6 @@ import java.util.List;
 public class App extends Application {
     public static final String APPKEY = "1308e911d0841bf20922d075dfaab229";
     public static App appliction;
-    private ComponentName topActivity; //栈顶Activity名字
 
     public static App getAppliction() {
         return appliction;
@@ -36,9 +30,6 @@ public class App extends Application {
         return appliction.getApplicationContext();
     }
 
-    public ComponentName getTopActivity() {
-        return topActivity;
-    }
 
     {
 //        PlatformConfig.setSinaWeibo("3921700954", "04b48b094faeb16683c32669824ebdad", "http://sns.whalecloud.com");
@@ -56,11 +47,6 @@ public class App extends Application {
         super.onCreate();
         appliction = this;
         UMShareAPI.get(this);
-        //获取栈顶Activity
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);
-        ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
-        topActivity = runningTaskInfo.topActivity;
         //在Application中初始化酷神笔API
         DrawingboardAPI.getInstance().init(getApplicationContext(), APPKEY);
         //初始化GreenDao

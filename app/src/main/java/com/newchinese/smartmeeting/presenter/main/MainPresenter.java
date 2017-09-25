@@ -110,13 +110,9 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     }
 
     @Override
-    public void checkjumpDrawingBoard(com.newchinese.coolpensdk.entity.NotePoint notePoint) {
+    public void saveCache(com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         if (pointCacheUtil.isCanAddFlag()) { //DrawingBoardActivity未初始化完之前的点都缓存起来
             pointCacheUtil.putInQueue(notePoint);
-        }
-        ComponentName topActivity = App.getAppliction().getTopActivity();
-        if (!DrawingBoardActivity.class.getName().equals(topActivity.getClassName())) {
-            mView.jumpDrawingBoard();
         }
     }
 

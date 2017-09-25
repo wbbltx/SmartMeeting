@@ -13,15 +13,13 @@ import com.newchinese.smartmeeting.base.BaseView;
 
 public interface MainActContract {
     interface View<E> extends BaseView<E> {
-        void jumpDrawingBoard();
-
         void showToast(String toastMsg);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
         void initListener();
 
-        void checkjumpDrawingBoard(com.newchinese.coolpensdk.entity.NotePoint notePoint);
+        void saveCache(com.newchinese.coolpensdk.entity.NotePoint notePoint);
 
         void initNoteRecord();
 

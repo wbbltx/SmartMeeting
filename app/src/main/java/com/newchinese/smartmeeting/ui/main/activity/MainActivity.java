@@ -1,6 +1,8 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IdRes;
@@ -30,6 +32,8 @@ import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -148,7 +152,8 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         mPresenter.saveStrokeAndPoint(notePoint);
         //会议页才可跳页，其他的地方书写则只存数据库
         if (nowFragment == meetingFragemnt) {
-            mPresenter.checkjumpDrawingBoard(notePoint); //缓存第一笔并检查当前是否在画板页，不在则jump
+            mPresenter.saveCache(notePoint); //缓存第一笔
+            jumpDrawingBoard(); //检查当前是否在画板页，不在则jump
             EventBus.getDefault().post(new OnPointCatchedEvent(fromType, notePoint));
         }
     }
@@ -178,9 +183,14 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     /**
      * 跳画板页
      */
-    @Override
     public void jumpDrawingBoard() {
-        startActivity(new Intent(this, DrawingBoardActivity.class));
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = am.getRunningTasks(1);
+        ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
+        ComponentName topActivity = runningTaskInfo.topActivity;
+        if (!DrawingBoardActivity.class.getName().equals(topActivity.getClassName())) {
+            startActivity(new Intent(this, DrawingBoardActivity.class));
+        }
     }
 
     @Override
