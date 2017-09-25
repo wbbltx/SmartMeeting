@@ -64,8 +64,8 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
     protected abstract T initPresenter();
 
     protected void onComplete(Activity context) {
-        XLog.d(TAG, TAG + " onComplete");
         int count = scanResultDialog.getCount();
+        XLog.d(TAG, TAG + " onComplete "+count);
         List<BluetoothDevice> devices = scanResultDialog.getDevices();
         String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
         if (count == 0) {//如果没有搜索到笔，提示
@@ -84,8 +84,12 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
 //            if (count == 1) {
 //                showDialog(devices.get(0));
 //            } else {
-            if (scanResultDialog != null && !isFinishing())
+            if (scanResultDialog != null && !isFinishing()){
+                XLog.d(TAG, TAG + " 搜索到笔 "+scanResultDialog.getCount());
+                scanResultDialog.setContent(address,"0");
                 scanResultDialog.show();
+            }
+
 //            }
         }
     }

@@ -122,6 +122,7 @@
     <string name="input_rules">最长包含9个汉字字符</string>
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
+    <string name="scan_result_info">为了避免给自己和别人带来困扰，请在确认设备号之后进行连接</string>
     <!--array-->
     <string-array name="selectIcon">
         <item>拍照</item>
