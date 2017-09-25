@@ -20,7 +20,10 @@ public interface RecordLibContract {
     }
 
     interface Presenter extends BaseSimplePresenter<View>{
+        //删除从画板页面跳转的录屏文件
         void deleteRecord(List<String> pathList, List<Boolean> isSelectedList,int pageIndex);
+        //删除从记录页面跳转的录屏文件
+        void deleteCollectRecord(List<String> pathList, List<Boolean> isSelectedList,int pageIndex);
 
     }
 }

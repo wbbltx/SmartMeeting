@@ -52,6 +52,8 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
     private List<String> recordPathList;
     private List<Boolean> isSelectedList = new ArrayList<>();
     private RecordLibAdapter adapter;
+    private String fromFlag;
+    private CollectPage currentPage;
 
     @Override
     protected int getLayoutId() {
@@ -63,15 +65,13 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
         dataCacheUtil = DataCacheUtil.getInstance();
         Intent intent = getIntent();
         selectPageIndex = intent.getIntExtra("selectPageIndex", 0);
-        String fromFlag = intent.getStringExtra("fromFlag");
-        CollectPage currentPage = (CollectPage) intent.getSerializableExtra("currentPage");
+        fromFlag = intent.getStringExtra("fromFlag");
+        currentPage = (CollectPage) intent.getSerializableExtra("currentPage");
         setTitle(selectPageIndex); //设置当前页数
-        if (fromFlag.equals("1")) {
-            XLog.d(TAG, "board传递");
+        if (fromFlag.equals("1")) {  //画板跳转
             recordPathList = dataCacheUtil.getRecordPathList();
-        } else {
+        } else {                     //记录跳转
             recordPathList = currentPage.getScreenPathList();
-            XLog.d(TAG, "记录本传递 " + recordPathList.size());
         }
         //recycler初始化
         recordView.setHasFixedSize(true);
@@ -141,7 +141,14 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
                 adapter.setIsSelectedList(isSelectedList);
                 break;
             case R.id.tv_create:
-                mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
+                if (fromFlag.equals("1")) {
+                    mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
+                }else {
+                    //删除数据库中的数据
+                    mPresenter.deleteCollectRecord(recordPathList, isSelectedList, selectPageIndex);
+                    //删除缓存中的数据
+                    //...待续
+                }
                 tvRight.setText(getString(R.string.edit));
                 recordLibOper.setVisibility(View.GONE);
                 break;

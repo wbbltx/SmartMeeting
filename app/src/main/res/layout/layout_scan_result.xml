@@ -19,17 +19,16 @@
             android:layout_marginLeft="7dp"
             android:gravity="center_vertical"
             android:textSize="17sp"
-            android:textColor="#666666"
-            android:text="1111111"/>
+            android:textColor="#666666" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/scan_result_curname"
+            android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:textSize="17sp"
             android:textColor="#464646"
-            android:text="我的设备 :"/>
+            android:text="@string/scan_result_title"/>
 
 
         <TextView
@@ -40,7 +39,7 @@
             android:layout_alignParentRight="true"
             android:textSize="15sp"
             android:textColor="#37cade"
-            android:text="连接成功"
+            android:text=""
             />
 
     </RelativeLayout>
@@ -60,7 +59,7 @@
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="附近的设备"
+            android:text="@string/scan_result_others"
             android:textColor="@color/gray3"
             android:textSize="17sp"/>
 
