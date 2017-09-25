@@ -236,7 +236,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
-    public void setConnState(){
+    public void setConnState() {
         if (dataCacheUtil.isLowPower()) {
             ivPen.setImageResource(R.mipmap.pen_low_power);
         } else {
@@ -350,7 +350,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Override
     public void setTitleText(int pageIndex) {
-        tvTitle.setText("书写，第" + pageIndex + "页"); //设置当前页数
+        tvTitle.setText(getString(R.string.write_page_index, pageIndex)); //设置当前页数
     }
 
     @Override
@@ -520,7 +520,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 MobclickAgent.onEvent(this, "play_record");
                 Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
                 intent1.putExtra(TAG_PAGE_INDEX, pageIndex);
-                intent1.putExtra("fromFlag","1");
+                intent1.putExtra("fromFlag", "1");
                 startActivity(intent1);
                 break;
             case R.id.iv_right://分享按钮
@@ -584,7 +584,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             mPresenter.startRecordTimer();
             Intent captureIntent = projectionManager.createScreenCaptureIntent();
             startActivityForResult(captureIntent, 101);
-            CustomizedToast.showShort(this, "正在录屏");
+            CustomizedToast.showShort(this, getString(R.string.loading_media));
         }
     }
 
@@ -879,7 +879,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onBackPressed() {
         if (recordService.isRunning()) {
-            showDialog1("离开当前界面将退出录制功能");
+            showDialog1(getString(R.string.leave_warning));
         } else {
             super.onBackPressed();
         }
@@ -888,14 +888,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private void showDialog1(final String address) {
         new AlertDialog.Builder(this)
                 .setTitle(address)
-                .setPositiveButton("离开", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.leave), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         stopRecord();
                         finish();
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

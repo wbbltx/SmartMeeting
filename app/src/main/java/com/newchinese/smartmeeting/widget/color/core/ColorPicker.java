@@ -1,4 +1,4 @@
-package zhou.colorpalette.core;
+package com.newchinese.smartmeeting.widget.color.core;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,7 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import zhou.colorpalette.R;
+import com.newchinese.smartmeeting.R;
+
 
 /**
  * Created by zzhoujay on 2015/2/20 0020.

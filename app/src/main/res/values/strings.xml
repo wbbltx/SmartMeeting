@@ -1,16 +1,24 @@
 <resources>
     <!--通用-->
+    <string name="mine">我的</string>
+    <string name="record">会议簿</string>
     <string name="app_name">智会议</string>
-    <string name="btn_confirm">确认</string>
     <string name="btn_cancel">取消</string>
-
+    <string name="meeting">会议助手</string>
+    <string name="btn_confirm">确认</string>
+    <string name="btn_confirm1">确定</string>
+    <string name="please_install_sd">请安装SD卡</string>
     <!--蓝牙模块-->
-    <string name="bluetooth_request">酷神笔开启蓝牙！</string>
-    <string name="bluetooth_open">开启 下一步</string>
-    <string name="bluetooth_stay">不开启</string>
-    <string name="read_channel">是否读取存储数据</string>
+    <string name="I_know">知道了</string>
     <string name="not_connect">未连接</string>
-
+    <string name="bluetooth_stay">不开启</string>
+    <string name="search_result">搜索结果</string>
+    <string name="bluetooth_open">开启 下一步</string>
+    <string name="read_channel">是否读取存储数据</string>
+    <string name="please_open_pen">请开启酷神笔！</string>
+    <string name="bluetooth_request">酷神笔开启蓝牙！</string>
+    <string name="attention">注：未开启手机蓝牙无法连接</string>
+    <string name="way_to_connect">长按酷神笔开关，指示红绿灯闪烁松手即可连接</string>
     <!--注册登录模块-->
     <string name="password">密码</string>
     <string name="login_title">登录</string>
@@ -26,11 +34,11 @@
     <string name="wrong_code">验证码有误</string>
     <string name="my_nick_name">我的昵称</string>
     <string name="simple_login">普通登录</string>
+    <string name="login_failed">登录失败</string>
+    <string name="login_cancle">取消登录</string>
     <string name="wrong_tel">手机号码有误</string>
     <string name="third_login">第三方登录</string>
     <string name="login_success">登录成功</string>
-    <string name="login_failed">登录失败</string>
-    <string name="login_cancle">取消登录</string>
     <string name="active_password">动态密码</string>
     <string name="forget_password">忘记密码</string>
     <string name="loading_request">正在请求</string>
@@ -40,24 +48,58 @@
     <string name="fill_person_message">完善个人资料</string>
     <string name="fill_password_again">再次输入密码</string>
     <string name="please_get_confirm_code">请获取验证码</string>
-    <string name="please_fill_correct_msg">请填写正确资料</string>
     <string name="no_account_to_regist">没有账号？ 去注册</string>
+    <string name="please_fill_correct_msg">请填写正确资料</string>
     <string name="have_account_to_login">已有账号？ 去登录</string>
-
     <!--会议模块-->
-    <string name="change_record_title">变更本次记录标题名称</string>
+    <string name="edit">编辑</string>
+    <string name="share">分享</string>
+    <string name="leave">离开</string>
+    <string name="delete">删除</string>
+    <string name="share_to">分享到</string>
+    <string name="select_all">全选</string>
+    <string name="take_photo">拍照</string>
+    <string name="show_media">录屏播放</string>
+    <string name="share_failed">分享失败</string>
+    <string name="share_cancel">取消分享</string>
+    <string name="share_success">分享成功</string>
+    <string name="not_select_all">全不选</string>
+    <string name="loading_media">正在录屏</string>
+    <string name="unknow_service">未知设备</string>
+    <string name="scan_blue_pen">扫描蓝牙笔</string>
+    <string name="select_photo">选择本地照片</string>
+    <string name="follow_weibo">关注官方微博</string>
+    <string name="write_page_index">"书写，第%d页</string>
+    <string name="record_page_index">"录屏，第%d页</string>
     <string name="please_collect">请将以下记录归档！</string>
-
+    <string name="create_current_record">生成本次档案</string>
+    <string name="please_input_title">请输入记录标题名称</string>
+    <string name="leave_warning">离开当前界面将退出录制功能</string>
+    <string name="create_record_success">生成会议档案成功</string>
+    <string name="change_record_title">变更本次记录标题名称</string>
+    <string name="please_select_record">请选择要生成的会议档案页！</string>
+    <string name="classify_work">工作例会</string>
+    <string name="classify_project">项目会议</string>
+    <string name="classify_study">学习培训</string>
+    <string name="classify_explore">研讨会</string>
+    <string name="classify_report">工作汇报</string>
+    <string name="classify_review">评审会</string>
+    <string name="classify_other">其他</string>
+    <string name="qqchat">QQ</string>
+    <string name="weibo">微博</string>
+    <string name="wechat">微信</string>
+    <string name="qzone">QQ空间</string>
+    <string name="we_friend">朋友圈</string>
     <!--记录模块-->
     <string name="search">搜索</string>
     <string name="page_number">第%d页</string>
-
     <!--我的模块-->
     <string name="save">保存</string>
     <string name="header">头像</string>
     <string name="up_load">提交</string>
     <string name="setting">设置</string>
     <string name="nick_name">昵称</string>
+    <string name="pen_info">笔信息</string>
     <string name="fb_title">问题反馈</string>
     <string name="au_title">关于我们</string>
     <string name="mine_confirm">确认</string>
@@ -66,6 +108,7 @@
     <string name="new_password">新密码</string>
     <string name="service">服务条款与协议</string>
     <string name="wrong_nick">昵称不能为空</string>
+    <string name="check_update">检查新版本</string>
     <string name="change_success">修改成功</string>
     <string name="request_failed">请求失败</string>
     <string name="change_password">修改密码</string>
@@ -79,7 +122,7 @@
     <string name="input_rules">最长包含9个汉字字符</string>
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
-
+    <!--array-->
     <string-array name="selectIcon">
         <item>拍照</item>
         <item>选择图片</item>

@@ -21,5 +21,6 @@
     <color name="black_alpha_55">#55000000</color>
     <color name="light_blue">#C2DAFA</color>
     <color name="background">#0f555555</color>
-    
+    <color name="zhou_normal">#00000000</color>
+    <color name="zhou_pressed">#03a9f4</color>
 </resources>

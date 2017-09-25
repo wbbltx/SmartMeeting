@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.contract.DraftBoxActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
@@ -182,7 +183,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                         notePageDao.delete(selectPage);
                     }
                 }
-                mView.showToast("生成会议档案成功");
+                mView.showToast(App.getContext().getString(R.string.create_record_success));
                 //存完刷新页面
                 loadActivePageList();
             }
@@ -217,7 +218,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     @Override
     public void updatePenState(int state) {
         int i = R.mipmap.pen_disconnect;
-        XLog.d(TAG, TAG+" 设置图标状态 " + state);
+        XLog.d(TAG, TAG + " 设置图标状态 " + state);
         switch (state) {
             case BSTATE_CONNECTED_LOW:
                 i = R.mipmap.pen_low_power;

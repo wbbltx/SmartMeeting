@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.presenter.mine;
 
+import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.MineContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
@@ -54,7 +55,7 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
     @Override
     public void loading() {
         if (mV != null) {
-            mV.showLoading("正在请求...");
+            mV.showLoading(App.getContext().getString(R.string.loading_request_m));
         }
     }
 

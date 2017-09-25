@@ -200,7 +200,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 if (!isSelectEmpty) {
                     createDialog();
                 } else {
-                    Toast.makeText(this, "请选择要生成的会议档案页", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.please_select_record), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -216,16 +216,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 checkBle(true);
                 break;
             case R.id.tv_right:
-                if ("全选".equals(tvRight.getText().toString())) { //点击全选
+                if (getString(R.string.select_all).equals(tvRight.getText().toString())) { //点击全选
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, true);
                     }
-                    tvRight.setText("全不选");
+                    tvRight.setText(getString(R.string.not_select_all));
                 } else { //点击全不选
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, false);
                     }
-                    tvRight.setText("全选");
+                    tvRight.setText(getString(R.string.select_all));
                 }
                 adapter.setIsSelectedList(isSelectedList);
                 break;
@@ -246,12 +246,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     private void createDialog() {
         builder = new CustomInputDialog.Builder(this);
-        builder.setTitle("变更本次记录标题名称");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.change_record_title));
+        builder.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("createDialog", "" + builder.getInputText());
                 if (builder.getInputText().isEmpty()) {
-                    Toast.makeText(DraftBoxActivity.this, "请输入记录标题名称", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DraftBoxActivity.this, getString(R.string.please_input_title), Toast.LENGTH_SHORT).show();
                 } else {
                     MobclickAgent.onEvent(DraftBoxActivity.this, "create_archives");
                     mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
@@ -260,7 +259,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
@@ -275,7 +274,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hintbuilder.setPositiveButton(new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 EventBus.getDefault().post(new ScanEvent());
-                CustomizedToast.showShort(DraftBoxActivity.this, "扫描蓝牙笔");
+                CustomizedToast.showShort(DraftBoxActivity.this, getString(R.string.scan_blue_pen));
                 dialog.dismiss();
             }
         });
@@ -501,7 +500,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     ivRight.setVisibility(View.GONE);
                     ivEmpty.setVisibility(View.VISIBLE);
                 }
-                tvRight.setText("全选");
+                tvRight.setText(getString(R.string.select_all));
                 tvRight.setVisibility(View.GONE);
             }
         });

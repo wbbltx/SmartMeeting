@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 
+import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
@@ -69,7 +70,7 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
         String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
         if (count == 0) {//如果没有搜索到笔，提示
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
-            CustomizedToast.showShort(context, "请开启酷神笔！");
+            CustomizedToast.showShort(context, getString(R.string.please_open_pen));
         } else {
             XLog.d(TAG, TAG + " 搜索到笔 ");
             for (BluetoothDevice device : devices) {

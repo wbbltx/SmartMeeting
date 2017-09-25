@@ -3,7 +3,6 @@ package com.newchinese.smartmeeting.ui.mine.fragment;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -41,7 +40,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
 
     @Override
     protected int getLayoutId() {
-        return R.layout.layout_mine;
+        return R.layout.fragment_mine;
     }
 
     @Override

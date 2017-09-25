@@ -20,7 +20,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
-            android:text="拍照"
+            android:text="@string/take_photo"
             android:textColor="#777777"
             android:textSize="18sp" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0.5dp"
             android:background="@color/colorWhite"
-            android:text="选择本地照片"
+            android:text="@string/select_photo"
             android:textColor="#777777"
             android:textSize="18sp" />
 
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@color/colorWhite"
-            android:text="取消"
+            android:text="@string/btn_cancel"
             android:textColor="#777777"
             android:textSize="18sp" />
     </LinearLayout>

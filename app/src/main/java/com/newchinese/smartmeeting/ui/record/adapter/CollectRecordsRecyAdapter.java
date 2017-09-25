@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.ui.record.activity.CollectRecordFilterActivity;
@@ -60,28 +61,21 @@ public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecor
         final CollectRecord collectRecord = collectRecordList.get(position);
         holder.tvRecordName.setText(collectRecord.getCollectRecordName());
         int picResource = 0;
-        switch (collectRecord.getClassifyName()) {
-            case "工作例会":
-                picResource = R.mipmap.record_work;
-                break;
-            case "项目会议":
-                picResource = R.mipmap.record_project;
-                break;
-            case "学习培训":
-                picResource = R.mipmap.record_study;
-                break;
-            case "研讨会":
-                picResource = R.mipmap.record_explore;
-                break;
-            case "评审会":
-                picResource = R.mipmap.record_review;
-                break;
-            case "工作汇报":
-                picResource = R.mipmap.record_report;
-                break;
-            case "其他":
-                picResource = R.mipmap.record_other;
-                break;
+        String classifyName = collectRecord.getClassifyName();
+        if (classifyName.equals(App.getContext().getString(R.string.classify_work))) {
+            picResource = R.mipmap.record_work;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_project))) {
+            picResource = R.mipmap.record_project;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_study))) {
+            picResource = R.mipmap.record_study;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_explore))) {
+            picResource = R.mipmap.record_explore;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_review))) {
+            picResource = R.mipmap.record_review;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_report))) {
+            picResource = R.mipmap.record_report;
+        } else if (classifyName.equals(App.getContext().getString(R.string.classify_other))) {
+            picResource = R.mipmap.record_other;
         }
         holder.ivClassify.setImageResource(picResource);
         holder.tvDate.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));

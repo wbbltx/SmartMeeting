@@ -1,4 +1,4 @@
-package zhou.colorpalette;
+package com.newchinese.smartmeeting.widget.color;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import zhou.colorpalette.core.ColorPalette;
+import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
+import com.newchinese.smartmeeting.widget.color.core.ColorPalette;
+
 
 /**
  * 颜色选择Activity
@@ -52,7 +55,7 @@ public class ColorSelectActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(0, 10086, 0, "确定");
+        MenuItem item = menu.add(0, 10086, 0, App.getContext().getString(R.string.btn_confirm1));
         item.setIcon(R.drawable.ic_action_accept);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);

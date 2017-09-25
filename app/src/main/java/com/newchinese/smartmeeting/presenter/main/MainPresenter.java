@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
+import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.constant.Constant;
@@ -290,7 +291,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                 insertFile.mkdir();
             }
         } else {
-            mView.showToast("请安装SD卡");
+            mView.showToast(App.getContext().getString(R.string.please_install_sd));
         }
     }
 

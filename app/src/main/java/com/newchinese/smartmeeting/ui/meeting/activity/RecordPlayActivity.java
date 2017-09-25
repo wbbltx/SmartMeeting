@@ -44,8 +44,8 @@ public class RecordPlayActivity extends BaseActivity<RecordPlayPresenter, View> 
 
     @Override
     protected void initStateAndData() {
-        MobclickAgent.onEvent(this,"play_record");
-        tv_title.setText("录屏播放");
+        MobclickAgent.onEvent(this, "play_record");
+        tv_title.setText(getString(R.string.show_media));
         iv_pen.setVisibility(View.GONE);
         Intent intent = getIntent();
         recordPath = intent.getStringExtra("recordPath");
@@ -74,8 +74,8 @@ public class RecordPlayActivity extends BaseActivity<RecordPlayPresenter, View> 
     }
 
     @OnClick({R.id.iv_back})
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.iv_back:
                 finish();
                 break;

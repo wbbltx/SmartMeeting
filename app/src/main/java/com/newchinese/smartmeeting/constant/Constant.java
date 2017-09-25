@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.constant;
 import android.graphics.Color;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
 
 /**
  * Description:
@@ -30,13 +31,13 @@ public class Constant {
             R.mipmap.guide_three
     };
     //各分类记录表名称
-    public static final String CLASSIFY_NAME_WORK = "工作例会";
-    public static final String CLASSIFY_NAME_PROJECT = "项目会议";
-    public static final String CLASSIFY_NAME_STUDY = "学习培训";
-    public static final String CLASSIFY_NAME_EXPLORE = "研讨会";
-    public static final String CLASSIFY_NAME_REPORT = "工作汇报";
-    public static final String CLASSIFY_NAME_REVIEW = "评审会";
-    public static final String CLASSIFY_NAME_OTHER = "其他";
+    public static final String CLASSIFY_NAME_WORK = App.getContext().getString(R.string.classify_work);
+    public static final String CLASSIFY_NAME_PROJECT = App.getContext().getString(R.string.classify_project);
+    public static final String CLASSIFY_NAME_STUDY = App.getContext().getString(R.string.classify_study);
+    public static final String CLASSIFY_NAME_EXPLORE = App.getContext().getString(R.string.classify_explore);
+    public static final String CLASSIFY_NAME_REPORT = App.getContext().getString(R.string.classify_report);
+    public static final String CLASSIFY_NAME_REVIEW = App.getContext().getString(R.string.classify_review);
+    public static final String CLASSIFY_NAME_OTHER = App.getContext().getString(R.string.classify_other);
     //各分类记录表缩略图SD卡存储一级目录
     public static final String SD_DIRECTORY_BASE = "SmartMeeting";
     //各分类记录表缩略图SD卡存储二级目录

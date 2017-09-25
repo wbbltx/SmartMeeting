@@ -27,7 +27,7 @@
         android:layout_above="@+id/btn_update"
         android:layout_margin="15dp"
         android:background="@drawable/btn_conner_white"
-        android:text="服务条款与协议"
+        android:text="@string/service"
         android:textColor="@color/simple_blue"
         android:textSize="18sp" />
 
@@ -40,7 +40,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/btn_conner_white"
-        android:text="检查新版本"
+        android:text="@string/check_update"
         android:textColor="@color/simple_blue"
         android:textSize="18sp" />
 </RelativeLayout>

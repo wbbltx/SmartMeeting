@@ -15,11 +15,11 @@ import com.newchinese.smartmeeting.entity.event.ColorEvent;
 import com.newchinese.smartmeeting.ui.meeting.adapter.HorizontalListViewAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.widget.color.ColorSelectDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import zhou.colorpalette.ColorSelectDialog;
 
 /**
  * Description:   选笔色的弹出窗口

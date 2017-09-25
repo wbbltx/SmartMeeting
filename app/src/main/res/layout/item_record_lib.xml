@@ -9,16 +9,16 @@
     android:background="@color/simple_background">
 
     <RelativeLayout
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="230dp"
+        android:layout_centerInParent="true"
         android:background="@color/colorWhite">
 
         <ImageView
             android:layout_width="59dp"
             android:layout_height="59dp"
             android:layout_centerInParent="true"
-            android:src="@mipmap/record_icon"/>
+            android:src="@mipmap/record_icon" />
 
         <TextView
             android:id="@+id/record_lib_title"
@@ -26,9 +26,9 @@
             android:layout_height="32dp"
             android:layout_alignParentBottom="true"
             android:background="@color/light_blue"
-            android:textColor="@color/simple_blue"
             android:gravity="center"
-            android:text="11111111111"/>
+            android:text="11111111111"
+            android:textColor="@color/simple_blue" />
 
         <RelativeLayout
             android:id="@+id/rl_is_selected"
@@ -45,7 +45,4 @@
                 android:src="@mipmap/draft_is_selected" />
         </RelativeLayout>
     </RelativeLayout>
-    
-
-
 </RelativeLayout>

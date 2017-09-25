@@ -67,7 +67,7 @@ public class ScanResultDialog extends Dialog {
 //        lp.width = display.getWidth() * 4 / 5; // 设置dialog宽度为屏幕的4/5
 //        getWindow().setAttributes(lp);
 
-        setTitle("搜索结果");
+        setTitle(context.getString(R.string.search_result));
     }
 
     public void addDevice(BluetoothDevice bluetoothDevice) {

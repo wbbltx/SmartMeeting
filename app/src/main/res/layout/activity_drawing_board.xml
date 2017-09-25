@@ -130,7 +130,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="right"
-            android:text="保存"
+            android:text="@string/save"
             android:textColor="@color/simple_blue"
             android:textSize="32px" />
     </RelativeLayout>

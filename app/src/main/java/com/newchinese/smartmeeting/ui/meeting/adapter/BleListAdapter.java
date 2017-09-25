@@ -79,7 +79,7 @@ public class BleListAdapter extends BaseAdapter {
         if (name !=null){
             viewHolder.deviceName.setText(name);
         }else
-            viewHolder.deviceName.setText("未知设备");
+            viewHolder.deviceName.setText(context.getString(R.string.unknow_service));
 
         viewHolder.deviceAddress.setText(bluetoothDevice.getAddress());
         return convertView;

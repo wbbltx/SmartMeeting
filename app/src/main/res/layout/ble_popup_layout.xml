@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
         android:layout_weight="2.5"
+        android:background="@color/colorWhite"
         android:gravity="center"
-        android:text="@string/bluetooth_request"/>
+        android:text="@string/bluetooth_request" />
 
     <View
         android:layout_width="match_parent"
-        android:background="#a6a6a6"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="#a6a6a6" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
+
         <TextView
             android:id="@+id/stay_close"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@drawable/ble_pop_selector"
-            android:text="@string/bluetooth_stay"/>
+            android:gravity="center"
+            android:text="@string/bluetooth_stay" />
 
         <TextView
             android:layout_width="1dp"
-            android:background="#a6a6a6"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="#a6a6a6" />
 
         <TextView
             android:id="@+id/open_bluetooth"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@drawable/ble_pop_selector"
-            android:text="@string/bluetooth_open"/>
+            android:gravity="center"
+            android:text="@string/bluetooth_open" />
     </LinearLayout>
-
-
-
 </LinearLayout>

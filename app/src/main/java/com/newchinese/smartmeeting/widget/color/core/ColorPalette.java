@@ -1,9 +1,8 @@
-package zhou.colorpalette.core;
+package com.newchinese.smartmeeting.widget.color.core;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;

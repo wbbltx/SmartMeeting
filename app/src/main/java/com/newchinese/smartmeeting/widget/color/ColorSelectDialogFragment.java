@@ -1,4 +1,4 @@
-package zhou.colorpalette;
+package com.newchinese.smartmeeting.widget.color;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,15 +10,15 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import zhou.colorpalette.core.ColorPalette;
+import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.widget.color.core.ColorPalette;
+
 
 /**
  * Created by 州 on 2015/5/23 0023.
  * 颜色选择器：DialogFragment
  */
 public class ColorSelectDialogFragment extends DialogFragment {
-
-
     private ColorPalette colorPalette;
     private Button cancelBtn,confirmBtn;
     private int color;

@@ -20,10 +20,10 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="106dp"
+                android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:gravity="center"
-                android:text="长按酷神笔开关，指示红绿灯闪烁松手即可连接"
+                android:text="@string/way_to_connect"
                 android:textColor="@color/gray9"
                 android:textSize="18sp" />
 
@@ -43,7 +43,7 @@
                     android:gravity="center"
                     android:lines="1"
                     android:maxLength="18"
-                    android:text="注：未开启手机蓝牙无法连接"
+                    android:text="@string/attention"
                     android:textColor="@android:color/holo_red_light"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -70,7 +70,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-                    android:text="知道了"
+                    android:text="@string/I_know"
                     android:textColor="#3D82E0"
                     android:textSize="16sp" />
             </LinearLayout>

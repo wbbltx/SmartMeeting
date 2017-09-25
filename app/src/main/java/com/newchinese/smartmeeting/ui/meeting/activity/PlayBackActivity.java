@@ -99,7 +99,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     @Override
     public void setTitleText(int pageIndex) {
         ivPen.setVisibility(View.GONE);
-        tvTitle.setText("录屏，第" + pageIndex + "页");
+        tvTitle.setText(getString(R.string.record_page_index, pageIndex));
     }
 
     @OnClick({R.id.play_back_start, R.id.iv_back})

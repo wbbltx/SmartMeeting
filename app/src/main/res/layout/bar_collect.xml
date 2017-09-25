@@ -25,7 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:layout_toRightOf="@+id/iv_back"
-            android:text="第一页 | 17-08-15 14:30"
             android:textColor="@color/simple_title"
             android:textSize="15sp" />
 

@@ -97,10 +97,10 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
 
     @Override
     public void setTitle(int pageIndex) {
-        tvTitle.setText("录屏 第" + pageIndex + "页");
+        tvTitle.setText(getString(R.string.record_page_index, pageIndex));
         ivPen.setVisibility(View.GONE);
         tvRight.setVisibility(View.VISIBLE);
-        tvRight.setText("编辑");
+        tvRight.setText(getString(R.string.edit));
     }
 
     @Override
@@ -125,28 +125,28 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
                 int state = getState(s);
                 if (state == 0) {//当前是编辑
                     recordLibOper.setVisibility(View.VISIBLE);
-                    tvRight.setText("全选");
-                    tvDelete.setText("删除");
+                    tvRight.setText(getString(R.string.select_all));
+                    tvDelete.setText(getString(R.string.delete));
                 } else if (state == 1) {//当前是全选
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, true);
                     }
-                    tvRight.setText("全不选");
+                    tvRight.setText(getString(R.string.not_select_all));
                 } else if (state == -1) {//当前是全不选
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, false);
                     }
-                    tvRight.setText("全选");
+                    tvRight.setText(getString(R.string.select_all));
                 }
                 adapter.setIsSelectedList(isSelectedList);
                 break;
             case R.id.tv_create:
                 mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
-                tvRight.setText("编辑");
+                tvRight.setText(getString(R.string.edit));
                 recordLibOper.setVisibility(View.GONE);
                 break;
             case R.id.tv_cancel:
-                tvRight.setText("编辑");
+                tvRight.setText(getString(R.string.edit));
                 recordLibOper.setVisibility(View.GONE);
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     isSelectedList.set(i, false);
@@ -158,11 +158,11 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
 
     private int getState(String str) {
         int i = 0;
-        if (str.equals("编辑")) {
+        if (str.equals(getString(R.string.edit))) {
             i = 0;
-        } else if (str.equals("全选")) {
+        } else if (str.equals(getString(R.string.select_all))) {
             i = 1;
-        } else if (str.equals("全不选")) {
+        } else if (str.equals(getString(R.string.not_select_all))) {
             i = -1;
         }
         return i;

@@ -22,6 +22,7 @@
                 android:layout_height="106dp"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/etInput"
                     android:layout_width="210dp"
@@ -30,7 +31,7 @@
                     android:gravity="center"
                     android:lines="1"
                     android:maxLength="18"
-                    android:text="是否读取历史数据"
+                    android:text="@string/read_channel"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -57,7 +58,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-                    android:text="删除"
+                    android:text="@string/delete"
                     android:textSize="16sp" />
 
                 <View
@@ -73,7 +74,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:gravity="center"
-                    android:text="确认"
+                    android:text="@string/btn_confirm"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
