@@ -68,18 +68,18 @@ public class BleListAdapter extends BaseAdapter {
             convertView = View.inflate(context,R.layout.listitem_device,null);
             viewHolder = new ViewHolder();
             viewHolder.deviceAddress = (TextView) convertView.findViewById(R.id.device_address);
-            viewHolder.deviceName = (TextView) convertView.findViewById(R.id.device_name);
+//            viewHolder.deviceName = (TextView) convertView.findViewById(R.id.device_name);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         BluetoothDevice bluetoothDevice = devices.get(position);
-        String name = bluetoothDevice.getName();
-        if (name !=null){
-            viewHolder.deviceName.setText(name);
-        }else
-            viewHolder.deviceName.setText(context.getString(R.string.unknow_service));
+//        String name = bluetoothDevice.getName();
+//        if (name !=null){
+//            viewHolder.deviceName.setText(name);
+//        }else
+//            viewHolder.deviceName.setText("未知设备");
 
         viewHolder.deviceAddress.setText(bluetoothDevice.getAddress());
         return convertView;

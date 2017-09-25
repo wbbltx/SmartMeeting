@@ -812,7 +812,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (flag == 0) {//如果是断开状态进行的搜索，应该判断
             onComplete(this);
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
-            scanResultDialog.show();
+            scanResultDialog
+                    .setContent(SharedPreUtils.getString(this,BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS),"1")
+                    .show();
         }
     }
 

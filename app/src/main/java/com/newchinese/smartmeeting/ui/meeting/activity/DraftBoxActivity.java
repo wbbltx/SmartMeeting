@@ -322,7 +322,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onScanComplete() {
         XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
-            scanResultDialog.show();
+            scanResultDialog
+                    .setContent(SharedPreUtils.getString(this,BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS),"1")
+                    .show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
             EventBus.getDefault().post(new ScanResultEvent(0));

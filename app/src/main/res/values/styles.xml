@@ -23,7 +23,7 @@
         <item name="android:windowIsTranslucent">true</item>                   <!--是否半透明-->
         <item name="android:windowNoTitle">false</item>                         <!--窗口是否无标题-->
         <item name="android:windowBackground">@android:color/transparent</item>       <!--但窗口背景透明-->
-        <item name="android:backgroundDimEnabled">true</item>                  <!--北京是否模糊-->
+        <item name="android:backgroundDimEnabled">true</item>                  <!--背景是否模糊-->
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center</item>
     </style>
