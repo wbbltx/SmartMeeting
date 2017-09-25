@@ -3,8 +3,8 @@
     <string name="mine">我的</string>
     <string name="record">会议簿</string>
     <string name="app_name">智会议</string>
-    <string name="btn_cancel">取消</string>
     <string name="meeting">会议助手</string>
+    <string name="btn_cancel">取消</string>
     <string name="btn_confirm">确认</string>
     <string name="btn_confirm1">确定</string>
     <string name="please_install_sd">请安装SD卡</string>
@@ -69,8 +69,8 @@
     <string name="scan_blue_pen">扫描蓝牙笔</string>
     <string name="select_photo">选择本地照片</string>
     <string name="follow_weibo">关注官方微博</string>
-    <string name="write_page_index">"书写，第%d页</string>
-    <string name="record_page_index">"录屏，第%d页</string>
+    <string name="write_page_index">书写，第%d页</string>
+    <string name="record_page_index">录屏，第%d页</string>
     <string name="please_collect">请将以下记录归档！</string>
     <string name="create_current_record">生成本次档案</string>
     <string name="please_input_title">请输入记录标题名称</string>
