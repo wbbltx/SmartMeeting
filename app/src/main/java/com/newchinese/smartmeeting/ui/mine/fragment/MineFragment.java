@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.ui.mine.fragment;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -89,8 +90,11 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
     public void onResume() {
         super.onResume();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
+        Log.e("test_login", "" + data.toString());
         if (data != null) {
-            Glide.with(this).load(data.icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop())
+            Glide.with(this).load(data.icon)
+                    .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_mine)
+                            .error(R.mipmap.default_mine))
                     .into(mIvIcon);
             mTvNick.setText(data.nickname);
             if (!TextUtils.isEmpty(data.tel)) {

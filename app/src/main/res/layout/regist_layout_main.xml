@@ -65,7 +65,7 @@
             android:layout_width="91dp"
             android:layout_height="91dp"
             android:layout_centerHorizontal="true"
-            android:src="@mipmap/icon_regeist_header" />
+            android:src="@mipmap/default_regist" />
 
         <EditText
             android:id="@+id/et_regist_nick"

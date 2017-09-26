@@ -162,6 +162,8 @@ public class SettingActivity extends BaseSimpleActivity {
             tvNickName.setText(loginData.getNickname() + "");
             Glide.with(this)
                     .load(loginData.getIcon())
+                    .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_setting)
+                            .error(R.mipmap.default_setting))
                     .into(ivHeader);
         }
     }

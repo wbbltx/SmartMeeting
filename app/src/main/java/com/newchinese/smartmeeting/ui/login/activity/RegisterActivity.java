@@ -295,7 +295,12 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                 chansformHeaderFile();
                                 Glide.with(this)
                                         .load(headerFile)
-                                        .apply(new RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).circleCrop().override(300))
+                                        .apply(new RequestOptions().skipMemoryCache(true)
+                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                .circleCrop()
+                                                .override(300)
+                                                .placeholder(R.mipmap.default_regist)
+                                                .error(R.mipmap.default_regist))
                                         .into(mIvIcon);
                                 takePhotoPopWin.dismiss();
                             }
