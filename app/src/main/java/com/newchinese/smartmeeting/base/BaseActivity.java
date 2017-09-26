@@ -81,16 +81,10 @@ public abstract class BaseActivity<T extends BasePresenter, E> extends BaseSimpl
                     return;
                 }
             }
-//            if (count == 1) {
-//                showDialog(devices.get(0));
-//            } else {
             if (scanResultDialog != null && !isFinishing()){
-                XLog.d(TAG, TAG + " 搜索到笔 "+scanResultDialog.getCount());
                 scanResultDialog.setContent(address,"0");
                 scanResultDialog.show();
             }
-
-//            }
         }
     }
 
