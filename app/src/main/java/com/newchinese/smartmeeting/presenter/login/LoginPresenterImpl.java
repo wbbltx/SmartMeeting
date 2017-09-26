@@ -146,7 +146,13 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
                 }
             }
         } else {
-            CustomizedToast.showShort(App.getAppliction(), data.msg);
+            if (data.msg.contains("Failed to connect")) {
+                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_net));
+            } else if ("login".equals(type)) {
+                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_name_or_password));
+            } else {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
+            }
         }
     }
 
