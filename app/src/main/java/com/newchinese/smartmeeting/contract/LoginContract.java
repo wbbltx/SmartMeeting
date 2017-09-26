@@ -22,7 +22,7 @@ public interface LoginContract {
 
         void showLoading(String msg);
 
-        void getDynamicMsg(BaseResult<LoginData> data);
+        void getDynamicMsg(LoginData data);
     }
 
 
@@ -43,8 +43,6 @@ public interface LoginContract {
         void loginQQ(String openid, String token);
 
         void regist(String phone, String pass, String code);
-
-        void loginQuick(String phone, String code);
 
         void verifyCode(String phone);
 
@@ -68,7 +66,7 @@ public interface LoginContract {
     }
 
     interface LoginIModel {
-        void login(LoginData data, boolean quick);
+        void login(LoginData data);
 
         void loginQQ(LoginData data);
 

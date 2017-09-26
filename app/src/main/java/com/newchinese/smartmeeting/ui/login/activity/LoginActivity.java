@@ -12,13 +12,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.newchinese.coolpensdk.utils.GetAddressUtil;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
-import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
@@ -29,14 +27,6 @@ import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -98,12 +88,10 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     }
 
     @Override
-    public void updateView(BaseResult<LoginData> data) {
-        if (!NetUrl.DYNAMIC_PASS.equals(data.url)) {
-            startActivity(new Intent(this, MainActivity.class));
-            SharedPreUtils.setBoolean(Constant.IS_LOGIN, true);
-            finish();
-        }
+    public void updateView(BaseResult<LoginData> data) { //普通登录与三方登录成功回调
+        startActivity(new Intent(this, MainActivity.class));
+        SharedPreUtils.setBoolean(Constant.IS_LOGIN, true);
+        finish();
     }
 
     @Override
@@ -145,9 +133,12 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                         Toast.makeText(this, getString(R.string.wrong_code), Toast.LENGTH_SHORT).show();
                     } else {
                         GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
+                        loginData.setTel(phone);
                         GreenDaoUtil.getInstance().getLoginDataDao().insert(loginData); //存登录数据
                         SharedPreUtils.setBoolean(Constant.IS_LOGIN, true); //设置登录状态
                         Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                        //存快捷登录类型
+                        SharedPreUtils.setString(Constant.LOGIN_TYPE, "dynamic");
                         startActivity(new Intent(this, MainActivity.class));
                         finish();
                     }
@@ -247,8 +238,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     }
 
     @Override
-    public void getDynamicMsg(BaseResult<LoginData> data) {
-        loginData = data.data;
-        sms = data.sms;
+    public void getDynamicMsg(LoginData data) {
+        loginData = data;
+        sms = data.getSms();
+        SharedPreUtils.setString(Constant.PASSWORD_FLAG, data.getFlag()); //设置是否有密码
     }
 }

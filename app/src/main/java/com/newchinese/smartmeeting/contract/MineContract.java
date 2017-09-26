@@ -11,11 +11,11 @@ import com.newchinese.smartmeeting.entity.bean.LoginData;
 
 public interface MineContract {
 
-    interface UpdateIVIew extends BaseToolbar {
+    interface UpdateIVIew {
 
         void showLoading(String msg);
 
-        void jumpLogin();
+        void jumpLogin(String type);
     }
 
     interface UpdateIPresenter<V> {
@@ -24,9 +24,9 @@ public interface MineContract {
 
         void detach();
 
-        void updateNick(String nick);
-
         void updatePass(String oldPass, String newPass);
+
+        void setPass(final String tel, final String password);
 
         void feedBack(String content, String contact);
 
@@ -36,8 +36,6 @@ public interface MineContract {
     }
 
     interface UpdateIModel {
-
-        void updateNick(LoginData data);
 
         void updatePass(LoginData data);
 

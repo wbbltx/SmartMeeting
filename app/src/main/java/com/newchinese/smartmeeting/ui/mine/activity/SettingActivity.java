@@ -31,6 +31,7 @@ import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.entity.http.XApi;
 import com.newchinese.smartmeeting.ui.login.activity.LoginActivity;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
@@ -58,7 +59,7 @@ import io.reactivex.schedulers.Schedulers;
  * 设置Activity
  */
 public class SettingActivity extends BaseSimpleActivity {
-
+    private static String path = "/sdcard/myHead/";//sd路径
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
@@ -67,22 +68,25 @@ public class SettingActivity extends BaseSimpleActivity {
     ImageView ivHeader;
     @BindView(R.id.tv_nick_name)
     TextView tvNickName;
+    @BindView(R.id.tv_set_password)
+    TextView tvSetPassword;
     @BindView(R.id.rl_header)
     RelativeLayout rlHeader;
     @BindView(R.id.rl_nick_name)
     RelativeLayout rlNickName;
     @BindView(R.id.rl_change_pwd)
     RelativeLayout rlChangePwd;
+    private ProgressDialog mPd;
     private TakePhotoPopWin takePhotoPopWin;
     private Bitmap headerBitmap;
+    private String loginType;
     private LoginData loginData;
     private LoginDataDao loginDataDao;
     private File headerFile;
-    private ByteArrayOutputStream mBaos = new ByteArrayOutputStream();
     private ApiService mServices;
+    private ByteArrayOutputStream mBaos = new ByteArrayOutputStream();
     private Flowable<BaseResult<LoginData>> observable;
-    private ProgressDialog mPd;
-    private static String path = "/sdcard/myHead/";//sd路径
+    private boolean hasPassword = true;
 
     @Override
     protected int getLayoutId() {
@@ -102,6 +106,7 @@ public class SettingActivity extends BaseSimpleActivity {
         tvTitle.setText(getString(R.string.setting));
         loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         loginData = loginDataDao.queryBuilder().unique();
+        Log.e("test_login", "" + loginData.toString());
         XApi.registerProvider(new NetProviderImpl());
         mServices = XApi.get(NetUrl.HOST, ApiService.class);
     }
@@ -119,22 +124,16 @@ public class SettingActivity extends BaseSimpleActivity {
                 finish();
                 break;
             case R.id.rl_header: //修改头像
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
-                    takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                }
+                takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.rl_nick_name: //修改昵称
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
-                    intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
-                    startActivity(intent);
-                }
+                intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rl_change_pwd: //修改密码
-                if (loginData.getCode() != null && !loginData.getCode().isEmpty()) { //排除快捷登录
-                    intent = new Intent(SettingActivity.this, UpdateActivity.class);
-                    intent.putExtra("type", 1);
-                    startActivity(intent);
-                }
+                intent = new Intent(SettingActivity.this, ChangePwdActivity.class);
+                intent.putExtra("has_password", hasPassword);
+                startActivity(intent);
                 break;
             case R.id.btn_exit_login: //退出登录
                 new Thread(new Runnable() {
@@ -159,12 +158,33 @@ public class SettingActivity extends BaseSimpleActivity {
         loginData = loginDataDao.queryBuilder().unique();
         if (loginData != null) {
             Log.e("test_greendao", "" + loginData.toString());
-            tvNickName.setText(loginData.getNickname() + "");
+            tvNickName.setText(TextUtils.isEmpty(loginData.getNickname()) ? "" : loginData.getNickname());
             Glide.with(this)
                     .load(loginData.getIcon())
                     .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_setting)
                             .error(R.mipmap.default_setting))
                     .into(ivHeader);
+        }
+        //设置密码状态
+        loginType = SharedPreUtils.getString(Constant.LOGIN_TYPE);
+        rlChangePwd.setVisibility(View.VISIBLE);
+        if (Constant.LOGIN_QQ.equals(loginType) || Constant.LOGIN_WE_CHAT.equals(loginType)) { //三方
+            rlChangePwd.setVisibility(View.GONE);
+        } else if (Constant.LOGIN_DYNAMIC.equals(loginType)) { //快捷
+            String flag = SharedPreUtils.getString(Constant.PASSWORD_FLAG);
+            if (TextUtils.isEmpty(flag)) {
+                flag = "1";
+            }
+            if ("1".equals(flag)) {
+                hasPassword = true;
+                tvSetPassword.setText(getString(R.string.change));
+            } else {
+                hasPassword = false;
+                tvSetPassword.setText(getString(R.string.not_set));
+            }
+        } else { //普通
+            hasPassword = true;
+            tvSetPassword.setText(getString(R.string.change));
         }
     }
 

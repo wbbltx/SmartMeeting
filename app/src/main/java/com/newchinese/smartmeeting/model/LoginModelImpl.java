@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.model;
 
 import android.util.Log;
 
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
@@ -39,14 +40,10 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
     }
 
     @Override
-    public void login(final LoginData data, boolean quick) {
+    public void login(final LoginData data) {
         Flowable<BaseResult<LoginData>> observable;
-        if (quick) {
-            observable = mServices.loginQuict(data);
-        } else {
-            observable = mServices.login(data);
-        }
-        invokeRequest(quick ? NetUrl.QUICK_LOGIN : NetUrl.LOGIN_NORMAL, true, "login", observable.map(new Function<BaseResult<LoginData>, BaseResult<LoginData>>() {
+        observable = mServices.login(data);
+        invokeRequest(NetUrl.LOGIN_NORMAL, true, Constant.LOGIN, observable.map(new Function<BaseResult<LoginData>, BaseResult<LoginData>>() {
             @Override
             public BaseResult<LoginData> apply(@NonNull BaseResult<LoginData> result) throws Exception {
                 result.data.setTel(data.getTel());
@@ -57,7 +54,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     @Override
     public void loginQQ(LoginData data) {
-        invokeRequest(NetUrl.LOGIN_QQ, true, "loginQQ", mServices.loginQQ(data));
+        invokeRequest(NetUrl.LOGIN_QQ, true, Constant.LOGIN_QQ, mServices.loginQQ(data));
     }
 
     @Override
@@ -83,7 +80,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     @Override
     public void dynamic(LoginData data) {
-        invokeRequest(NetUrl.DYNAMIC_PASS, false, "dynamic", mServices.dynamic(data));
+        invokeRequest(NetUrl.DYNAMIC_PASS, false, Constant.LOGIN_DYNAMIC, mServices.dynamic(data));
     }
 
     @Override

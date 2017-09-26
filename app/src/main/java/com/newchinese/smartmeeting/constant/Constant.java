@@ -70,4 +70,11 @@ public class Constant {
     public static final int CROP_HEADER = 3; //裁切请求码
     //是否登录标志
     public static final String IS_LOGIN = "is_login"; //裁切请求码
+    //登录类型
+    public static final String LOGIN_TYPE = "login_type"; //登录类型
+    public static final String LOGIN = "login"; //普通登录
+    public static final String LOGIN_DYNAMIC = "dynamic"; //快捷登录
+    public static final String LOGIN_QQ = "loginQQ"; //qq登录
+    public static final String LOGIN_WE_CHAT = "loginWeChat"; //微信登录
+    public static final String PASSWORD_FLAG = "password_flag"; //是否有密码标记
 }

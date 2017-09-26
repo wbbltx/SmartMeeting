@@ -35,11 +35,6 @@ public class UpdateModelImpl implements MineContract.UpdateIModel {
     }
 
     @Override
-    public void updateNick(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_NICK, true, mServices.updateNick(data));
-    }
-
-    @Override
     public void updatePass(LoginData data) {
         invokeRequest(NetUrl.UPDATE_PASS, false, mServices.updatePass(data));
     }

@@ -8,7 +8,7 @@ import com.newchinese.smartmeeting.entity.http.IModel;
 
 public class BaseResult<D> implements IModel {
 
-    public String url, no, msg, verifyCode, sms;
+    public String url, no, msg, verifyCode;
     public boolean update;//标记用户信息更新
     public D data;
 
@@ -39,7 +39,6 @@ public class BaseResult<D> implements IModel {
                 ", no='" + no + '\'' +
                 ", msg='" + msg + '\'' +
                 ", verifyCode='" + verifyCode + '\'' +
-                ", sms='" + sms + '\'' +
                 ", update=" + update +
                 ", data=" + data +
                 '}';

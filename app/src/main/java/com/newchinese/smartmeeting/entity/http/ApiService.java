@@ -22,10 +22,6 @@ public interface ApiService {
     @POST(NetUrl.REGIST)
     Flowable<BaseResult<LoginData>> regist(@Body LoginData data);
 
-    //快速登录
-    @POST(NetUrl.QUICK_LOGIN)
-    Flowable<BaseResult<LoginData>> loginQuict(@Body LoginData data);
-
     //忘记密码
     @POST(NetUrl.FORGET_PASS)
     Flowable<BaseResult<LoginData>> forget(@Body LoginData data);

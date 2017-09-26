@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.ui.mine.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -66,7 +67,7 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
         tvTitle.setText(getString(R.string.change_nickname));
         loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         loginData = loginDataDao.queryBuilder().unique();
-        if (loginData != null) {
+        if (loginData != null && !TextUtils.isEmpty(loginData.getNickname())) {
             etNickName.setText(loginData.getNickname() + "");
             etNickName.setSelection(loginData.getNickname().length());
         }

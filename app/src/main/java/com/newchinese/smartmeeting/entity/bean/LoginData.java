@@ -18,14 +18,15 @@ public class LoginData {
     @Id(autoincrement = true)
     public Long id;
 
-    public String code, token, nickname, im_token, tel, icon, comment;
+    public String code, token, nickname, im_token, tel, icon, comment, password;
 
     @Transient
-    public String password, new_password, icon_format, openid, flag;
+    public String new_password, icon_format, openid, flag, sms;
 
-    @Generated(hash = 1612017057)
+    @Generated(hash = 315100689)
     public LoginData(Long id, String code, String token, String nickname,
-                     String im_token, String tel, String icon, String comment) {
+                     String im_token, String tel, String icon, String comment,
+                     String password) {
         this.id = id;
         this.code = code;
         this.token = token;
@@ -34,6 +35,7 @@ public class LoginData {
         this.tel = tel;
         this.icon = icon;
         this.comment = comment;
+        this.password = password;
     }
 
     @Generated(hash = 1578814127)
@@ -99,7 +101,8 @@ public class LoginData {
     }
 
     public LoginData setPassword(String password) {
-        this.password = md5(password);
+//        this.password = md5(password);
+        this.password = password;
         return this;
     }
 
@@ -126,7 +129,8 @@ public class LoginData {
     }
 
     public LoginData setNew_password(String new_password) {
-        this.new_password = md5(new_password);
+//        this.new_password = md5(new_password);
+        this.new_password = new_password;
         return this;
     }
 
@@ -154,6 +158,15 @@ public class LoginData {
 
     public LoginData setFlag(String flag) {
         this.flag = flag;
+        return this;
+    }
+
+    public String getSms() {
+        return sms;
+    }
+
+    public LoginData setSms(String sms) {
+        this.sms = sms;
         return this;
     }
 
@@ -194,6 +207,7 @@ public class LoginData {
                 ", icon_format='" + icon_format + '\'' +
                 ", openid='" + openid + '\'' +
                 ", flag='" + flag + '\'' +
+                ", sms='" + sms + '\'' +
                 '}';
     }
 }

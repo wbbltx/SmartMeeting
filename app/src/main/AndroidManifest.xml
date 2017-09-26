@@ -126,7 +126,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait" />
         <activity
-            android:name=".ui.mine.activity.UpdateActivity"
+            android:name=".ui.mine.activity.ChangePwdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/change_nickname"
