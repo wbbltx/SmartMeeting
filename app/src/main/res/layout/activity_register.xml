@@ -4,6 +4,7 @@
     android:id="@+id/rl_draw_base"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/simple_background"
     android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.login.activity.RegisterActivity">
 
