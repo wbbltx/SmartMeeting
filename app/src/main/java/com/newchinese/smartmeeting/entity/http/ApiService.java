@@ -53,6 +53,11 @@ public interface ApiService {
     @POST(NetUrl.UPDATE_PASS)
     Flowable<BaseResult<LoginData>> updatePass(@Body LoginData data);
 
+    //QQ登录
     @POST(NetUrl.LOGIN_QQ)
     Flowable<BaseResult<LoginData>> loginQQ(@Body LoginData data);
+
+    //微信登录
+    @POST(NetUrl.LOGIN_WE_CHAT)
+    Flowable<BaseResult<LoginData>> loginWeChat(@Body LoginData data);
 }

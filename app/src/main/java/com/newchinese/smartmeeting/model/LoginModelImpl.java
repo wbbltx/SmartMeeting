@@ -59,7 +59,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     @Override
     public void loginWeChat(LoginData data) {
-
+        invokeRequest(NetUrl.LOGIN_WE_CHAT, true, Constant.LOGIN_WE_CHAT, mServices.loginWeChat(data));
     }
 
     @Override

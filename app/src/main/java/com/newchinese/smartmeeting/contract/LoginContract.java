@@ -40,9 +40,9 @@ public interface LoginContract {
 
         void loginPhone(String user, String pass);
 
-        void loginWechat();
-
         void loginQQ(String openid, String token);
+
+        void loginWechat(String openid, String accessToken);
 
         void regist(String phone, String pass, String code);
 

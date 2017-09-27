@@ -182,7 +182,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
             Log.e("test_login", "" + data.toString());
-            mPresenter.loginQQ(data.get("openid"), data.get("accessToken"));
+            if (platform == SHARE_MEDIA.QQ) {
+                mPresenter.loginQQ(data.get("openid"), data.get("accessToken"));
+            } else if (platform == SHARE_MEDIA.WEIXIN) {
+                mPresenter.loginWechat(data.get("openid"), data.get("accessToken"));
+            }
         }
 
         /**
@@ -246,6 +250,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
 
     @Override
     public void getDynamicMsg(String data) {
-        
+
     }
 }

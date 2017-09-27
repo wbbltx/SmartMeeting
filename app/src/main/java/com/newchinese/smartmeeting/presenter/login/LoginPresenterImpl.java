@@ -32,13 +32,13 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     private String password;
 
     @Override
-    public void loginWechat() {
-
+    public void loginQQ(String openid, String token) {
+        mLoginModel.loginQQ(new LoginData().setOpenid(openid).setToken(token).setFlag("1"));
     }
 
     @Override
-    public void loginQQ(String openid, String token) {
-        mLoginModel.loginQQ(new LoginData().setOpenid(openid).setToken(token).setFlag("1"));
+    public void loginWechat(String openid, String accessToken) {
+        mLoginModel.loginWeChat(new LoginData().setOpenid(openid).setAccess_token(accessToken));
     }
 
     @Override

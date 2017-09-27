@@ -21,7 +21,7 @@ public class LoginData {
     public String code, token, nickname, im_token, tel, icon, comment, password;
 
     @Transient
-    public String new_password, icon_format, openid, flag, sms;
+    public String new_password, icon_format, openid, access_token, flag, sms;
 
     @Generated(hash = 315100689)
     public LoginData(Long id, String code, String token, String nickname,
@@ -167,6 +167,15 @@ public class LoginData {
 
     public LoginData setSms(String sms) {
         this.sms = sms;
+        return this;
+    }
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public LoginData setAccess_token(String access_token) {
+        this.access_token = access_token;
         return this;
     }
 
