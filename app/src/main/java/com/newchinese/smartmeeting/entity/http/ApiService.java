@@ -34,6 +34,10 @@ public interface ApiService {
     @POST(NetUrl.VERIFY_CODE)
     Flowable<BaseResult<String>> verify(@Body LoginData data);
 
+    //忘记密码验证码
+    @POST(NetUrl.VERIFY_FORGET_CODE)
+    Flowable<BaseResult<String>> verifyForget(@Body LoginData data);
+
     //更新资料
     @POST(NetUrl.UPDATE_NICK)
     Flowable<BaseResult<LoginData>> updateNick(@Body LoginData data);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.media.DrmInitData;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,9 +45,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -57,6 +62,10 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     public static final int UI_TYPE_REG = 0;//注册界面
     public static final int UI_TYPE_FOR = 1;//忘记密码
     public static final int UI_TYPE_UPD = 2;//完善资料
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.iv_pen)
+    ImageView ivPen;
     private String[] mBtnTitles;
     private String[] mTitles;
     private EditView mEvPhone, mEvCode, mEvPass;
@@ -78,40 +87,31 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_register);
-        initIntent();
         super.onCreate(savedInstanceState);
-        mBtnTitles = new String[]{getString(R.string.regist_space), getString(R.string.confirm_space),
-                getString(R.string.complete_space)};
-        mTitles = new String[]{getString(R.string.regist_title), getString(R.string.forget_password),
-                getString(R.string.fill_person_message)};
+        setContentView(R.layout.activity_register);
+        ButterKnife.bind(this);
+        initData();
+        initIntent();
         initPresenter();
         initView();
         updateBtn();
         initListener();
     }
 
+    private void initData() {
+        mBtnTitles = new String[]{getString(R.string.regist_space), getString(R.string.confirm_space),
+                getString(R.string.complete_space)};
+        mTitles = new String[]{getString(R.string.regist_title), getString(R.string.forget_password),
+                getString(R.string.fill_person_message)};
+    }
+
     private void initIntent() {
         mUi = getIntent().getIntExtra("ui", 0);
-        setTitle(mTitles[mUi]);
-    }
-
-    private void initPresenter() {
-        mPresenter = new LoginPresenterImpl().attach(this);
-    }
-
-    private void initListener() {
-        mEvPhone.setOnEditViewListener(this);
-        mEvCode.setOnEditViewListener(this);
-        mEvPass.setOnEditViewListener(this);
-        mEvPass2.setOnEditViewListener(this);
-        mBtnReg.setOnClickListener(this);
-        if (mUi == UI_TYPE_UPD) {
-            mIvIcon.setOnClickListener(this);
-        }
+        tvTitle.setText(mTitles[mUi]);
     }
 
     private void initView() {
+        ivPen.setVisibility(View.GONE);
         mEvPhone = (EditView) findViewById(R.id.ev_regist_1);
         mEvCode = (EditView) findViewById(R.id.ev_regist_2);
         mEvPass = (EditView) findViewById(R.id.ev_regist_3);
@@ -153,6 +153,26 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         takePhotoPopWin = new TakePhotoPopWin(this, "RegisterActivity");
     }
 
+    private void initPresenter() {
+        mPresenter = new LoginPresenterImpl().attach(this);
+    }
+
+    private void initListener() {
+        mEvPhone.setOnEditViewListener(this);
+        mEvCode.setOnEditViewListener(this);
+        mEvPass.setOnEditViewListener(this);
+        mEvPass2.setOnEditViewListener(this);
+        mBtnReg.setOnClickListener(this);
+        if (mUi == UI_TYPE_UPD) {
+            mIvIcon.setOnClickListener(this);
+        }
+    }
+
+    @OnClick(R.id.iv_back)
+    public void onViewClicked() {
+        finish();
+    }
+
     @Override
     public void skipWhat() {
         startActivity(new Intent(this, LoginActivity.class));
@@ -190,7 +210,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
             case R.id.ev_regist_2:
                 if (mEvPhone.mMatching) {
                     //获取验证码
-                    mPresenter.verifyCode(mEvPhone.getText());
+                    if (mUi == UI_TYPE_REG) {
+                        mPresenter.verifyCode(mEvPhone.getText());
+                    } else if (mUi == UI_TYPE_FOR) {
+                        mPresenter.verifyForgetCode(mEvPhone.getText());
+                    }
                     mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnNext(new Consumer<Long>() {
@@ -241,7 +265,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                 .subscribeOn(Schedulers.io())
                                 .map(new Function<byte[], String>() {
                                     @Override
-                                    public String apply(@io.reactivex.annotations.NonNull byte[] bytes) throws Exception {
+                                    public String apply(@NonNull byte[] bytes) throws Exception {
                                         return byte2String(mBaos.toByteArray());
                                     }
                                 })

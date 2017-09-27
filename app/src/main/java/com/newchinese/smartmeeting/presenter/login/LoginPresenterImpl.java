@@ -58,6 +58,11 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
+    public void verifyForgetCode(String phone) {
+        mLoginModel.verifyForget(new LoginData().setTel(phone));
+    }
+
+    @Override
     public void uploadInfo(String nick, String icon) {
         GreenDaoUtil.getInstance().getDaoSession().clear();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
@@ -144,12 +149,16 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
                 if (mV != null) {
                     mV.updateView(data);
                 }
+            } else {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
             }
         } else {
             if (data.msg.contains("Failed to connect")) {
                 CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_net));
             } else if ("login".equals(type)) {
                 CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_name_or_password));
+            } else if ("regist".equals(type)) {
+                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_confirm));
             } else {
                 CustomizedToast.showShort(App.getAppliction(), data.msg);
             }

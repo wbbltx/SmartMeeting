@@ -46,6 +46,8 @@ public interface LoginContract {
 
         void verifyCode(String phone);
 
+        void verifyForgetCode(String phone);
+
         void uploadInfo(String nick, String icon);
 
         void forgetPass(String phone, String code, String pass);
@@ -77,6 +79,8 @@ public interface LoginContract {
         void forget(LoginData data);
 
         void verify(LoginData data);
+
+        void verifyForget(LoginData data);
 
         void dynamic(LoginData data);
 

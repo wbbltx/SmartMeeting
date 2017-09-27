@@ -24,7 +24,8 @@ public class ActivityLife implements Application.ActivityLifecycleCallbacks {
         if (BaseToolbar.class.isAssignableFrom(activity.getClass())) {
             Toolbar toolBar = (Toolbar) activity.findViewById(R.id.toolbar);
             TextView tvTitle = (TextView) activity.findViewById(R.id.tv_bar_title);
-            tvTitle.setText(activity.getTitle());
+            if (tvTitle != null)
+                tvTitle.setText(activity.getTitle());
             ((AppCompatActivity) activity).setSupportActionBar(toolBar);
             ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
             if (actionBar != null) {

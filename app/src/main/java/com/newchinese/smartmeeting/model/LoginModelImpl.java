@@ -62,7 +62,6 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     }
 
-
     @Override
     public void regist(LoginData data) {
         invokeRequest(NetUrl.REGIST, true, "regist", mServices.regist(data));
@@ -76,6 +75,11 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
     @Override
     public void verify(LoginData data) {
         invokeRequest(NetUrl.VERIFY_CODE, false, "verify", mServices.verify(data));
+    }
+
+    @Override
+    public void verifyForget(LoginData data) {
+        invokeRequest(NetUrl.VERIFY_FORGET_CODE, false, "verifyForget", mServices.verifyForget(data));
     }
 
     @Override

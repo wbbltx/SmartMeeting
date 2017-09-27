@@ -11,16 +11,16 @@ public interface NetUrl {
     String HOST = "http://182.92.99.12:9005";
     String TEST = "http://192.168.1.52:8080";
 
-    String DYNAMIC_PASS = HOST + "/user/m/sms_fastLogin";
-
-    String LOGIN_NORMAL = HOST + "/user/m/login";
-    String REGIST = HOST + "/user/m/register";
-    String VERIFY_CODE = HOST + "/user/m/rsms";
-    String FORGET_PASS = HOST + "/user/m/reset";
-    String UPDATE_NICK = HOST + "/user/m/update";
-    String UPDATE_ICON = HOST + "/user/m/update/icon";
-    String FEED_BACK = HOST + "/user/m/feed_back";
-    String UPDATE_PASS = HOST + "/user/m/pass";
-    String LOGIN_QQ = HOST + "/user/getQqUserInfo";
-    String LOGIN_WE_CHAT = HOST + "/user/getWechatUserInfo";
+    String LOGIN_NORMAL = HOST + "/user/m/login"; //普通登录
+    String DYNAMIC_PASS = HOST + "/user/m/sms_fastLogin"; //快捷登录
+    String LOGIN_QQ = HOST + "/user/getQqUserInfo"; //QQ登录
+    String LOGIN_WE_CHAT = HOST + "/user/getWechatUserInfo"; //微信登录
+    String REGIST = HOST + "/user/m/register"; //注册
+    String VERIFY_CODE = HOST + "/user/m/rsms"; //注册获取验证码
+    String VERIFY_FORGET_CODE = HOST + "/user/m/sms"; //忘记密码获取验证码
+    String FORGET_PASS = HOST + "/user/m/reset"; //忘记密码
+    String UPDATE_PASS = HOST + "/user/m/pass"; //修改密码
+    String UPDATE_NICK = HOST + "/user/m/update"; //更新用户昵称
+    String UPDATE_ICON = HOST + "/user/m/update/icon"; //更新用户头像
+    String FEED_BACK = HOST + "/user/m/feed_back"; //反馈
 }
