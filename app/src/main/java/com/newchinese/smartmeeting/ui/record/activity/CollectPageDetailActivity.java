@@ -189,6 +189,12 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onDismiss() {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = 1f;

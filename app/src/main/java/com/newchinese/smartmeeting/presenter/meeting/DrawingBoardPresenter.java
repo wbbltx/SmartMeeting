@@ -196,7 +196,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
 
     /**
      * 查询当前页的录屏个数
-     *
+     * 需要执行此操作的情况：收到换页回调 录屏结束 删除录屏回到该界面 滑动页面（左右两种情况） 初始化
      * @param pageIndex
      */
     @Override

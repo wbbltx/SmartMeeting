@@ -71,7 +71,6 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
             @Override
             public void run() {
                 CollectPage unique = collectPageDao.queryBuilder().where(CollectPageDao.Properties.BookId.eq(activeCollectRecord.getId()), CollectPageDao.Properties.PageIndex.eq(pageIndex)).unique();
-                XLog.d("presenter",activeNoteRecord.getId()+" 当前页是："+pageIndex);
                 List<String> screenPathList = unique.getScreenPathList();
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     if (isSelectedList.get(i)) {
