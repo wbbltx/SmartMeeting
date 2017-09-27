@@ -68,7 +68,7 @@ public class CollectPageAdapter extends PagerAdapter {
             if (screenPathList != null && screenPathList.size() != 0 && screenPathList.get(0) != "") {
                 rlRecordCount.setVisibility(View.VISIBLE);
                 recordCount.setText(screenPathList.size() + "");
-                Log.i("test_page", "screenPathList的长度是：" + screenPathList.size());
+
             }
             rlRecordCount.setOnClickListener(new View.OnClickListener() {
                 @Override

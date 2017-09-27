@@ -838,8 +838,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
         int i = Integer.parseInt(value);
-        if (i <= 30) {
+        boolean lowPower = receivedEvent.isLowPower();
+        if (lowPower) {
             ivPen.setImageResource(R.mipmap.pen_low_power);
+        }else {
+            ivPen.setImageResource(R.mipmap.pen_normal_power);
         }
     }
 
@@ -950,6 +953,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
             EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.queryRecordCount(pageIndex);
     }
 
     @Override

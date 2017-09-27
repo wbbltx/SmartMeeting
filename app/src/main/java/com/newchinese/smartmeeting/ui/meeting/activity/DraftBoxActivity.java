@@ -81,7 +81,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     TextView tvTitle; //标题
     @BindView(R.id.tv_right)
     TextView tvRight; //全选/全不选
-    //    @BindView(R.id.iv_pen)
+    @BindView(R.id.iv_pen)
     ImageView ivPen; //笔图标
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
@@ -116,7 +116,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         viewCreateRecord = LayoutInflater.from(this).inflate(R.layout.layout_create_record, null);
         tvCancel = (TextView) viewCreateRecord.findViewById(R.id.tv_cancel);
         tvCreate = (TextView) viewCreateRecord.findViewById(R.id.tv_create);
-        ivPen = (ImageView) findViewById(R.id.iv_pen);
         initView();
         //初始化PopupWindow
         pwCreateRecord = new PopupWindow(viewCreateRecord, RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -323,7 +322,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
             scanResultDialog
-                    .setContent(SharedPreUtils.getString(this,BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS),"1")
+                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS), "1")
                     .show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
@@ -435,12 +434,19 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
         XLog.d(TAG, TAG + " onElecReceived " + i);
+        boolean lowPower = DataCacheUtil.getInstance().isLowPower();
         if (i <= 30) {//默认图标是电量正常，小于30才更换图标
-            DataCacheUtil.getInstance().setLowPower(true);
-            EventBus.getDefault().post(new ElectricityReceivedEvent(s));
-            mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
-        } else {
-            DataCacheUtil.getInstance().setLowPower(false);
+            if (!lowPower) {//只在电量发生变化的时候
+                EventBus.getDefault().post(new ElectricityReceivedEvent(s, true));
+                mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
+                DataCacheUtil.getInstance().setLowPower(true);
+            }
+        } else {//上一次低电量，这次正常 电量的变化点
+            if (lowPower) {
+                EventBus.getDefault().post(new ElectricityReceivedEvent(s, false));
+                mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
+                DataCacheUtil.getInstance().setLowPower(false);
+            }
         }
     }
 
@@ -451,8 +457,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void setState(int id) {
-        if (ivPen != null)
-            ivPen.setImageResource(id);
+        if (ivPen != null) ivPen.setImageResource(id);
+        else XLog.d(TAG,"ivPen是空的");
     }
 
     @Override
