@@ -23,6 +23,8 @@ public interface LoginContract {
         void showLoading(String msg);
 
         void getDynamicMsg(LoginData data);
+
+        void getDynamicMsg(String data);
     }
 
 
@@ -61,6 +63,8 @@ public interface LoginContract {
         void getSpan(TextView tv, String txt);
 
         void onResult(boolean succ, String type, BaseResult<LoginData> data);
+
+        void onSMSResult(boolean succ, String type, BaseResult<String> data);
 
         void loading();
 

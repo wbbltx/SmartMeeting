@@ -243,4 +243,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
         sms = data.getSms();
         SharedPreUtils.setString(Constant.PASSWORD_FLAG, data.getFlag()); //设置是否有密码
     }
+
+    @Override
+    public void getDynamicMsg(String data) {
+        
+    }
 }

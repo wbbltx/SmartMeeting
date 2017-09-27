@@ -166,6 +166,31 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
+    public void onSMSResult(boolean succ, String type, BaseResult<String> data) {
+        complete();
+        if (succ && data == null) {
+            CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_data));
+        } else if (succ) {
+            if (NetUrl.NO_SUCC.equals(data.no)) {
+                CustomizedToast.showShort(App.getAppliction(), App.getAppliction().getString(R.string.send_success));
+                if (Constant.VERIFY.equals(type) && data.data != null) {
+                    mV.getDynamicMsg(data.data);
+                } else if (Constant.VERIFY_FORGET.equals(type) && !TextUtils.isEmpty(data.sms)) {
+                    mV.getDynamicMsg(data.sms);
+                } else CustomizedToast.showShort(App.getAppliction(), data.msg);
+            } else {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
+            }
+        } else {
+            if (data.msg.contains("Failed to connect")) {
+                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_net));
+            } else {
+                CustomizedToast.showShort(App.getAppliction(), data.msg);
+            }
+        }
+    }
+
+    @Override
     public void loading() { //加载中
         if (mV != null) {
             mV.showLoading(App.getContext().getString(R.string.loading_request));

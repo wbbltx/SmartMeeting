@@ -77,4 +77,6 @@ public class Constant {
     public static final String LOGIN_QQ = "loginQQ"; //qq登录
     public static final String LOGIN_WE_CHAT = "loginWeChat"; //微信登录
     public static final String PASSWORD_FLAG = "password_flag"; //是否有密码标记
+    public static final String VERIFY = "verify"; //注册获取验证码
+    public static final String VERIFY_FORGET = "verifyForget"; //忘记密码获取验证码
 }

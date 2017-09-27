@@ -134,7 +134,11 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
                             loginDataBaseResult.url = url;
                             loginDataBaseResult.update = update;
                             Log.e("test_login", "onNext:" + loginDataBaseResult.toString());
-                            mPresenter.onResult(true, type, loginDataBaseResult);
+                            if (Constant.VERIFY.equals(type) || Constant.VERIFY_FORGET.equals(type)) {
+                                mPresenter.onSMSResult(true, type, loginDataBaseResult);
+                            } else {
+                                mPresenter.onResult(true, type, loginDataBaseResult);
+                            }
                         }
                     }
                 });

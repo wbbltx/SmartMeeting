@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -21,10 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.newchinese.coolpensdk.utils.GetAddressUtil;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.constant.Constant;
@@ -37,12 +40,19 @@ import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.widget.EditView;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -84,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private Bitmap headerBitmap;
     private File headerFile;
     private static String path = "/sdcard/myHead/";//sd路径
+    private String sms, telCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,11 +220,13 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         switch (v.getId()) {
             case R.id.ev_regist_2:
                 if (mEvPhone.mMatching) {
+                    telCache = mEvPhone.getText();
                     //获取验证码
                     if (mUi == UI_TYPE_REG) {
                         mPresenter.verifyCode(mEvPhone.getText());
                     } else if (mUi == UI_TYPE_FOR) {
                         mPresenter.verifyForgetCode(mEvPhone.getText());
+//                        reQuestPermission(mEvPhone.getText());
                     }
                     mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -237,6 +250,60 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         }
     }
 
+    private void reQuestPermission(final String tel) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String[] parameter = {"tel"};
+                String[] parameterValue = {tel};
+                try {
+                    //通过openConnection 连接  
+                    URL url = new URL(NetUrl.VERIFY_FORGET_CODE);
+                    HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+
+                    //设置输入和输出流   
+                    urlConn.setRequestMethod("POST");
+                    urlConn.setDoOutput(true);
+                    urlConn.setDoInput(true);
+                    urlConn.setUseCaches(false);
+                    urlConn.setInstanceFollowRedirects(false);
+                    urlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                    urlConn.connect();
+
+                    //设置请求参数
+                    DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+                    JSONObject o = new JSONObject();
+                    for (int i = 0; i < parameter.length; i++) {
+                        o.put(parameter[i], parameterValue[i]);
+                    }
+                    Log.i("requestData", "请求参数" + o.toString());
+                    out.writeBytes(o.toString());
+                    out.flush();
+                    out.close();
+
+                    //接收返回结果
+                    if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
+                        BufferedReader buffer = new BufferedReader(in);
+                        String inputLine = null;
+                        String resultData = "";
+                        while (((inputLine = buffer.readLine()) != null)) {
+                            resultData += inputLine + "\n";
+                        }
+                        Log.e("resultData", "返回结果:" + resultData);
+                        in.close();
+                    } else {
+                        Log.e("coolPenError", "11006:网络请求失败");
+                    }
+                    urlConn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("coolPenError", "11006:网络请求失败");
+                }
+            }
+        }).start();
+    }
+
     @Override
     public void onEditError(String err) {
         CustomizedToast.showShort(App.getAppliction(), err);
@@ -254,10 +321,22 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_regist_sub:
-                if (mUi == UI_TYPE_REG) {
-                    mPresenter.regist(mEvPhone.getText(), mEvPass.getText(), mEvCode.getText());
-                } else if (mUi == UI_TYPE_FOR) {
-                    mPresenter.forgetPass(mEvPhone.getText(), mEvCode.getText(), mEvPass.getText());
+                if (mUi == UI_TYPE_REG || mUi == UI_TYPE_FOR) {
+                    String tel = mEvPhone.getText();
+                    String code = mEvCode.getText();
+                    String pass = mEvPass.getText();
+                    if (!tel.equals(telCache)) { //校验手机号
+                        CustomizedToast.showShort(this, getString(R.string.wrong_tel));
+                        break;
+                    } else if (!sms.equals(code)) { //校验验证码
+                        CustomizedToast.showShort(this, getString(R.string.wrong_code));
+                        break;
+                    }
+                    if (mUi == UI_TYPE_REG) {
+                        mPresenter.regist(tel, pass, code);
+                    } else if (mUi == UI_TYPE_FOR) {
+                        mPresenter.forgetPass(tel, code, pass);
+                    }
                 } else if (mUi == UI_TYPE_UPD) {
                     final String nick = mEtNick.getText().toString().trim();
                     if (mBaos.size() != 0 && nick.length() < 9 && nick.length() > 0) {
@@ -437,6 +516,10 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
 
     @Override
     public void getDynamicMsg(LoginData data) {
+    }
 
+    @Override
+    public void getDynamicMsg(String data) {
+        sms = data;
     }
 }
