@@ -76,6 +76,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     public void onPresenterDestroy() {
         //清空活动记录所有页集合
         DataCacheUtil.getInstance().clearActiveNotePageList();
+        BleListener.getDefault().unInit();
         singleThreadExecutor.shutdownNow();
     }
 
