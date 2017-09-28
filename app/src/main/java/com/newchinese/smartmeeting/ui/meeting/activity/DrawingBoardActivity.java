@@ -365,7 +365,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                closeEditInsertImage(); //关闭图片编辑模式容错
+//                closeEditInsertImage(); //关闭图片编辑模式容错
                 if (rlRecordCount != null && recordCount != null) {
                     if (i == 0) {
                         rlRecordCount.setVisibility(View.GONE);
@@ -813,7 +813,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             onComplete(this);
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
             scanResultDialog
-                    .setContent(SharedPreUtils.getString(this,BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS),"1")
+                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS), "1")
                     .show();
         }
     }
@@ -841,7 +841,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         boolean lowPower = receivedEvent.isLowPower();
         if (lowPower) {
             ivPen.setImageResource(R.mipmap.pen_low_power);
-        }else {
+        } else {
             ivPen.setImageResource(R.mipmap.pen_normal_power);
         }
     }
