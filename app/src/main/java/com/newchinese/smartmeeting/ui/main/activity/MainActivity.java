@@ -159,7 +159,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     }
 
     /**
-     * 收到线回调8
+     * 收到线回调
      */
     @Override
     public void onStrokeCached(int fromType, com.newchinese.coolpensdk.entity.NoteStroke noteStroke) {
