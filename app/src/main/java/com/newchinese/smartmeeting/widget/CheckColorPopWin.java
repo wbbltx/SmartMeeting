@@ -36,9 +36,11 @@ public class CheckColorPopWin extends PopupWindow {
     private Context mContext;
     private ColorEvent event = null;
     private HorizontalListViewAdapter hListViewAdapter;
+    private OnSelectListener onSelectListener;
 
-    public CheckColorPopWin(final Context mContext) {
+    public CheckColorPopWin(final Context mContext, final OnSelectListener onSelectListener) {
         this.mContext = mContext;
+        this.onSelectListener = onSelectListener;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.checkout_color, null);
         hListView = (HorizontalListView) view.findViewById(R.id.horizon_listview);
         // 设置外部可点击
@@ -76,7 +78,7 @@ public class CheckColorPopWin extends PopupWindow {
         hListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MobclickAgent.onEvent(mContext,"color",position+"");
+                MobclickAgent.onEvent(mContext, "color", position + "");
                 if (position <= 5) {
                     if (position == 5) {
                         Constant.colors[5] = colors[5];
@@ -84,11 +86,12 @@ public class CheckColorPopWin extends PopupWindow {
                     event = new ColorEvent(position);
                     EventBus.getDefault().post(event);
                     DataCacheUtil.getInstance().setCurrentColorPosition(position);
+                    onSelectListener.onSelect();
                     hListViewAdapter.notifyDataSetChanged();
                     if (event != null) {
                         EventBus.getDefault().post(event);
                     }
-                    dismiss();
+//                    dismiss();
                 } else if (position == 6) {
                     if (colorSelectDialog == null) {
                         colorSelectDialog = new ColorSelectDialog(mContext);
@@ -100,6 +103,7 @@ public class CheckColorPopWin extends PopupWindow {
                                 hListViewAdapter.notifyDataSetChanged();
                                 SharedPreUtils.setInteger(mContext, "lastcolor", color);
                                 DataCacheUtil.getInstance().setCurrentColorPosition(5);
+                                onSelectListener.onSelect();
                                 event = new ColorEvent(5);
                                 EventBus.getDefault().post(event);
                                 hListViewAdapter.notifyDataSetChanged();
@@ -114,5 +118,9 @@ public class CheckColorPopWin extends PopupWindow {
                 }
             }
         });
+    }
+
+    public interface OnSelectListener {
+        void onSelect();
     }
 }

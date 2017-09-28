@@ -43,6 +43,7 @@ import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
+import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
@@ -95,7 +96,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener, OnDeviceItemClickListener, DialogInterface.OnDismissListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener, OnDeviceItemClickListener, DialogInterface.OnDismissListener, CheckColorPopWin.OnSelectListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
@@ -140,6 +141,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private boolean isMenuBtnClicked = false;
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private List<NotePage> activeNotePageList;
+    private NoteRecord activeNoteRecord;
     private Bitmap insertBitmap;
     private DataCacheUtil dataCacheUtil;
     //    private ScanResultDialog scanResultDialog;
@@ -195,6 +197,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
+        //获取当前活动本
+        activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
         //获取当前活动本所有页
         activeNotePageList = dataCacheUtil.getActiveNotePageList();
         //加载第一笔缓存
@@ -215,7 +219,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             });
         }
         //初始化调色板窗口
-        checkColorPopWin = new CheckColorPopWin(this);
+        checkColorPopWin = new CheckColorPopWin(this, this);
         //初始化图片窗口
         takePhotoPopWin = new TakePhotoPopWin(this, "DrawingBoardActivity");
 
@@ -275,6 +279,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 return true;
             }
         });
+    }
+
+    /**
+     * 选择笔色回调
+     */
+    @Override
+    public void onSelect() {
+        dataCacheUtil.setCurrentColor(Constant.colors[dataCacheUtil.getCurrentColorPosition()]);
+        drawViewMeeting.setPaintColor(Constant.colors[dataCacheUtil.getCurrentColorPosition()]);
     }
 
     /**
@@ -357,7 +370,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Override
     public void setTitleText(int pageIndex) {
-        tvTitle.setText(getString(R.string.write_page_index, pageIndex)); //设置当前页数
+        tvTitle.setText(activeNoteRecord.getClassifyName() + " " + getString(R.string.write_page_index, pageIndex)); //设置当前页数
     }
 
     @Override
@@ -581,7 +594,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 dataCacheUtil.setStrokeWidth(3);
                 break;
         }
-        hideStrokeWidth();
+//        hideStrokeWidth();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -729,7 +742,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             }
         });
     }
-
 
     /**
      * 显示插入普片PopupWindow
