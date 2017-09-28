@@ -72,7 +72,7 @@
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:padding="20dp"
-        android:src="@mipmap/draw_menu_close" />
+        android:src="@mipmap/draw_menu_open" />
 
     <!--该页录屏数量显示-->
     <RelativeLayout
