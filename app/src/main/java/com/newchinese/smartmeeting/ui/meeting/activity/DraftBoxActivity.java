@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,7 @@ import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
+import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,7 +71,7 @@ import io.reactivex.functions.Consumer;
  */
 public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
         DraftBoxActContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
-        OnItemClickedListener, View.OnClickListener {
+        OnItemClickedListener, View.OnClickListener, DialogInterface.OnDismissListener {
     private static final String TAG = "DraftBoxActivity";
     //    private static boolean isFirstTime = true;
     @BindView(R.id.iv_empty)
@@ -87,6 +90,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     RecyclerView rvPageList;
     @BindView(R.id.rl_remind)
     RelativeLayout rlRemind;
+    @BindView(R.id.progressbar)
+    ProgressBar progressBar;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
@@ -97,7 +102,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private List<NotePage> notePageList = new ArrayList<>();
     private List<Boolean> isSelectedList = new ArrayList<>();
 
-    //    private ScanResultDialog scanResultDialog;
+    private ScanResultDialog scanResultDialog;
     private BluePopUpWindow bluePopUpWindow;
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
@@ -111,6 +116,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
+        XLog.d(TAG, TAG + "onViewCreated " + isFinishing());
         root_view = (ViewGroup) findViewById(R.id.rl_parent);
         //初始化地图弹出窗口view
         viewCreateRecord = LayoutInflater.from(this).inflate(R.layout.layout_create_record, null);
@@ -161,10 +167,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         tvRight.setVisibility(View.GONE);
         ivRight.setImageResource(R.mipmap.icon_create);
         ivRight.setVisibility(View.GONE);
-
-//        scanResultDialog = new ScanResultDialog(this);
+        scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
-
+        XLog.d(TAG, TAG + "initStateAndData " + isFinishing());
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
         rvPageList.setAdapter(adapter);
@@ -176,6 +181,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void initListener() {
         mPresenter.initListener();
         scanResultDialog.setOnDeviceItemClickListener(this);
+        scanResultDialog.setOnDismissListener(this);
         adapter.setOnItemClickedListener(this);
         tvCancel.setOnClickListener(this);
         tvCreate.setOnClickListener(this);
@@ -299,18 +305,21 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         super.onWindowFocusChanged(hasFocus);
         XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().isFirstTime());
         if (hasFocus) {
-            boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-            if (!bluetoothOpen) {
-                bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
-            } else {
-                initView();
-            }
-            if (DataCacheUtil.getInstance().isFirstTime()) {
-                XLog.d(TAG, TAG + " onWindowFocusChanged");
-                checkBle(false);
-                DataCacheUtil.getInstance().setFirstTime(false);
-//                isFirstTime = false;
-            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    boolean bluetoothOpen = mPresenter.isBluetoothOpen();
+                    if (!bluetoothOpen) {
+                        bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
+                    } else {
+                        initView();
+                    }
+                    if (DataCacheUtil.getInstance().isFirstTime()) {
+                        checkBle(false);
+                        DataCacheUtil.getInstance().setFirstTime(false);
+                    }
+                }
+            }, 1500);
         }
     }
 
@@ -319,7 +328,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onScanComplete() {
-        XLog.d(TAG, TAG + " onScanComplete " + isFinishing());
+        XLog.d(TAG, TAG + " onScanComplete "+ !isFinishing());
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
             scanResultDialog
                     .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS), "1")
@@ -327,7 +336,38 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
             EventBus.getDefault().post(new ScanResultEvent(0));
-            onComplete(this);
+            onComplete();
+        }
+    }
+
+    private void onComplete() {
+        if (scanResultDialog == null){
+            scanResultDialog = new ScanResultDialog(this);
+        }
+        int count = scanResultDialog.getCount();
+        XLog.d(TAG, TAG + " onComplete " + count);
+        List<BluetoothDevice> devices = scanResultDialog.getDevices();
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+        if (count == 0) {//如果没有搜索到笔，提示
+            XLog.d(TAG, TAG + " 没有搜索到笔 ");
+            CustomizedToast.showShort(this, getString(R.string.please_open_pen));
+            setState(R.mipmap.pen_disconnect);
+            progressBar.setVisibility(View.GONE);
+        } else {
+            XLog.d(TAG, TAG + " 搜索到笔 ");
+            for (BluetoothDevice device : devices) {
+                if (device.getAddress().equals(address)) {
+                    if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
+                        EventBus.getDefault().post(new ConnectEvent(device, 0));
+                        return;
+                    }
+                    break;
+                }
+            }
+            if (scanResultDialog != null && !isFinishing() ) {
+                scanResultDialog.setContent(address, "0");
+                scanResultDialog.show();
+            }
         }
     }
 
@@ -370,6 +410,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             mPresenter.disConnect();
         }
         mPresenter.connectDevice(type.getDevice());
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -382,7 +423,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
         if (b) {//第一次启动应用，弹出如何使用对话框
             createHintDialog();
-        } else {//不是第一次启动该应用，不弹出，直接打开蓝牙
+        } else {//不是第一次启动该应用，不弹出，直接扫描蓝牙
             Flowable.timer(3, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
@@ -401,6 +442,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onSuccess() {
         XLog.d(TAG, TAG + " onSuccess");
+        progressBar.setVisibility(View.GONE);
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
@@ -411,6 +453,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onFailed() {
+        progressBar.setVisibility(View.GONE);
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
     }
@@ -588,11 +631,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 //        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_SCANNING);
         XLog.d(TAG, TAG + " 将蓝牙状态设置为扫描");
         mPresenter.scanBlueDevice();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        DataCacheUtil.getInstance().setFirstTime(true);
         super.onDestroy();
     }
 
@@ -602,5 +647,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         EventBus.getDefault().post(new HisInfoEvent(listener));
         if (!isFinishing())
             showDialog(listener, findViewById(android.R.id.content));
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        progressBar.setVisibility(View.GONE);
     }
 }

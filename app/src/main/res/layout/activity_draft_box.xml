@@ -67,4 +67,11 @@
         android:layout_below="@+id/bar"
         android:background="@color/simple_background"
         android:src="@mipmap/empty_icon" />
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

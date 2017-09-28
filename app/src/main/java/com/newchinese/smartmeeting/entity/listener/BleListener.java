@@ -67,11 +67,15 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     }
 
     public BleListener init(DraftBoxActivity iView) {
-        if (!isInited) {
+        if (mView == null) {
             mView = iView;
-            isInited = true;
+//            isInited = true;
         }
         return this;
+    }
+
+    public void unInit(){
+        mView = null;
     }
 
     @Override
@@ -102,10 +106,11 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
 
     @Override
     public void onDisconnected() {
+        XLog.d(TAG, TAG + " 连接断开");
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_DISCONNECTED);
         DataCacheUtil.getInstance().setFirstTime(true);
+        if (mView != null)
         mView.onDisconnected();
-        XLog.d(TAG, TAG + " 连接断开");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
@@ -14,7 +15,6 @@ import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.annotation.RequiresApi;
@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -38,6 +39,7 @@ import com.newchinese.coolpensdk.entity.NoteStroke;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
@@ -67,6 +69,7 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
+import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 import com.umeng.analytics.MobclickAgent;
@@ -92,7 +95,7 @@ import io.reactivex.functions.Consumer;
  * Date           2017/8/20 21:12
  */
 public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, BluetoothDevice> implements
-        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener, OnDeviceItemClickListener {
+        DrawingBoardActContract.View<BluetoothDevice>, View.OnTouchListener, PopWindowListener, RadioGroup.OnCheckedChangeListener, OnShareListener, PopupWindow.OnDismissListener, OnDeviceItemClickListener, DialogInterface.OnDismissListener {
     public final static String TAG_PAGE_INDEX = "selectPageIndex";
     private static final String TAG = "DrawingBoardActivity";
     @BindView(R.id.iv_back)
@@ -125,6 +128,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     LinearLayout llInsertOperate;
     @BindView(R.id.iv_right)
     ImageView ivShare;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -145,9 +150,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private RecordService recordService;
 
     private boolean startTimeDown;
-    private Handler handler = new Handler();
     private UMImage shareImage;
     private Bitmap shareBitmap;
+    private ScanResultDialog scanResultDialog;
 
     @Override
     protected int getLayoutId() {
@@ -163,6 +168,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     protected void onViewCreated(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onViewCreated(savedInstanceState);
+        scanResultDialog = new ScanResultDialog(this);
         dataCacheUtil = DataCacheUtil.getInstance();
         //初始化笔状态
         initPenState();
@@ -247,6 +253,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void initListener() {
         scanResultDialog.setOnDeviceItemClickListener(this);
+        scanResultDialog.setOnDismissListener(this);
         //设置左右滑动作监听器
         drawViewMeeting.setOnTouchListener(this);
         checkColorPopWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -667,6 +674,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         } else {
             //如果蓝牙已经打开，则去扫描
             EventBus.getDefault().post(new ScanEvent());
+            progressBar.setVisibility(View.VISIBLE);
             ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
@@ -818,6 +826,33 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
+    protected void onComplete(Activity context) {
+        int count = scanResultDialog.getCount();
+        XLog.d(TAG, TAG + " onComplete " + count);
+        List<BluetoothDevice> devices = scanResultDialog.getDevices();
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+        if (count == 0) {//如果没有搜索到笔，提示
+            XLog.d(TAG, TAG + " 没有搜索到笔 ");
+            CustomizedToast.showShort(context, getString(R.string.please_open_pen));
+            progressBar.setVisibility(View.GONE);
+        } else {
+            XLog.d(TAG, TAG + " 搜索到笔 ");
+            for (BluetoothDevice device : devices) {
+                if (device.getAddress().equals(address)) {
+                    if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
+                        EventBus.getDefault().post(new ConnectEvent(device, 0));
+                        return;
+                    }
+                    break;
+                }
+            }
+            if (scanResultDialog != null ) {
+                scanResultDialog.setContent(address, "0");
+                scanResultDialog.show();
+            }
+        }
+    }
+
     /**
      * 接收到添加设备事件
      *
@@ -871,6 +906,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
         XLog.d(TAG, TAG + " onSuccess");
+        progressBar.setVisibility(View.GONE);
         int flag = stateEvent.getFlag();
         if (flag == 0) {
             ivPen.setImageResource(R.mipmap.weilianjie);
@@ -974,5 +1010,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 ivPen.setImageResource(R.mipmap.pen_disconnect);
             }
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        progressBar.setVisibility(View.GONE);
     }
 }
