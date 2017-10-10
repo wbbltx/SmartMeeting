@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     }
 
     /**
-     * 收到换页回调
+     * 收到换页回调-
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {

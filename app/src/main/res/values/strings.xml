@@ -132,7 +132,7 @@
     <string name="wrong_connect">联系方式不正确</string>
     <string name="loading_request_m">正在请求…</string>
     <string name="please_fill_fb">请填写反馈内容</string>
-    <string name="input_rules">最长包含9个汉字字符</string>
+    <string name="input_rules">最长包含15个汉字字符</string>
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
     <!--array-->
