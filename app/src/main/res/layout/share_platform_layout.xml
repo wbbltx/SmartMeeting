@@ -22,8 +22,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingLeft="80dp"
+            android:paddingRight="80dp">
 
             <TextView
                 android:id="@+id/share_wechat"
@@ -39,7 +39,7 @@
                 android:id="@+id/share_moments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_alignParentRight="true"
                 android:drawablePadding="5dp"
                 android:drawableTop="@mipmap/share_moments"
                 android:padding="10dp"
@@ -49,12 +49,13 @@
                 android:id="@+id/share_qq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:drawablePadding="5dp"
                 android:drawableTop="@mipmap/share_qq"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="@string/qqchat" />
+                android:text="@string/qqchat"
+                android:layout_below="@+id/share_moments"
+                android:layout_alignStart="@+id/share_moments" />
 
             <TextView
                 android:id="@+id/share_qzone"

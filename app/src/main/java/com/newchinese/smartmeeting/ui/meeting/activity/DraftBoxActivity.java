@@ -309,14 +309,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 @Override
                 public void run() {
                     boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-                    if (!bluetoothOpen) {
-                        bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
-                    } else {
-                        initView();
-                    }
+//                    if (!bluetoothOpen && DataCacheUtil.getInstance().isFirstTime()) {
+//                        bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
+//                    } else {
+                    initView();
+//                    }
                     if (DataCacheUtil.getInstance().isFirstTime()) {
-                        checkBle(false);
                         DataCacheUtil.getInstance().setFirstTime(false);
+                        checkBle(false);
                     }
                 }
             }, 1500);
@@ -631,7 +631,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 //        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_SCANNING);
         XLog.d(TAG, TAG + " 将蓝牙状态设置为扫描");
         mPresenter.scanBlueDevice();
-        progressBar.setVisibility(View.VISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

@@ -108,7 +108,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onDisconnected() {
         XLog.d(TAG, TAG + " 连接断开");
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_DISCONNECTED);
-        DataCacheUtil.getInstance().setFirstTime(true);
+//        DataCacheUtil.getInstance().setFirstTime(true);
         if (mView != null)
         mView.onDisconnected();
     }
