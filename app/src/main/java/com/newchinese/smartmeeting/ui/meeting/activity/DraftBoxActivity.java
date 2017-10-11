@@ -331,7 +331,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         XLog.d(TAG, TAG + " onScanComplete "+ !isFinishing());
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
             scanResultDialog
-                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS), "1")
+                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME), "1")
                     .show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
@@ -347,7 +347,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         int count = scanResultDialog.getCount();
         XLog.d(TAG, TAG + " onComplete " + count);
         List<BluetoothDevice> devices = scanResultDialog.getDevices();
-        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME);
         if (count == 0) {//如果没有搜索到笔，提示
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
             CustomizedToast.showShort(this, getString(R.string.please_open_pen));
