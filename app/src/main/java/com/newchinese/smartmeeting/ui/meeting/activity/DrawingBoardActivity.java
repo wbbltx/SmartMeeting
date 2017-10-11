@@ -486,7 +486,11 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
-                finish();
+                if (recordService.isRunning()) {
+                    showDialog1(getString(R.string.leave_warning));
+                } else {
+                    finish();
+                }
                 break;
             case R.id.iv_pen: //笔图标
                 checkState();
@@ -858,7 +862,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     break;
                 }
             }
-            if (scanResultDialog != null ) {
+            if (scanResultDialog != null) {
                 scanResultDialog.setContent(address, "0");
                 scanResultDialog.show();
             }

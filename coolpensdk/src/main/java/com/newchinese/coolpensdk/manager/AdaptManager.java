@@ -70,11 +70,9 @@ public class AdaptManager {
     public static float[] getTargetSize(float w, float h, float x, float y) {
         float[] result = new float[2];
         if (w / x < h / y) {
-            Log.i("BluetoothLe11111", "getTargetSize w");
             result[0] = w;
             result[1] = y * w / x;
         } else {
-            Log.i("BluetoothLe11111", "getTargetSize h");
             result[0] = x * h / y;
             result[1] = h;
         }
