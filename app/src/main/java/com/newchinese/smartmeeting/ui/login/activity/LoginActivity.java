@@ -12,11 +12,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.newchinese.coolpensdk.utils.GetAddressUtil;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
@@ -27,6 +29,13 @@ import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -114,12 +123,67 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
                     .subscribe();
             telCache = (String) v.getTag(R.id.ev_regist_1);
             mPresenter.dynamicPass(telCache);
+//            reQuestPermission(telCache);
         } else {//忘记密码
             Intent intent = new Intent(this, RegisterActivity.class);
             intent.putExtra("ui", RegisterActivity.UI_TYPE_FOR);
             startActivity(intent);
         }
     }
+
+//    private void reQuestPermission(final String tel) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String[] parameter = {"tel"};
+//                String[] parameterValue = {tel};
+//                try {
+//                    //通过openConnection 连接  
+//                    URL url = new URL(NetUrl.DYNAMIC_PASS);
+//                    HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+//
+//                    //设置输入和输出流   
+//                    urlConn.setRequestMethod("POST");
+//                    urlConn.setDoOutput(true);
+//                    urlConn.setDoInput(true);
+//                    urlConn.setUseCaches(false);
+//                    urlConn.setInstanceFollowRedirects(false);
+//                    urlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//                    urlConn.connect();
+//
+//                    //设置请求参数
+//                    DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+//                    JSONObject o = new JSONObject();
+//                    for (int i = 0; i < parameter.length; i++) {
+//                        o.put(parameter[i], parameterValue[i]);
+//                    }
+//                    Log.i("requestData", "请求参数" + o.toString());
+//                    out.writeBytes(o.toString());
+//                    out.flush();
+//                    out.close();
+//
+//                    //接收返回结果
+//                    if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                        InputStreamReader in = new InputStreamReader(urlConn.getInputStream());
+//                        BufferedReader buffer = new BufferedReader(in);
+//                        String inputLine = null;
+//                        String resultData = "";
+//                        while (((inputLine = buffer.readLine()) != null)) {
+//                            resultData += inputLine + "\n";
+//                        }
+//                        Log.e("resultData", "返回结果:" + resultData);
+//                        in.close();
+//                    } else {
+//                        Log.e("coolPenError", "11006:网络请求失败");
+//                    }
+//                    urlConn.disconnect();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Log.e("coolPenError", "11006:网络请求失败");
+//                }
+//            }
+//        }).start();
+//    }
 
     @Override
     public void onLogin(String phone, String pass, int position) {
