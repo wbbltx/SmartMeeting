@@ -197,6 +197,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     /**
      * 查询当前页的录屏个数
      * 需要执行此操作的情况：收到换页回调 录屏结束 删除录屏回到该界面 滑动页面（左右两种情况） 初始化
+     *
      * @param pageIndex
      */
     @Override
@@ -494,7 +495,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      */
     @Override
     public void saveInsertImageToData(final int pageIndex, Matrix imageMatrix) {
-        cacheMatrix = imageMatrix;
         float imageMatrixValue[] = new float[9];
         imageMatrix.getValues(imageMatrixValue);
         insertImageX = imageMatrixValue[2];
@@ -520,6 +520,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             }
         };
         singleThreadExecutor.execute(saveRunnable);
+        cacheMatrix = imageMatrix;
+        Log.e("test_pic", "saveInsertImageToData:" + cacheMatrix.toString());
     }
 
     /**
@@ -558,8 +560,12 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     if (mView != null) {
                         mView.setInsertViewMatrix(insertImageMatrix, pageIndex);
                         mView.setInsertViewBitmap(insertBitmap, pageIndex);
+                        mView.hasPic(true);
                     }
                 } else {
+                    if (mView != null) {
+                        mView.hasPic(false);
+                    }
                     Log.e("test_greendao", "saveInsertImageToData：currentPage为空");
                     //换页时若无图片清空相关数据
                     resetData();
@@ -611,6 +617,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     @Override
     public void loadCacheMatrix(int cachePageIndex) {
         if (cacheMatrix != null) {
+            Log.e("test_pic", "loadCacheMatrix:" + cacheMatrix.toString());
             mView.setInsertViewMatrix(cacheMatrix, cachePageIndex);
             float imageMatrixValue[] = new float[9];
             cacheMatrix.getValues(imageMatrixValue);

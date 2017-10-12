@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -139,6 +140,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     private int pageIndex;
     private boolean isMenuBtnClicked = false;
+    private boolean hasPic = false; //标记当页是否插入了图片
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private List<NotePage> activeNotePageList;
     private NoteRecord activeNoteRecord;
@@ -348,6 +350,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         //清空当页图片，置位编辑状态，置位所有window 
         resetInsertImage();
         closeEditInsertImage();
+        hasPic = false;
         mPresenter.readInsertImageFromData(pageIndex);
         mPresenter.queryRecordCount(pageIndex);
     }
@@ -451,6 +454,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库点
                         mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
+                        hasPic = false;
                         mPresenter.readInsertImageFromData(pageIndex);
                     }
                 } else if (mCurPosX - mPosX < 0 && (Math.abs(mCurPosX - mPosX) > 150)) {
@@ -471,6 +475,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         setTitleText(pageIndex); //更新标题
                         mPresenter.readDataBasePoint(pageIndex); //读数据库
                         mPresenter.queryRecordCount(pageIndex); //查询数据库录屏
+                        hasPic = false;
                         mPresenter.readInsertImageFromData(pageIndex);
                     }
                 }
@@ -514,9 +519,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 break;
             case R.id.iv_image_cancle: //取消插入图片
                 mPresenter.loadCacheMatrix(pageIndex);
+                if (!hasPic) {
+                    ivInsertImage.setImageBitmap(null);
+                }
                 closeEditInsertImage();
                 break;
             case R.id.iv_image_confirm: //确认插入图片
+                hasPic = true;
                 MobclickAgent.onEvent(this, "insert_image");
                 mPresenter.saveInsertImageToData(pageIndex, ivInsertImage.getImageMatrix());
                 closeEditInsertImage();
@@ -660,13 +669,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (ivInsertImage != null)
+                    if (ivInsertImage != null) {
+                        Log.e("test_pic", "setInsertViewMatrix:" + matrix.toString());
                         ivInsertImage.setImageMatrix(matrix);
+                    }
                 }
             });
         }
     }
 
+    @Override
+    public void hasPic(boolean isHasPic) {
+        hasPic = isHasPic;
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override

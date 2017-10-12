@@ -45,6 +45,8 @@ public interface DrawingBoardActContract {
         void openEditInsertImage();
 
         void closeEditInsertImage();
+        
+        void hasPic(boolean isHasPic);
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
