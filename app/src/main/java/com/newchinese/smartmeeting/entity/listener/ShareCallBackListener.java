@@ -47,7 +47,7 @@ public class ShareCallBackListener implements UMShareListener {
      */
     @Override
     public void onError(SHARE_MEDIA platform, Throwable t) {
-        Toast.makeText(context, context.getString(R.string.share_failed) + t.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.share_failed), Toast.LENGTH_LONG).show();
     }
 
     /**

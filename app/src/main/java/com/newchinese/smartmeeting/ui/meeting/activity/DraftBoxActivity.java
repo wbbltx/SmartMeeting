@@ -356,7 +356,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         } else {
             XLog.d(TAG, TAG + " 搜索到笔 ");
             for (BluetoothDevice device : devices) {
-                if (device.getAddress().equals(address)) {
+                if (device.getName().equals(address)) {
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
                         EventBus.getDefault().post(new ConnectEvent(device, 0));
                         return;

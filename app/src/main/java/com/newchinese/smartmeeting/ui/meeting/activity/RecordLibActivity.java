@@ -16,6 +16,7 @@ import com.newchinese.smartmeeting.entity.bean.CollectPage;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.meeting.RecordLibPresenter;
 import com.newchinese.smartmeeting.ui.meeting.adapter.RecordLibAdapter;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
 
@@ -65,7 +66,7 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
         dataCacheUtil = DataCacheUtil.getInstance();
         Intent intent = getIntent();
         selectPageIndex = intent.getIntExtra("selectPageIndex", 0);
-        fromFlag = intent.getStringExtra("fromFlag");
+        fromFlag = intent.getStringExtra("fromFlag");//列表界面可能来自书写，也可能来自记录
         currentPage = (CollectPage) intent.getSerializableExtra("currentPage");
         setTitle(selectPageIndex); //设置当前页数
         if (fromFlag.equals("1")) {  //画板跳转
@@ -141,16 +142,26 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
                 adapter.setIsSelectedList(isSelectedList);
                 break;
             case R.id.tv_create:
-                if (fromFlag.equals("1")) {
-                    mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
-                }else {
-                    //删除数据库中的数据
-                    mPresenter.deleteCollectRecord(recordPathList, isSelectedList, selectPageIndex);
-                    //删除缓存中的数据
-                    //...待续
+                int k = 0;
+                for (Boolean aBoolean : isSelectedList) {
+                    if (!aBoolean){
+                        k++;
+                    }
                 }
-                tvRight.setText(getString(R.string.edit));
-                recordLibOper.setVisibility(View.GONE);
+                if (k == isSelectedList.size()){
+                    CustomizedToast.showShort(this,"请选择视频");
+                }else {
+                    if (fromFlag.equals("1")) {//来自书写
+                        mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
+                    } else {//来自记录
+                        //删除数据库中的数据
+                        mPresenter.deleteCollectRecord(recordPathList, isSelectedList, selectPageIndex);
+                        //删除缓存中的数据
+                        //...待续
+                    }
+                    tvRight.setText(getString(R.string.edit));
+                    recordLibOper.setVisibility(View.GONE);
+                }
                 break;
             case R.id.tv_cancel:
                 tvRight.setText(getString(R.string.edit));
