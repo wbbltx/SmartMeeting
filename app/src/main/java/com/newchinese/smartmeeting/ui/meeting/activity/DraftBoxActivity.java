@@ -538,7 +538,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i("test_greendao", "" + notePageList.toString());
                 adapter.setNotePageList(notePageList); //使用RecyclerView数据保持一致
                 if (notePageList != null && notePageList.size() > 0) {
                     ivRight.setVisibility(View.VISIBLE);

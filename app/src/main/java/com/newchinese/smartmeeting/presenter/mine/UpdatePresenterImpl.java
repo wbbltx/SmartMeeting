@@ -118,7 +118,7 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
                         while (((inputLine = buffer.readLine()) != null)) {
                             resultData += inputLine + "\n";
                         }
-                        Log.e("resultData", "返回结果:" + resultData);
+                        Log.i("resultData", "返回结果:" + resultData);
                         analysisResult(resultData);
                         in.close();
                     } else {

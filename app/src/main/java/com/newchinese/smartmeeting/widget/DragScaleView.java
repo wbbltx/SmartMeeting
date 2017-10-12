@@ -46,7 +46,6 @@ public class DragScaleView extends View implements View.OnTouchListener {
         paint.setColor(Color.RED);
         paint.setStrokeWidth(4.0f);
         paint.setStyle(Paint.Style.STROKE);
-        Log.i(TAG, "初始化 " + screenHeight + "---" + screenWidth);
     }
 
     public DragScaleView(Context context, AttributeSet attrs, int defStyle) {
@@ -230,7 +229,6 @@ public class DragScaleView extends View implements View.OnTouchListener {
      * @param dy
      */
     private void bottom(View v, int dy) {
-        Log.i(TAG, "触摸点为下边缘");
         oriBottom += dy;
         if (oriBottom > screenHeight + offset) {
             oriBottom = screenHeight + offset;

@@ -49,7 +49,6 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
             public void run() {
                 List<CollectRecord> collectRecords = collectRecordDao.queryBuilder()
                         .orderDesc(CollectRecordDao.Properties.CollectDate).list();
-                Log.i("test_greendao", collectRecords.size() + "," + collectRecords.toString());
                 mView.getAllCollectRecordData(collectRecords);
             }
         };
@@ -67,7 +66,6 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
             public void run() {
                 List<CollectRecord> collectRecords = collectRecordDao.queryBuilder()
                         .orderDesc(CollectRecordDao.Properties.CollectDate).list();
-                Log.e("test_greendao", collectRecords.size() + "," + collectRecords.toString());
                 for (CollectRecord collectRecord : collectRecords) {
                     if (collectRecord.getCollectRecordName().contains(name)) {
                         searchCollectRecordList.add(collectRecord);

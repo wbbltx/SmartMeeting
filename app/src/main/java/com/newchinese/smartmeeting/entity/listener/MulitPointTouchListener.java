@@ -2,7 +2,6 @@ package com.newchinese.smartmeeting.entity.listener;
 
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,24 +42,19 @@ public class MulitPointTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN://一点触摸down【也是多点触摸第一点down】
 //down触发时，给matrix赋初值为当前图片的矩阵值
                 matrix.set(view.getImageMatrix());
-                Log.d(TAG, "ACTION_DOWN：" + matrix.toString());
 //down触发时，给savedMatrix赋初值为当前图片的矩阵值
                 savedMatrix.set(matrix);
 //down触发时，给start赋初值为当前触摸事件的手指点值
                 start.set(event.getX(), event.getY());
-                Log.d(TAG, "ACTION_DOWN：" + "x:" + event.getX() + ";y:" + event.getY());
                 mode = DRAG;
 
                 //Log.d(TAG, "mode=NONE");
                 break;
             case MotionEvent.ACTION_POINTER_DOWN://多点触摸第二点down
                 oldDist = spacing(event);
-                Log.d(TAG, "ACTION_POINTER_DOWN：" + "oldDist:" + oldDist);
                 if (oldDist > 10f) {
                     savedMatrix.set(matrix);
-                    Log.d(TAG, "ACTION_POINTER_DOWN_oldDist > 10f：" + "savedMatrix:" + savedMatrix);
                     midPoint(mid, event);
-                    Log.d(TAG, "ACTION_POINTER_DOWN_oldDist > 10f：" + "midPoint:" + mid.toString());
                     mode = ZOOM;
                     //Log.d(TAG, "mode=ZOOM");
                 }
@@ -68,25 +62,19 @@ public class MulitPointTouchListener implements View.OnTouchListener {
 //            最后一次抬起点时的先调用ACTION_UP、再调用ACTION_POINTER_UP
 //            倒数第二次抬点只调用ACTION_POINTER_UP
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "ACTION_UP：" + matrix.toString());
             case MotionEvent.ACTION_POINTER_UP:
                 mode = NONE;
-                Log.d(TAG, "ACTION_POINTER_UP：" + matrix.toString());
                 break;
             case MotionEvent.ACTION_MOVE://挪动
                 if (mode == DRAG) {//一点就是拖曳
                     matrix.set(savedMatrix);
-                    Log.d(TAG, "ACTION_MOVE_mode == DRAG：" + matrix.toString());
                     matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
 
                 } else if (mode == ZOOM) {//多点就是缩放
                     float newDist = spacing(event);
-                    Log.d(TAG, "ACTION_MOVE_mode == DRAG：" + newDist);
                     if (newDist > 10f) {
                         matrix.set(savedMatrix);
-                        Log.d(TAG, "ACTION_MOVE_mode == DRAG_newDist > 10f：" + newDist);
                         float scale = newDist / oldDist;
-                        Log.d(TAG, "ACTION_MOVE_mode == DRAG_newDist > 10f：" + newDist);
                         matrix.postScale(scale, scale, mid.x, mid.y);
                     }
                 }
@@ -126,16 +114,12 @@ public class MulitPointTouchListener implements View.OnTouchListener {
     }
 
     private float spacing(MotionEvent event) {
-        Log.d(TAG, "spacing：event.getX(0)" + "=" + event.getX(0) + ";event.getX(1)" + "=" + event.getX(1));
-        Log.d(TAG, "spacing：event.getY(0)" + "=" + event.getY(0) + ";event.getY(1)" + "=" + event.getY(1));
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
     }
 
     private void midPoint(PointF point, MotionEvent event) {
-        Log.d(TAG, "midPoint：event.getX(0)" + "=" + event.getX(0) + ";event.getX(1)" + "=" + event.getX(1));
-        Log.d(TAG, "midPoint：event.getY(0)" + "=" + event.getY(0) + ";event.getY(1)" + "=" + event.getY(1));
         float x = event.getX(0) + event.getX(1);
         float y = event.getY(0) + event.getY(1);
         point.set(x / 2, y / 2);

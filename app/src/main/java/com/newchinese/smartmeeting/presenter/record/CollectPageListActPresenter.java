@@ -50,7 +50,6 @@ public class CollectPageListActPresenter extends BasePresenter<CollectPageListAc
             public void run() {
                 List<CollectPage> collectPages = collectRecordDao.queryBuilder()
                         .where(CollectPageDao.Properties.BookId.eq(activeCollectRecord.getId())).list();
-                Log.e("test_greendao", collectPages.size() + "," + collectPages.toString());
                 mView.getAllCollectPageData(collectPages);
             }
         };

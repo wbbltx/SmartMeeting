@@ -245,7 +245,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
          */
         @Override
         public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            Log.e("test_login", "" + data.toString());
             if (platform == SHARE_MEDIA.QQ) {
                 mPresenter.loginQQ(data.get("openid"), data.get("accessToken"));
             } else if (platform == SHARE_MEDIA.WEIXIN) {

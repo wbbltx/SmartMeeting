@@ -106,7 +106,6 @@ public class SettingActivity extends BaseSimpleActivity {
         tvTitle.setText(getString(R.string.setting));
         loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
         loginData = loginDataDao.queryBuilder().unique();
-        Log.e("test_login", "" + loginData.toString());
         XApi.registerProvider(new NetProviderImpl());
         mServices = XApi.get(NetUrl.HOST, ApiService.class);
     }
@@ -157,7 +156,6 @@ public class SettingActivity extends BaseSimpleActivity {
         super.onResume();
         loginData = loginDataDao.queryBuilder().unique();
         if (loginData != null) {
-            Log.e("test_greendao", "" + loginData.toString());
             tvNickName.setText(TextUtils.isEmpty(loginData.getNickname()) ? "" : loginData.getNickname());
             Glide.with(this)
                     .load(loginData.getIcon())
@@ -338,7 +336,6 @@ public class SettingActivity extends BaseSimpleActivity {
                 .subscribe(new Consumer<BaseResult<LoginData>>() {
                     @Override
                     public void accept(BaseResult<LoginData> loginDataBaseResult) throws Exception {
-                        Log.e("test_http", "" + loginDataBaseResult.toString());
                         Toast.makeText(SettingActivity.this, getString(R.string.change_success), Toast.LENGTH_SHORT).show();
                         loginData.setIcon(loginDataBaseResult.data.getIcon());
                         loginDataDao.update(loginData);
@@ -351,7 +348,6 @@ public class SettingActivity extends BaseSimpleActivity {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e("test_http", "请求错误：" + throwable.getMessage());
                         Toast.makeText(SettingActivity.this, getString(R.string.request_failed), Toast.LENGTH_SHORT).show();
                         mPd.dismiss();
                     }

@@ -161,9 +161,6 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     @Override
     public void createSelectedRecords(final List<NotePage> notePages, List<Boolean> isSelecteds,
                                       final String recordName) {
-        Log.i("test_select", notePages.size() + ",notePages：" + notePages);
-        Log.i("test_select", "isSelecteds：" + isSelecteds);
-        Log.i("test_select", "recordName：" + recordName);
         isSelectedList.clear();
         isSelectedList.addAll(isSelecteds);
         notePageList.clear();
@@ -174,7 +171,6 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 CollectRecord collectRecord = collectRecordManager.insertCollectRecord(collectRecordDao, classifyName, recordName);
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     if (isSelectedList.get(i)) {
-                        Log.i("test_select", "selectedPage：" + notePageList.get(i).getPageIndex());
                         //存收藏页
                         NotePage selectPage = notePageList.get(i);
                         collectPageManager.insertCollectPage(collectPageDao, collectRecord.getId(),

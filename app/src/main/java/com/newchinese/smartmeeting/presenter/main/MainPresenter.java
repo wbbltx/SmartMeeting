@@ -159,7 +159,6 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     private void collectAndClearAllRecord() {
         String cacheDayNum = SharedPreUtils.getString(Constant.DAY_NUM);
         String currentDayNum = DateUtils.formatLongDate4(System.currentTimeMillis());
-        Log.i("test_collect", "cacheDayNum：" + cacheDayNum + ",currentDayNum：" + currentDayNum);
         if (!"".equals(cacheDayNum) && !cacheDayNum.equals(currentDayNum)) {
             //收藏现有的并清空页线点
             Runnable deleteRunnable = new Runnable() {
@@ -204,7 +203,6 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     public void savePage(final com.newchinese.coolpensdk.entity.NotePoint notePoint) {
         activeNotePageList = dataCacheUtil.getActiveNotePageList();
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord();
-        Log.i("test_active", "savePage：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable savePageRunnable = new Runnable() {
             @Override
             public void run() {
@@ -237,7 +235,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
                 }
                 //防止currentNoteStroke为空
                 if (activeNoteStroke == null) {
-                    Log.i("test_greendao", "saveStrokeAndPoint：noteStrokeData为空，向数据库添加");
+                    Log.e("test_greendao", "saveStrokeAndPoint：noteStrokeData为空，向数据库添加");
                     activeNoteStroke = noteStrokeManager.insertNoteStroke(noteStrokeDao,
                             dataCacheUtil.getActiveNotePage().getId(), dataCacheUtil.getCurrentColor(),
                             dataCacheUtil.getStrokeWidth());

@@ -69,7 +69,6 @@ public class ColorBoard extends LinearLayout {
                     public void onClick(View v) {
                         if(onColorSelectListener!=null){
                             onColorSelectListener.onColorSelect(colorValue[finalI][finalJ]);
-                            Log.d("colorBoard",""+colorValue[finalI][finalJ]);
                         }
                     }
                 });

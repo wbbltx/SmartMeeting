@@ -287,7 +287,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             mView.clearCanvars(); //清屏防止有上一页缓存
         }
         activeNoteRecord = dataCacheUtil.getActiveNoteRecord(); //当前活动的分类记录表
-        Log.i("test_active", "readDataBasePoint：activeNoteRecord：" + activeNoteRecord.toString());
         Runnable readDataRunnable = new Runnable() {
             @Override
             public void run() {
@@ -324,7 +323,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      * 获取当前NotePage在集合中的Pointion
      */
     public int getCurrentPosition(List<NotePage> activeNotePageList, int pageIndex) {
-        Log.i("test_active", "size：" + activeNotePageList.size() + "," + activeNotePageList.toString());
         int position = 0;
         for (int i = 0; i < activeNotePageList.size(); i++) {
             if (activeNotePageList.get(i).getPageIndex() == pageIndex) {
@@ -347,7 +345,6 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             //缩略图文件名称（分类记录名称+页码+时间戳），加时间戳防止重复
             final String thumbnailFilePath = recordDirectory + "/" + classifyName + "-" + pageIndex + "-" + System.currentTimeMillis() + ".jpg";
             dataCacheUtil.setThumbPath(thumbnailFilePath);
-            Log.e("test_pic", "" + thumbnailFilePath);
             File thumbnailFile = new File(thumbnailFilePath);
             if (bitmap != null) {
                 try {

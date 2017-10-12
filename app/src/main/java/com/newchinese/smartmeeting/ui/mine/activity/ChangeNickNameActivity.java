@@ -100,7 +100,6 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
                             .subscribe(new Consumer<BaseResult<LoginData>>() {
                                 @Override
                                 public void accept(BaseResult<LoginData> loginDataBaseResult) throws Exception {
-                                    Log.e("test_http", "" + loginDataBaseResult.toString());
                                     Toast.makeText(ChangeNickNameActivity.this, getString(R.string.change_success), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }

@@ -124,7 +124,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
                     protected void onFail(NetError error) {
                         BaseResult<String> result = new BaseResult<>();
                         result.msg = error.getMessage();
-                        Log.e("test_login", "onFail:" + error.getMessage());
+                        Log.i("test_login", "onFail:" + error.getMessage());
                         mPresenter.onResult(false, type, result);
                     }
 
@@ -133,7 +133,7 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
                         if (mPresenter != null) {
                             loginDataBaseResult.url = url;
                             loginDataBaseResult.update = update;
-                            Log.e("test_login", "onNext:" + loginDataBaseResult.toString());
+                            Log.i("test_login", "onNext:" + loginDataBaseResult.toString());
                             if (Constant.VERIFY.equals(type) || Constant.VERIFY_FORGET.equals(type)) {
                                 mPresenter.onSMSResult(true, type, loginDataBaseResult);
                             } else {
