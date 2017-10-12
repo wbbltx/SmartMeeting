@@ -80,12 +80,14 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
 
     @Override
     public void onScanResult(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
-        mView.showResult(bluetoothDevice);
+        if (mView != null)
+            mView.showResult(bluetoothDevice);
     }
 
     @Override
     public void onScanCompleted() {
-        mView.onScanComplete();
+        if (mView != null)
+            mView.onScanComplete();
     }
 
     @Override
@@ -110,7 +112,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_DISCONNECTED);
 //        DataCacheUtil.getInstance().setFirstTime(true);
         if (mView != null)
-        mView.onDisconnected();
+            mView.onDisconnected();
     }
 
     @Override

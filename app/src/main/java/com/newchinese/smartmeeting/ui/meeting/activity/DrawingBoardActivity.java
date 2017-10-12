@@ -837,7 +837,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             onComplete(this);
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
             scanResultDialog
-                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS), "1")
+                    .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME), "1")
                     .show();
         }
     }
@@ -846,7 +846,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         int count = scanResultDialog.getCount();
         XLog.d(TAG, TAG + " onComplete " + count);
         List<BluetoothDevice> devices = scanResultDialog.getDevices();
-        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS);
+        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME);
         if (count == 0) {//如果没有搜索到笔，提示
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
             CustomizedToast.showShort(context, getString(R.string.please_open_pen));

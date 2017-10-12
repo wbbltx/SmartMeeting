@@ -140,6 +140,7 @@ public class PlayBackUtil implements Runnable {
                 id = drawingPointList.get(0).getId();
                 NoteStroke unique = noteStrokeDao.queryBuilder().where(NoteStrokeDao.Properties.Id.eq(drawingPointList.get(0).getId())).unique();
                 if (unique != null) {
+                    canvarView.setStrokeWidth(unique.getStrokeWidth());
                     canvarView.setPaintColor(unique.getStrokeColor());
                 }
             }
