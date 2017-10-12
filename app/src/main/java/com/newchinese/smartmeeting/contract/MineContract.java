@@ -32,7 +32,7 @@ public interface MineContract {
 
         void loading();
 
-        <T> void onResult(boolean succ, BaseResult<T> data);
+        <T> void onResult(boolean succ, String type, BaseResult<T> data);
     }
 
     interface UpdateIModel {

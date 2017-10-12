@@ -65,13 +65,15 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
     }
 
     @Override
-    public void onResult(boolean succ, BaseResult data) {
+    public void onResult(boolean succ, String type, BaseResult data) {
         CustomizedToast.showLong(App.getAppliction(), data.msg);
         if (mV != null) {
             mV.showLoading(null);
         }
         if (succ) {
-            SharedPreUtils.setString(Constant.PASSWORD_FLAG, "1");
+            if ("updatePass".equals(type)) {
+                SharedPreUtils.setString(Constant.PASSWORD_FLAG, "1");
+            }
             mV.jumpLogin("change");
         }
     }

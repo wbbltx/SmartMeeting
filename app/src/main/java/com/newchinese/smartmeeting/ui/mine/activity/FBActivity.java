@@ -87,7 +87,7 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     @Override
     public void jumpLogin(String type) {
-
+        finish();
     }
 
     @Override

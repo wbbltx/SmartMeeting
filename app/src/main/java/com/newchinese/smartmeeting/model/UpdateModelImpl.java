@@ -36,15 +36,15 @@ public class UpdateModelImpl implements MineContract.UpdateIModel {
 
     @Override
     public void updatePass(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_PASS, false, mServices.updatePass(data));
+        invokeRequest(NetUrl.UPDATE_PASS, "updatePass", false, mServices.updatePass(data));
     }
 
     @Override
     public void feedBack(FeedBack data) {
-        invokeRequest(NetUrl.FEED_BACK, false, mServices.feedBack(data));
+        invokeRequest(NetUrl.FEED_BACK, "feedBack", false, mServices.feedBack(data));
     }
 
-    protected <T> void invokeRequest(final String url, final boolean update, Flowable<BaseResult<T>> observable) {
+    protected <T> void invokeRequest(final String url, final String type, final boolean update, Flowable<BaseResult<T>> observable) {
         observable.subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override
@@ -61,7 +61,7 @@ public class UpdateModelImpl implements MineContract.UpdateIModel {
                     protected void onFail(NetError error) {
                         BaseResult<String> result = new BaseResult<>();
                         result.msg = error.getMessage();
-                        mPresenter.onResult(false, result);
+                        mPresenter.onResult(false, type, result);
                     }
 
                     @Override
@@ -69,7 +69,7 @@ public class UpdateModelImpl implements MineContract.UpdateIModel {
                         if (mPresenter != null) {
                             loginDataBaseResult.url = url;
                             loginDataBaseResult.update = update;
-                            mPresenter.onResult(true, loginDataBaseResult);
+                            mPresenter.onResult(true, type, loginDataBaseResult);
                         }
                     }
                 });
