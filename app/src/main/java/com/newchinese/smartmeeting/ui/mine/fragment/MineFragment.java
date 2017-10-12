@@ -90,6 +90,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
     public void onResume() {
         super.onResume();
         LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
+        Log.e("test_login",""+data.toString());
         if (data != null) {
             Glide.with(this).load(data.icon)
                     .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_mine)

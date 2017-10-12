@@ -101,8 +101,8 @@ public class LoginData {
     }
 
     public LoginData setPassword(String password) {
-//        this.password = md5(password);
-        this.password = password;
+        this.password = md5(password);
+//        this.password = password;
         return this;
     }
 
@@ -129,8 +129,8 @@ public class LoginData {
     }
 
     public LoginData setNew_password(String new_password) {
-//        this.new_password = md5(new_password);
-        this.new_password = new_password;
+        this.new_password = md5(new_password);
+//        this.new_password = new_password;
         return this;
     }
 

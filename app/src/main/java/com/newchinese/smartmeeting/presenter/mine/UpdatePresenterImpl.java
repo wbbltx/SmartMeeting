@@ -22,8 +22,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Administrator on 2017-08-30.
@@ -85,7 +88,7 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
             @Override
             public void run() {
                 String[] parameter = {"tel", "password"};
-                String[] parameterValue = {tel, password,};
+                String[] parameterValue = {tel, md5(password)};
                 try {
                     //通过openConnection 连接  
                     URL url = new URL(NetUrl.FORGET_PASS);
@@ -150,5 +153,26 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private String md5(String src) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] digest = md5.digest(src.getBytes("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                String s = Integer.toHexString(b & 0xff);
+                if (s.length() == 1) {
+                    s = "0" + s;
+                }
+                sb.append(s);
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException ignored) {
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
