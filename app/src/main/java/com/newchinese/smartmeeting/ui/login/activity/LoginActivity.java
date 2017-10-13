@@ -23,6 +23,7 @@ import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.login.adapter.LoginPageAdapter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.NetUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.widget.EditView;
 import com.umeng.socialize.UMAuthListener;
@@ -106,24 +107,28 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     @Override
     public void onInnerClick(final View v, int position) {
         if (position == 0) {//获取动态密码
-            mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Consumer<Long>() {
-                        @Override
-                        public void accept(Long aLong) throws Exception {
-                            ((EditView) v).setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
-                        }
-                    })
-                    .doOnComplete(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            ((EditView) v).setEnd(getString(R.string.get_active_password), true);
-                        }
-                    })
-                    .subscribe();
-            telCache = (String) v.getTag(R.id.ev_regist_1);
-            mPresenter.dynamicPass(telCache);
+            if (!NetUtil.isNetworkAvailable(this)) { //检测网络连接状态
+                Toast.makeText(this, getString(R.string.wrong_net), Toast.LENGTH_SHORT).show();
+            } else {
+                mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) throws Exception {
+                                ((EditView) v).setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
+                            }
+                        })
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                ((EditView) v).setEnd(getString(R.string.get_active_password), true);
+                            }
+                        })
+                        .subscribe();
+                telCache = (String) v.getTag(R.id.ev_regist_1);
+                mPresenter.dynamicPass(telCache);
 //            reQuestPermission(telCache);
+            }
         } else {//忘记密码
             Intent intent = new Intent(this, RegisterActivity.class);
             intent.putExtra("ui", RegisterActivity.UI_TYPE_FOR);

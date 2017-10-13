@@ -37,6 +37,7 @@ import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.NetUtil;
 import com.newchinese.smartmeeting.widget.EditView;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
@@ -220,28 +221,32 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         switch (v.getId()) {
             case R.id.ev_regist_2:
                 if (mEvPhone.mMatching) {
-                    telCache = mEvPhone.getText();
-                    //获取验证码
-                    if (mUi == UI_TYPE_REG) {
-                        mPresenter.verifyCode(mEvPhone.getText());
-                    } else if (mUi == UI_TYPE_FOR) {
-                        mPresenter.verifyForgetCode(mEvPhone.getText());
+                    if (!NetUtil.isNetworkAvailable(this)) { //检测网络连接状态
+                        Toast.makeText(this, getString(R.string.wrong_net), Toast.LENGTH_SHORT).show();
+                    } else {
+                        telCache = mEvPhone.getText();
+                        //获取验证码
+                        if (mUi == UI_TYPE_REG) {
+                            mPresenter.verifyCode(mEvPhone.getText());
+                        } else if (mUi == UI_TYPE_FOR) {
+                            mPresenter.verifyForgetCode(mEvPhone.getText());
+                        }
+                        mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Consumer<Long>() {
+                                    @Override
+                                    public void accept(Long aLong) throws Exception {
+                                        mEvCode.setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
+                                    }
+                                })
+                                .doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        mEvCode.setEnd(getString(R.string.get_confirm_code), true);
+                                    }
+                                })
+                                .subscribe();
                     }
-                    mDisposable = Flowable.intervalRange(0, 60, 0, 1, TimeUnit.SECONDS)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnNext(new Consumer<Long>() {
-                                @Override
-                                public void accept(Long aLong) throws Exception {
-                                    mEvCode.setEnd(getString(R.string.cache_again) + "(" + (60 - aLong) + ")", false);
-                                }
-                            })
-                            .doOnComplete(new Action() {
-                                @Override
-                                public void run() throws Exception {
-                                    mEvCode.setEnd(getString(R.string.get_confirm_code), true);
-                                }
-                            })
-                            .subscribe();
                 } else {
                     CustomizedToast.showShort(this, getString(R.string.wrong_tel));
                 }

@@ -38,7 +38,6 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
 
     @Override
     public MineContract.UpdateIPresenter attach(MineContract.UpdateIVIew v) {
-
         mV = v;
         mModel = new UpdateModelImpl(this);
         return this;
