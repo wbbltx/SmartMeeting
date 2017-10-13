@@ -543,7 +543,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 MobclickAgent.onEvent(this, "review");
                 Intent intent = new Intent(DrawingBoardActivity.this, PlayBackActivity.class);
                 intent.putExtra(TAG_PAGE_INDEX, pageIndex);
-                startActivity(intent);
+                startActivityForResult(intent, 102);
                 break;
             case R.id.save_record://保存结束录屏
                 MobclickAgent.onEvent(this, "record");
@@ -632,12 +632,19 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 recordService.startRecord();
                 startTimeDown = true;
                 dataCacheUtil.addPages(pageIndex);
+            } else if (requestCode == 102) {
+                //解决笔记回放页返回空白问题
+                mPresenter.readDataBasePoint(pageIndex); //读数据库
             } else if (requestCode == Constant.SELECT_PIC_KITKAT || requestCode == Constant.TAKEPHOTO_SAVE_MYPATH) {
                 mPresenter.operateInsertImag(this, requestCode, ivInsertImage.getImageMatrix(), data, pageIndex);
             }
         } else {
-            if (requestCode == 101)
+            if (requestCode == 101) {
                 recordBar.setVisibility(View.GONE);
+            } else if (requestCode == 102) {
+                //解决笔记回放页返回空白问题
+                mPresenter.readDataBasePoint(pageIndex); //读数据库
+            }
         }
     }
 

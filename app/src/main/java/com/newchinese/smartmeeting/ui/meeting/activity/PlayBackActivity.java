@@ -106,6 +106,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
+                setResult(RESULT_OK, new Intent());
                 finish();
                 break;
             case R.id.play_back_start: //开始按钮
