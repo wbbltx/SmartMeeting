@@ -177,10 +177,10 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
                 share(SHARE_MEDIA.QQ);
                 break;
             case "2"://朋友圈
-                share(SHARE_MEDIA.WEIXIN);
+                share(SHARE_MEDIA.WEIXIN_CIRCLE);
                 break;
             case "3"://微信
-                share(SHARE_MEDIA.WEIXIN_CIRCLE);
+                share(SHARE_MEDIA.WEIXIN);
                 break;
             case "4"://微博
                 share(SHARE_MEDIA.SINA);
