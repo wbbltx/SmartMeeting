@@ -89,7 +89,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
 
     @Override
     public void onPresenterCreated() {
-        dataCacheUtil = dataCacheUtil;
+        dataCacheUtil = DataCacheUtil.getInstance();
         notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
         noteStrokeDao = GreenDaoUtil.getInstance().getNoteStrokeDao();
         notePointDao = GreenDaoUtil.getInstance().getNotePointDao();
