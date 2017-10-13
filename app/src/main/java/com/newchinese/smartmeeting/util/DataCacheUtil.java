@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.util;
 
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Matrix;
 
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.smartmeeting.constant.Constant;
@@ -41,6 +42,7 @@ public class DataCacheUtil {
     private BluetoothDevice device;//保存蓝牙的临时变量
     private boolean isFirstTime = true; //b草稿箱界面是否需要初始化蓝牙标志
     private boolean isLowPower = false;  //是否低电量
+    private float[] cacheMatrix = new float[9]; //缓存Matrix只可存其数组，直接存Matrix会动态变化
 
     public boolean isLowPower() {
         return isLowPower;
@@ -223,5 +225,15 @@ public class DataCacheUtil {
 
     public void setPicSDCardDirectory(String picSDCardDirectory) {
         this.picSDCardDirectory = picSDCardDirectory;
+    }
+
+    public Matrix getCacheMatrix() {
+        Matrix matrix = new Matrix();
+        matrix.setValues(this.cacheMatrix);
+        return matrix;
+    }
+
+    public void setCacheMatrix(Matrix cacheMatrix) {
+        cacheMatrix.getValues(this.cacheMatrix);
     }
 }

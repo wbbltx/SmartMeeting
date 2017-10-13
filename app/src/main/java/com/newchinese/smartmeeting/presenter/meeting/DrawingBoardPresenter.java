@@ -21,13 +21,12 @@ import com.newchinese.coolpensdk.constants.PointType;
 import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.coolpensdk.manager.DrawingboardAPI;
-import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BasePresenter;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
-import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.bean.NotePoint;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
@@ -36,8 +35,8 @@ import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.ImageUtil;
-import com.newchinese.smartmeeting.util.PlayBackUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -49,10 +48,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -88,12 +85,11 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     private NotePointDao notePointDao;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private RecordService recordService;
-    private Matrix cacheMatrix;
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
 
     @Override
     public void onPresenterCreated() {
-        dataCacheUtil = DataCacheUtil.getInstance();
+        dataCacheUtil = dataCacheUtil;
         notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
         noteStrokeDao = GreenDaoUtil.getInstance().getNoteStrokeDao();
         notePointDao = GreenDaoUtil.getInstance().getNotePointDao();
@@ -107,8 +103,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     public void onPresenterDestroy() {
         //重置第一笔缓存标志，初始笔色，初始线宽
         PointCacheUtil.getInstance().setCanAddFlag(true);
-        DataCacheUtil.getInstance().setCurrentColor(Constant.colors[0]);
-        DataCacheUtil.getInstance().setStrokeWidth(0);
+        dataCacheUtil.setCurrentColor(Constant.colors[0]);
+        dataCacheUtil.setStrokeWidth(0);
         //关闭线程池
         shutDownExecutor();
         //清除SDK数据缓存
@@ -414,7 +410,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageY = imageMatrixValue[5];
                     insertImageWidth = imageMatrixValue[0];
                     insertImageHeight = imageMatrixValue[4];
-                    cacheMatrix = matrix;
+                    dataCacheUtil.setCacheMatrix(matrix);
 
                     mView.setInsertViewBitmap(insertBitmap, cachePageIndex);
                     mView.hideTakePhotoWindow();
@@ -448,7 +444,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     insertImageY = imageMatrixValue[5];
                     insertImageWidth = imageMatrixValue[0];
                     insertImageHeight = imageMatrixValue[4];
-                    cacheMatrix = matrix;
+                    dataCacheUtil.setCacheMatrix(matrix);
 
                     mView.setInsertViewBitmap(insertBitmap, cachePageIndex);
                     mView.hideTakePhotoWindow();
@@ -467,7 +463,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
             return "";
         }
-        String imageDirectory = DataCacheUtil.getInstance().getPicSDCardDirectory() + "/" + Constant.SD_DIRECTORY_INSERT;
+        String imageDirectory = dataCacheUtil.getPicSDCardDirectory() + "/" + Constant.SD_DIRECTORY_INSERT;
         String imageFileName = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
         String imageFilePath = imageDirectory + "/" + imageFileName;
         File imageFile = new File(imageFilePath);
@@ -520,8 +516,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             }
         };
         singleThreadExecutor.execute(saveRunnable);
-        cacheMatrix = imageMatrix;
-        Log.e("test_pic", "saveInsertImageToData:" + cacheMatrix.toString());
+        dataCacheUtil.setCacheMatrix(imageMatrix);
+        Log.e("test_pic", "saveInsertImageToData:" + dataCacheUtil.getCacheMatrix().toString());
     }
 
     /**
@@ -556,7 +552,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     matrixValue[2] = insertImageX;
                     matrixValue[5] = insertImageY;
                     insertImageMatrix.setValues(matrixValue);
-                    cacheMatrix = insertImageMatrix;
+                    dataCacheUtil.setCacheMatrix(insertImageMatrix);
+
                     if (mView != null) {
                         mView.setInsertViewMatrix(insertImageMatrix, pageIndex);
                         mView.setInsertViewBitmap(insertBitmap, pageIndex);
@@ -616,6 +613,7 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
      */
     @Override
     public void loadCacheMatrix(int cachePageIndex) {
+        Matrix cacheMatrix = dataCacheUtil.getCacheMatrix();
         if (cacheMatrix != null) {
             Log.e("test_pic", "loadCacheMatrix:" + cacheMatrix.toString());
             mView.setInsertViewMatrix(cacheMatrix, cachePageIndex);
