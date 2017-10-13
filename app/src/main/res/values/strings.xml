@@ -50,6 +50,7 @@
     <string name="loading_request">正在请求</string>
     <string name="get_confirm_code">获取验证码</string>
     <string name="fill_confirm_code">输入验证码</string>
+    <string name="please_select_header">请选择头像</string>
     <string name="get_active_password">获取动态密码</string>
     <string name="fill_person_message">完善个人资料</string>
     <string name="fill_password_again">再次输入密码</string>

@@ -70,7 +70,7 @@
 
         <EditText
             android:id="@+id/et_regist_nick"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_regist_icon"
             android:layout_centerHorizontal="true"

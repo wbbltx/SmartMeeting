@@ -289,7 +289,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                     }
                 } else if (mUi == UI_TYPE_UPD) {
                     final String nick = mEtNick.getText().toString().trim();
-                    if (mBaos.size() != 0 && nick.length() < 9 && nick.length() > 0) {
+                    if (mBaos.size() == 0) { //未选择头像
+                        Toast.makeText(this, getString(R.string.please_select_header), Toast.LENGTH_SHORT).show();
+                    } else if (nick.length() == 0) { //未填写昵称
+                        Toast.makeText(this, getString(R.string.please_fill_nick), Toast.LENGTH_SHORT).show();
+                    } else {
                         Observable.fromArray(mBaos.toByteArray())
                                 .subscribeOn(Schedulers.io())
                                 .map(new Function<byte[], String>() {
@@ -305,8 +309,6 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                         mPresenter.uploadInfo(nick, s);
                                     }
                                 });
-                    } else {
-                        CustomizedToast.showShort(this, getString(R.string.please_fill_correct_msg));
                     }
                 }
                 break;
