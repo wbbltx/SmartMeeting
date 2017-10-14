@@ -12,6 +12,7 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +28,7 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
     private ExecutorService singleThreadExecutor; //单核心线程线程池
     private NoteRecord activeNoteRecord;
     private CollectRecord activeCollectRecord;
+    private ArrayList<String> strings;
 
     @Override
     public void onPresenterCreated() {
@@ -45,7 +47,9 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
 
     @Override
     public void deleteRecord(final List<String> pathList, final List<Boolean> isSelectedList, final int pageIndex) {
-
+        strings = new ArrayList<>();
+        strings.clear();
+        strings.addAll(pathList);
         Runnable deleteRunnable = new Runnable() {
             @Override
             public void run() {
@@ -53,7 +57,7 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
                 List<String> screenPathList = unique.getScreenPathList();
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     if (isSelectedList.get(i)) {
-                        String s = pathList.get(i);
+                        String s = strings.get(i);
                         screenPathList.remove(s);
                     }
                 }

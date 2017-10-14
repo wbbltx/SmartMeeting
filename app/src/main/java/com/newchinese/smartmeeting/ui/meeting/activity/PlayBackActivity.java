@@ -18,6 +18,7 @@ import com.newchinese.smartmeeting.presenter.meeting.PlayBackPresenter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.PlayBackUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.xw.repo.BubbleSeekBar;
 
 import java.util.ArrayList;
@@ -175,6 +176,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     @Override
     protected void onDestroy() {
         if (timer != null && timerTask != null) {
+            XLog.d("hahehe","onDestroy");
             timer.cancel();
             timerTask.cancel();
         }
