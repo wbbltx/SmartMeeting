@@ -488,4 +488,12 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     public void getDynamicMsg(String data) {
         sms = data;
     }
+
+    @Override
+    public void resetTime() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+        mEvCode.setEnd(getString(R.string.get_confirm_code), true);
+    }
 }

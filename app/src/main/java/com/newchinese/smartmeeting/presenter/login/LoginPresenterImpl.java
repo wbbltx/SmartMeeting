@@ -154,14 +154,21 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
                 CustomizedToast.showShort(App.getAppliction(), data.msg);
             }
         } else {
-            if (data.msg.contains("Failed to connect")) {
-                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_net));
-            } else if ("login".equals(type)) {
-                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_name_or_password));
-            } else if ("regist".equals(type)) {
-                CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_confirm));
-            } else {
-                CustomizedToast.showShort(App.getAppliction(), data.msg);
+            if (data.msg != null) {
+                if (data.msg.contains("Failed to connect")) {
+                    CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_net));
+                } else if ("login".equals(type)) {
+                    CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_name_or_password));
+                } else if ("regist".equals(type)) {
+                    CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_confirm));
+                } else if ("该手机号已被注册".equals(data.msg)) {
+                    CustomizedToast.showShort(App.getAppliction(), data.msg);
+                    if (mV != null) {
+                        mV.resetTime();
+                    }
+                } else {
+                    CustomizedToast.showShort(App.getAppliction(), data.msg);
+                }
             }
         }
     }

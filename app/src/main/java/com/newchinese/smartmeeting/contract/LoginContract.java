@@ -25,6 +25,8 @@ public interface LoginContract {
         void getDynamicMsg(LoginData data);
 
         void getDynamicMsg(String data);
+
+        void resetTime();
     }
 
 

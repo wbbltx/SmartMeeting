@@ -320,4 +320,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     public void getDynamicMsg(String data) {
 
     }
+
+    @Override
+    public void resetTime() {
+        
+    }
 }
