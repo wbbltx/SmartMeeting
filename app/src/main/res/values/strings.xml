@@ -83,7 +83,7 @@
     <string name="please_collect">请将以下记录归档！</string>
     <string name="create_current_record">生成本次档案</string>
     <string name="please_input_title">请输入记录标题名称</string>
-    <string name="leave_warning">离开当前界面将退出录制功能</string>
+    <string name="leave_warning">离开当前界面将退出录制功能 当前视频将会保存</string>
     <string name="create_record_success">生成会议档案成功</string>
     <string name="please_select_record">请选择要生成的会议档案页！</string>
     <string name="classify_work">工作例会</string>
