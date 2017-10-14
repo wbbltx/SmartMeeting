@@ -55,7 +55,6 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     private int playStatus = 0;//0未播放，1播放中, 2暂停
     private MyTimerTask timerTask;
     private Timer timer;
-    private PlayBackUtil netUtil2;
     private Handler handler = new Handler();
     private int progress;
     private ArrayList<NotePoint> drawingPointList;
@@ -176,9 +175,9 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     @Override
     protected void onDestroy() {
         if (timer != null && timerTask != null) {
-            XLog.d("hahehe","onDestroy");
             timer.cancel();
             timerTask.cancel();
+            handler.removeCallbacksAndMessages(null);
         }
         super.onDestroy();
     }

@@ -467,6 +467,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onDisconnected() {
         XLog.d(TAG, TAG + " onDisconnected");
+        progressBar.setVisibility(View.GONE);
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
         setState(R.mipmap.pen_disconnect);
@@ -500,8 +501,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void setState(int id) {
-        if (ivPen != null) ivPen.setImageResource(id);
-        else XLog.d(TAG,"ivPen是空的");
+        if (ivPen != null)
+            ivPen.setImageResource(id);
     }
 
     @Override
