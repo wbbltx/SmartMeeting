@@ -150,7 +150,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 mView.getActivePageList(notePageList);
             }
         };
-        singleThreadExecutor.execute(loadPageRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(loadPageRunnable);
+        }
     }
 
     /**
@@ -185,7 +187,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 loadActivePageList();
             }
         };
-        singleThreadExecutor.execute(saveRecordsRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRecordsRunnable);
+        }
     }
 
 

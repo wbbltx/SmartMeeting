@@ -136,7 +136,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(saveRecordRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRecordRunnable);
+        }
     }
 
     @Override
@@ -220,7 +222,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(queryRecordCountRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(queryRecordCountRunnable);
+        }
     }
 
     /**
@@ -313,7 +317,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 } else Log.e("test_greendao", "activeNotePage当前页为空");
             }
         };
-        singleThreadExecutor.execute(readDataRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(readDataRunnable);
+        }
     }
 
     /**
@@ -366,7 +372,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     notePageDao.update(currentNotePage);
                 }
             };
-            singleThreadExecutor.execute(saveRunnable);
+            if (!singleThreadExecutor.isShutdown()) {
+                singleThreadExecutor.execute(saveRunnable);
+            }
         }
     }
 
@@ -515,7 +523,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(saveRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRunnable);
+        }
         dataCacheUtil.setCacheMatrix(imageMatrix);
         Log.e("test_pic", "saveInsertImageToData:" + dataCacheUtil.getCacheMatrix().toString());
     }
@@ -569,7 +579,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(saveRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRunnable);
+        }
     }
 
     /**
@@ -594,7 +606,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(saveRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRunnable);
+        }
     }
 
     /**
@@ -642,7 +656,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 }
             }
         };
-        singleThreadExecutor.execute(saveRunnable);
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(saveRunnable);
+        }
     }
 
     /**
