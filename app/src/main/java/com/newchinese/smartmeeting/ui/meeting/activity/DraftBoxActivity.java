@@ -470,6 +470,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         progressBar.setVisibility(View.GONE);
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
+        CustomizedToast.showShort(this,"连接失败 请点击图标重新连接");
         setState(R.mipmap.pen_disconnect);
         mPresenter.stopTimer();
     }
@@ -497,6 +498,16 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public DraftBoxActivity initBluListener() {
         return this;
+    }
+
+    @Override
+    public void showAnim() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void dismissAnim() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

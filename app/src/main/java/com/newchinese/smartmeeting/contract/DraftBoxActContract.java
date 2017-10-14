@@ -42,6 +42,10 @@ public interface DraftBoxActContract {
         void onElecReceived(String ele);
 
         DraftBoxActivity initBluListener();
+
+        void showAnim();
+
+        void dismissAnim();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {

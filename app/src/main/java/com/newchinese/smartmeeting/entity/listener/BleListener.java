@@ -39,6 +39,9 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onConfirm(int tag) {//确认读取存储数据
         XLog.d(TAG, TAG + " onConfirm");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_STORAGE_CHANNEL);
+        if (mView != null){
+            mView.showAnim();
+        }
         Flowable.timer(600, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,6 +56,9 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onCancel(int i) {//删除存储数据
         XLog.d(TAG, TAG + " onCancel");
+        if (mView != null){
+            mView.showAnim();
+        }
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
     }
 
@@ -140,10 +146,16 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         BluetoothLe.getDefault().setKey(cacheKeyMessage);
     }
 
+    /**
+     * 存储数据读取完毕
+     */
     @Override
     public void onReadHistroyInfo() {
         XLog.d(TAG, TAG + " onReadHistroyInfo");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
+        if (mView != null){
+            mView.dismissAnim();
+        }
         Flowable.timer(3, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -161,9 +173,15 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         mView.onHistoryDetected(this);
     }
 
+    /**
+     * 存储数据删除完成
+     */
     @Override
     public void onHistroyInfoDeleted() {
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+        if (mView != null){
+            mView.dismissAnim();
+        }
     }
 
     @Override
