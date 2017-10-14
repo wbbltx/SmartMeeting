@@ -79,4 +79,6 @@ public class Constant {
     public static final String PASSWORD_FLAG = "password_flag"; //是否有密码标记
     public static final String VERIFY = "verify"; //注册获取验证码
     public static final String VERIFY_FORGET = "verifyForget"; //忘记密码获取验证码
+    public static final String UPDATE_NICK = "updateNick"; //更新昵称
+    public static final String UPDATE_ICON = "updateIcon"; //更新头像
 }

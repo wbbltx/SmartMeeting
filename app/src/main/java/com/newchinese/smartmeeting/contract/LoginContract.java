@@ -44,13 +44,13 @@ public interface LoginContract {
 
         void loginWechat(String openid, String accessToken);
 
-        void regist(String phone, String pass, String code);
+        void regist(String phone, String pass, String code, String nick, String icon);
 
         void verifyCode(String phone);
 
         void verifyForgetCode(String phone);
 
-        void uploadInfo(String nick, String icon);
+//        void uploadInfo(String nick, String icon);
 
         void forgetPass(String phone, String code, String pass);
 

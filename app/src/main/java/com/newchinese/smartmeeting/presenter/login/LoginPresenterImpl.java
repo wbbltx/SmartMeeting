@@ -48,8 +48,9 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
-    public void regist(String phone, String pass, String code) {
-        mLoginModel.regist(new LoginData().setTel(phone).setPassword(pass).setCode(code).setNickname("nick").setIcon("icon").setIcon_format("icon_format"));
+    public void regist(String phone, String pass, String code, String nick, String icon) {
+        mLoginModel.regist(new LoginData().setTel(phone).setPassword(pass).setCode(code)
+                .setNickname(nick).setIcon(icon).setIcon_format("png"));
     }
 
     @Override
@@ -62,14 +63,14 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
         mLoginModel.verifyForget(new LoginData().setTel(phone));
     }
 
-    @Override
-    public void uploadInfo(String nick, String icon) {
-        GreenDaoUtil.getInstance().getDaoSession().clear();
-        LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
-        data.setId(null).setTel(null).setNickname(null);
-        mLoginModel.updateIcon(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
-        mLoginModel.updateNick(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
-    }
+//    @Override
+//    public void uploadInfo(String nick, String icon) {
+//        GreenDaoUtil.getInstance().getDaoSession().clear();
+//        LoginData data = GreenDaoUtil.getInstance().getDaoSession().getLoginDataDao().queryBuilder().unique();
+//        data.setId(null).setTel(null).setNickname(null);
+//        mLoginModel.updateIcon(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
+//        mLoginModel.updateNick(data.setNickname(nick).setIcon(icon).setIcon_format("png"));
+//    }
 
     @Override
     public void forgetPass(String phone, String code, String pass) {

@@ -96,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private File headerFile;
     private static String path = "/sdcard/myHead/";//sd路径
     private String sms, telCache;
+    private String tel = "", code = "", password = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +121,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private void initIntent() {
         mUi = getIntent().getIntExtra("ui", 0);
         tvTitle.setText(mTitles[mUi]);
+        if (mUi == UI_TYPE_UPD) {
+            tel = getIntent().getStringExtra("tel");
+            code = getIntent().getStringExtra("code");
+            password = getIntent().getStringExtra("password");
+        }
     }
 
     private void initView() {
@@ -195,11 +201,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         if (data.update) {
             finish();
         }
-        if (NetUrl.REGIST.equals(data.url)) {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            intent.putExtra("ui", UI_TYPE_UPD);
-            startActivity(intent);
-        }
+//        if (NetUrl.REGIST.equals(data.url)) {
+//            Intent intent = new Intent(this, RegisterActivity.class);
+//            intent.putExtra("ui", UI_TYPE_UPD);
+//            startActivity(intent);
+//        }
     }
 
     @Override
@@ -283,7 +289,14 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                         break;
                     }
                     if (mUi == UI_TYPE_REG) {
-                        mPresenter.regist(tel, pass, code);
+//                        mPresenter.regist(tel, pass, code);
+                        finish();
+                        Intent intent = new Intent(this, RegisterActivity.class);
+                        intent.putExtra("ui", UI_TYPE_UPD);
+                        intent.putExtra("tel", tel);
+                        intent.putExtra("code", code);
+                        intent.putExtra("password", pass);
+                        startActivity(intent);
                     } else if (mUi == UI_TYPE_FOR) {
                         mPresenter.forgetPass(tel, code, pass);
                     }
@@ -306,7 +319,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                                 .subscribe(new Consumer<String>() {
                                     @Override
                                     public void accept(String s) throws Exception {
-                                        mPresenter.uploadInfo(nick, s);
+                                        mPresenter.regist(tel, password, code, nick, s);
+//                                        mPresenter.uploadInfo(nick, s);
                                     }
                                 });
                     }

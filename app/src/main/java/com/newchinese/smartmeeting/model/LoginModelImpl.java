@@ -74,12 +74,12 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     @Override
     public void verify(LoginData data) {
-        invokeRequest(NetUrl.VERIFY_CODE, false, "verify", mServices.verify(data));
+        invokeRequest(NetUrl.VERIFY_CODE, false, Constant.VERIFY, mServices.verify(data));
     }
 
     @Override
     public void verifyForget(LoginData data) {
-        invokeRequest(NetUrl.VERIFY_FORGET_CODE, false, "verifyForget", mServices.verifyForget(data));
+        invokeRequest(NetUrl.VERIFY_FORGET_CODE, false, Constant.VERIFY_FORGET, mServices.verifyForget(data));
     }
 
     @Override
@@ -89,12 +89,12 @@ public class LoginModelImpl implements LoginContract.LoginIModel {
 
     @Override
     public void updateNick(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_NICK, true, "updateNick", mServices.updateNick(data));
+        invokeRequest(NetUrl.UPDATE_NICK, true, Constant.UPDATE_NICK, mServices.updateNick(data));
     }
 
     @Override
     public void updateIcon(LoginData data) {
-        invokeRequest(NetUrl.UPDATE_ICON, true, "updateIcon", mServices.updateIcon(data)
+        invokeRequest(NetUrl.UPDATE_ICON, true, Constant.UPDATE_ICON, mServices.updateIcon(data)
                 .concatMap(new Function<BaseResult<String>, Publisher<BaseResult<LoginData>>>() {
                     @Override
                     public Publisher<BaseResult<LoginData>> apply(@NonNull BaseResult<String> data) throws Exception {
