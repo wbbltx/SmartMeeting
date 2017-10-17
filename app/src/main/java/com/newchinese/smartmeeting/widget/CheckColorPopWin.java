@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +21,9 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Description:   选笔色的弹出窗口
@@ -30,6 +34,7 @@ public class CheckColorPopWin extends PopupWindow {
     private View view;
     private HorizontalListView hListView;
     private ColorSelectDialog colorSelectDialog;
+    private List<Boolean> isSelectedList;
 
     private int lastColor;
     private int[] colors = Constant.colors;
@@ -73,7 +78,9 @@ public class CheckColorPopWin extends PopupWindow {
         this.setBackgroundDrawable(dw);
         // 设置弹出窗体显示时的动画，从底部向上弹出
         this.setAnimationStyle(R.style.popup_anim);
-        hListViewAdapter = new HorizontalListViewAdapter(mContext, null, null, colors);
+        initSelect();
+        Log.e("test_select", "initSelect:" + isSelectedList.toString());
+        hListViewAdapter = new HorizontalListViewAdapter(mContext, null, null, colors, isSelectedList);
         hListView.setAdapter(hListViewAdapter);
         hListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -87,6 +94,10 @@ public class CheckColorPopWin extends PopupWindow {
                     EventBus.getDefault().post(event);
                     DataCacheUtil.getInstance().setCurrentColorPosition(position);
                     onSelectListener.onSelect();
+                    //设置选中效果
+                    resetSelect();
+                    isSelectedList.set(position, true);
+                    hListViewAdapter.setIsSelectedList(isSelectedList);
                     hListViewAdapter.notifyDataSetChanged();
                     if (event != null) {
                         EventBus.getDefault().post(event);
@@ -118,6 +129,26 @@ public class CheckColorPopWin extends PopupWindow {
                 }
             }
         });
+    }
+
+    /**
+     * 初始化选中集合
+     */
+    private void initSelect() {
+        isSelectedList = new ArrayList<>();
+        isSelectedList.add(true); //默认黑色选中
+        for (int i = 0; i < 6; i++) {
+            isSelectedList.add(false);
+        }
+    }
+
+    /**
+     * 所有选中置为false
+     */
+    private void resetSelect() {
+        for (int i = 0; i < isSelectedList.size(); i++) {
+            isSelectedList.set(i, false);
+        }
     }
 
     public interface OnSelectListener {

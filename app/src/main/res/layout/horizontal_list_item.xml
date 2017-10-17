@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_root"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -13,4 +13,10 @@
         android:layout_width="30dp"
         android:layout_height="30dp" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="visible"
+        android:src="@mipmap/select_color" />
+</RelativeLayout>

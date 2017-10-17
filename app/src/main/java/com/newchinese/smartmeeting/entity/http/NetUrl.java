@@ -8,7 +8,6 @@ public interface NetUrl {
     String NO_SUCC = "100000";
 
     String HOST = "http://newsso.coolpen.net"; //正式服
-//    String HOST = "http://182.92.99.12:8083"; //测试服
 //    String HOST = "http://182.92.99.12:9005"; //测试服
 //    String TEST = "http://192.168.1.65:8080"; //个人测试服
 
