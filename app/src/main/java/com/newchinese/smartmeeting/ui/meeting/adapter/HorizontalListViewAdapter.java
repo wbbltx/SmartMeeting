@@ -46,7 +46,6 @@ public class HorizontalListViewAdapter extends BaseAdapter {
         this.mTitles = titles;
         this.colors = colors;
         this.isSelectedList = isSelectedList;
-        Log.e("test_select", "isSelectedList:" + isSelectedList.toString());
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
     }
 
