@@ -722,7 +722,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 显示功能菜单
      */
     private void showMenu() {
-        ivMenuBtn.setImageResource(R.mipmap.draw_menu_close);
+        ivMenuBtn.setImageResource(R.mipmap.draw_menu_open);
         rlMenuContainer.setVisibility(View.VISIBLE);
         isMenuBtnClicked = !isMenuBtnClicked;
     }
@@ -731,7 +731,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      * 隐藏功能菜单
      */
     private void hideMenu() {
-        ivMenuBtn.setImageResource(R.mipmap.draw_menu_open);
+        ivMenuBtn.setImageResource(R.mipmap.draw_menu_close);
         rlMenuContainer.setVisibility(View.GONE);
         isMenuBtnClicked = !isMenuBtnClicked;
     }
