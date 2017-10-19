@@ -76,7 +76,9 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
             if ("updatePass".equals(type)) {
                 SharedPreUtils.setString(Constant.PASSWORD_FLAG, "1");
             }
-            mV.jumpLogin("change");
+            if (mV != null) {
+                mV.jumpLogin("change");
+            }
         }
     }
 
@@ -147,7 +149,9 @@ public class UpdatePresenterImpl implements MineContract.UpdateIPresenter<MineCo
             String no = jsonObject.getString("no");
             if (!TextUtils.isEmpty(no) && no.equals(NetUrl.NO_SUCC)) {
                 SharedPreUtils.setString(Constant.PASSWORD_FLAG, "1");
-                mV.jumpLogin("set");
+                if (mV != null) {
+                    mV.jumpLogin("set");
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

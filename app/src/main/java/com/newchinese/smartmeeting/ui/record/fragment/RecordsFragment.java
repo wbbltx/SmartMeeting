@@ -112,14 +112,16 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      */
     @Override
     public void getAllCollectRecordData(List<CollectRecord> collectRecords) {
-        collectRecordList.clear();
-        collectRecordList.addAll(collectRecords);
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setCollectRecordList(collectRecordList);
-            }
-        });
+        if (!mActivity.isFinishing()) {
+            collectRecordList.clear();
+            collectRecordList.addAll(collectRecords);
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.setCollectRecordList(collectRecordList);
+                }
+            });
+        }
     }
 
     /**
@@ -138,7 +140,7 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      */
     @Override
     public void onClick(View view, int position) {
-        MobclickAgent.onEvent(getActivity(),"book_res",collectRecordList.get(position).getCollectRecordName());
+        MobclickAgent.onEvent(getActivity(), "book_res", collectRecordList.get(position).getCollectRecordName());
         DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
         startActivity(new Intent(mActivity, CollectPageListActivity.class));
     }

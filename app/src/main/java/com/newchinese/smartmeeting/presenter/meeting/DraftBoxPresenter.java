@@ -147,7 +147,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 NotePageDao notePageDao = GreenDaoUtil.getInstance().getNotePageDao();
                 List<NotePage> notePageList = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()))
                         .orderDesc(NotePageDao.Properties.Date).list();
-                mView.getActivePageList(notePageList);
+                if (mView != null) {
+                    mView.getActivePageList(notePageList);
+                }
             }
         };
         if (!singleThreadExecutor.isShutdown()) {
@@ -182,7 +184,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                         notePageDao.delete(selectPage);
                     }
                 }
-                mView.showToast(App.getContext().getString(R.string.create_record_success));
+                if (mView != null) {
+                    mView.showToast(App.getContext().getString(R.string.create_record_success));
+                }
                 //存完刷新页面
                 loadActivePageList();
             }

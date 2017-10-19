@@ -84,14 +84,16 @@ public class CollectRecordFilterActivity extends BaseActivity<CollectRecordFilte
 
     @Override
     public void getFilterCollectRecordData(List<CollectRecord> collectRecords) {
-        collectRecordList.clear();
-        collectRecordList.addAll(collectRecords);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setCollectRecordList(collectRecordList);
-            }
-        });
+        if (!isFinishing()) {
+            collectRecordList.clear();
+            collectRecordList.addAll(collectRecords);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.setCollectRecordList(collectRecordList);
+                }
+            });
+        }
     }
 
     @OnClick(R.id.iv_back)

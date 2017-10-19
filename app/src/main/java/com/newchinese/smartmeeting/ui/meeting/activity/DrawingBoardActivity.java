@@ -378,7 +378,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     public void setRecordTime(String time) {
-        if (startTimeDown) {
+        if (startTimeDown && recordTime != null) {
             recordTime.setText(time);
         }
     }
@@ -491,7 +491,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
-                if (recordService.isRunning()) {
+                if (recordService != null && recordService.isRunning()) {
                     showDialog1(getString(R.string.leave_warning));
                 } else {
                     finish();

@@ -177,8 +177,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                 .doOnNext(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        mView.setRecordTime(timeParse(++duration) + "");
-//
+                        if (mView != null) {
+                            mView.setRecordTime(timeParse(++duration) + "");
+                        }
                     }
                 })
                 .subscribe();
@@ -308,8 +309,9 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                                             new com.newchinese.coolpensdk.entity.NotePoint(notePoint.getPX(),
                                                     notePoint.getPY(), notePoint.getTestTime(), notePoint.getFirstPress(),
                                                     notePoint.getPress(), notePoint.getPageIndex(), notePoint.getPointType());
-                                    if (mView != null)
+                                    if (mView != null) {
                                         mView.getDataBasePoint(sdkPoint, noteStroke.getStrokeColor(), noteStroke.getStrokeWidth(), pageIndex);
+                                    }
                                 }
                             } else Log.e("test_greendao", "currentNotePointListData当前点集合为空");
                         }
@@ -368,8 +370,10 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
                     NotePage currentNotePage = notePageDao.queryBuilder()
                             .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
                                     NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
-                    currentNotePage.setThumbnailPath(thumbnailFilePath);
-                    notePageDao.update(currentNotePage);
+                    if (currentNotePage != null) {
+                        currentNotePage.setThumbnailPath(thumbnailFilePath);
+                        notePageDao.update(currentNotePage);
+                    }
                 }
             };
             if (!singleThreadExecutor.isShutdown()) {

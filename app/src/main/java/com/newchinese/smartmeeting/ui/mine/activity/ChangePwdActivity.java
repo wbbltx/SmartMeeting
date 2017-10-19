@@ -118,13 +118,15 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mPd = mPd == null ? new ProgressDialog(ChangePwdActivity.this) : mPd;
-                if (!TextUtils.isEmpty(msg)) {
-                    mPd.setMessage(msg);
-                    mPd.show();
-                } else {
-                    if (mPd.isShowing()) {
-                        mPd.dismiss();
+                if (!isFinishing()) {
+                    mPd = mPd == null ? new ProgressDialog(ChangePwdActivity.this) : mPd;
+                    if (!TextUtils.isEmpty(msg)) {
+                        mPd.setMessage(msg);
+                        mPd.show();
+                    } else {
+                        if (mPd.isShowing()) {
+                            mPd.dismiss();
+                        }
                     }
                 }
             }

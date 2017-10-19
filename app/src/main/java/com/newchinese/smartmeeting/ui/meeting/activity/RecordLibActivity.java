@@ -109,8 +109,10 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                adapter.setNotePageList(recordPath);
-                initIsSelectedStatus(recordPath);
+                if (!isFinishing()) {
+                    adapter.setNotePageList(recordPath);
+                    initIsSelectedStatus(recordPath);
+                }
             }
         });
     }
@@ -144,13 +146,13 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
             case R.id.tv_create:
                 int k = 0;
                 for (Boolean aBoolean : isSelectedList) {
-                    if (!aBoolean){
+                    if (!aBoolean) {
                         k++;
                     }
                 }
-                if (k == isSelectedList.size()){
-                    CustomizedToast.showShort(this,"请选择视频");
-                }else {
+                if (k == isSelectedList.size()) {
+                    CustomizedToast.showShort(this, "请选择视频");
+                } else {
                     if (fromFlag.equals("1")) {//来自书写
                         mPresenter.deleteRecord(recordPathList, isSelectedList, selectPageIndex);
                     } else {//来自记录

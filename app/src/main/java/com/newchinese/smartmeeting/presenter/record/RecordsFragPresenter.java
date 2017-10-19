@@ -49,7 +49,9 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
             public void run() {
                 List<CollectRecord> collectRecords = collectRecordDao.queryBuilder()
                         .orderDesc(CollectRecordDao.Properties.CollectDate).list();
-                mView.getAllCollectRecordData(collectRecords);
+                if (mView != null) {
+                    mView.getAllCollectRecordData(collectRecords);
+                }
             }
         };
         singleThreadExecutor.execute(loadRunnable);
@@ -71,7 +73,9 @@ public class RecordsFragPresenter extends BasePresenter<RecordsFragContract.View
                         searchCollectRecordList.add(collectRecord);
                     }
                 }
-                mView.getAllCollectRecordData(searchCollectRecordList);
+                if (mView != null) {
+                    mView.getAllCollectRecordData(searchCollectRecordList);
+                }
             }
         };
         singleThreadExecutor.execute(loadRunnable);

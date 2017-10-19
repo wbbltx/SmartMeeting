@@ -61,7 +61,9 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
                         screenPathList.remove(s);
                     }
                 }
-                mView.refreshRecord(screenPathList);
+                if (mView != null) {
+                    mView.refreshRecord(screenPathList);
+                }
                 unique.setScreenPathList(screenPathList);
                 notePageDao.update(unique);
             }
@@ -82,7 +84,9 @@ public class RecordLibPresenter extends BasePresenter<RecordLibContract.View> im
                         screenPathList.remove(s);
                     }
                 }
-                mView.refreshRecord(screenPathList);
+                if (mView != null) {
+                    mView.refreshRecord(screenPathList);
+                }
                 unique.setScreenPathList(screenPathList);
                 collectPageDao.update(unique);
             }

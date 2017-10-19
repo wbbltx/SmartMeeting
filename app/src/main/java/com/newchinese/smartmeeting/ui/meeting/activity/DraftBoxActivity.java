@@ -328,7 +328,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     @Override
     public void onScanComplete() {
-        XLog.d(TAG, TAG + " onScanComplete "+ !isFinishing());
+        XLog.d(TAG, TAG + " onScanComplete " + !isFinishing());
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isFinishing()) {
             scanResultDialog
                     .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME), "1")
@@ -341,7 +341,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void onComplete() {
-        if (scanResultDialog == null){
+        if (scanResultDialog == null) {
             scanResultDialog = new ScanResultDialog(this);
         }
         int count = scanResultDialog.getCount();
@@ -364,7 +364,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     break;
                 }
             }
-            if (scanResultDialog != null && !isFinishing() ) {
+            if (scanResultDialog != null && !isFinishing()) {
                 scanResultDialog.setContent(address, "0");
                 scanResultDialog.show();
             }
@@ -470,7 +470,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         progressBar.setVisibility(View.GONE);
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
-        CustomizedToast.showShort(this,"连接失败 请点击图标重新连接");
+        CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
         setState(R.mipmap.pen_disconnect);
         mPresenter.stopTimer();
     }
@@ -550,20 +550,28 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                adapter.setNotePageList(notePageList); //使用RecyclerView数据保持一致
-                if (notePageList != null && notePageList.size() > 0) {
-                    ivRight.setVisibility(View.VISIBLE);
-                    ivEmpty.setVisibility(View.GONE);
-                    //初始化是否被选择的集合
-                    initIsSelectedStatus(notePageList);
-                    //显示提示框
-                    rlRemind.setVisibility(View.VISIBLE);
-                } else {
-                    ivRight.setVisibility(View.GONE);
-                    ivEmpty.setVisibility(View.VISIBLE);
+                if (!isFinishing()) {
+                    adapter.setNotePageList(notePageList); //使用RecyclerView数据保持一致
+                    if (notePageList != null && notePageList.size() > 0) {
+                        if (ivRight != null && ivEmpty != null && rlRemind != null) {
+                            ivRight.setVisibility(View.VISIBLE);
+                            ivEmpty.setVisibility(View.GONE);
+                            //初始化是否被选择的集合
+                            initIsSelectedStatus(notePageList);
+                            //显示提示框
+                            rlRemind.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (ivRight != null && ivEmpty != null) {
+                            ivRight.setVisibility(View.GONE);
+                            ivEmpty.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    if (tvRight != null) {
+                        tvRight.setText(getString(R.string.select_all));
+                        tvRight.setVisibility(View.GONE);
+                    }
                 }
-                tvRight.setText(getString(R.string.select_all));
-                tvRight.setVisibility(View.GONE);
             }
         });
     }

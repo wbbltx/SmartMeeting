@@ -1,6 +1,5 @@
 package com.newchinese.smartmeeting.presenter.main;
 
-import android.content.ComponentName;
 import android.os.Environment;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.manager.NotePointManager;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.manager.NoteStrokeManager;
-import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;

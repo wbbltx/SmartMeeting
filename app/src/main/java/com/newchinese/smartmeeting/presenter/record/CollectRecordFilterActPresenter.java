@@ -44,7 +44,9 @@ public class CollectRecordFilterActPresenter extends BasePresenter<CollectRecord
             public void run() {
                 List<CollectRecord> collectRecords = collectRecordDao.queryBuilder()
                         .where(CollectRecordDao.Properties.ClassifyName.eq(classifyName)).list();
-                mView.getFilterCollectRecordData(collectRecords);
+                if (mView != null) {
+                    mView.getFilterCollectRecordData(collectRecords);
+                }
             }
         };
         singleThreadExecutor.execute(loadRunnable);

@@ -83,15 +83,17 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
 
     @Override
     public void getAllCollectPageData(List<CollectPage> collectPages) {
-        collectPageList.clear();
-        collectPageList.addAll(collectPages);
-        DataCacheUtil.getInstance().setActiveCollectPageList(collectPageList);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.setCollectPageList(collectPageList);
-            }
-        });
+        if (!isFinishing()) {
+            collectPageList.clear();
+            collectPageList.addAll(collectPages);
+            DataCacheUtil.getInstance().setActiveCollectPageList(collectPageList);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.setCollectPageList(collectPageList);
+                }
+            });
+        }
     }
 
     @OnClick(R.id.iv_back)
