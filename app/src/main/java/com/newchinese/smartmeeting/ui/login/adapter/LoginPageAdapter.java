@@ -7,6 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
@@ -80,6 +81,9 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         mEvPass[position].configure(position == 0 ? context.getString(R.string.active_password) :
                 context.getString(R.string.password), position == 0 ? context.getString(R.string.get_active_password)
                 : context.getString(R.string.forget_password));
+        if (position == 1) {
+            mEvPass[position].setEyeMode(true);
+        }
 
         mEvPhone[position].setTag(position);
         mEvPass[position].setTag(position);

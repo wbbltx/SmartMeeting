@@ -45,7 +45,6 @@ public class GuideActivity extends BaseSimpleActivity {
 
     @Override
     protected void initStateAndData() {
-        SharedPreUtils.setBoolean("isFirstInstall", false); //首次安装标记置否
         viewList = new ArrayList<>();
         LayoutInflater inflater = LayoutInflater.from(this);
         for (int i = 0; i < Constant.pics.length; i++) {

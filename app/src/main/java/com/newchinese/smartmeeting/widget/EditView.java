@@ -9,10 +9,13 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 /**
  * Created by Administrator on 2017-08-24.
@@ -26,10 +29,13 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
     private EditText mEt;
     private TextView mTv;
     private OnEditViewListener mListener;
+    private boolean isVisible = false;
 
     public static final int EDIT_TYPE_PHONE = 1;
     public static final int EDIT_TYPE_PASS = 2;
     public boolean mMatching = false;
+    private ImageView mIv;
+    private boolean isEyeMode = false;
 
     public EditView(Context context) {
         this(context, null);
@@ -48,6 +54,7 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
     private void initListener() {
         mEt.addTextChangedListener(this);
         mTv.setOnClickListener(this);
+        mIv.setOnClickListener(this);
     }
 
     private void initView(Context context) {
@@ -57,6 +64,7 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
         mTil = (TextInputLayout) findViewById(R.id.til_edit_content);
         mEt = (EditText) findViewById(R.id.et_edit_content);
         mTv = (TextView) findViewById(R.id.tv_edit_end);
+        mIv = (ImageView) findViewById(R.id.iv_edit_end);
     }
 
     @Override
@@ -69,6 +77,7 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
         mMatching = mEt.getInputType() == InputType.TYPE_CLASS_PHONE && s.toString().trim().matches(REGEX_PHONE)
                 || mEt.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_PASS)
                 || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && !TextUtils.isEmpty(mEt.getText().toString().trim());
+        XLog.d("hahehe", mMatching + " onTextChanged " + s);
         if (mListener != null) {
             mListener.onMatch(this, mMatching);
         }
@@ -76,7 +85,17 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
 
     @Override
     public void afterTextChanged(Editable s) {
-
+        if (isEyeMode){
+            if (0 == s.length()) {  //输入框为空的时候 显示忘记密码
+                XLog.d("hahehe", "afterTextChanged1 " + s.length());
+                mIv.setVisibility(GONE);
+                mTv.setVisibility(VISIBLE);
+            } else {              //不为空显示小眼睛
+                XLog.d("hahehe", "afterTextChanged2 " + s.length());
+                mIv.setVisibility(VISIBLE);
+                mTv.setVisibility(GONE);
+            }
+        }
     }
 
     @Override
@@ -87,7 +106,32 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
                     mListener.onEndClick(this);
                 }
                 break;
+
+            case R.id.iv_edit_end:
+                setStyle();
+                break;
         }
+    }
+
+    private void setStyle() {
+        isVisible = !isVisible;
+        if (isVisible) {
+            mEt.setInputType(InputType.TYPE_CLASS_TEXT);
+            mIv.setImageResource(R.mipmap.password_show);
+        } else {
+            setEditType(EditView.EDIT_TYPE_PASS);
+            mIv.setImageResource(R.mipmap.password_hide);
+        }
+    }
+
+    public EditView setImage(int srcId) {
+        mIv.setImageResource(srcId);
+        return this;
+    }
+
+    public EditView setEyeMode(boolean isEyeMode){
+        this.isEyeMode = isEyeMode;
+        return this;
     }
 
     public EditView setText(String txt) {
@@ -113,7 +157,7 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
         return this;
     }
 
-    public EditView setOnEditViewListener (OnEditViewListener listener) {
+    public EditView setOnEditViewListener(OnEditViewListener listener) {
         mListener = listener;
         return this;
     }
@@ -129,7 +173,9 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
 
     public interface OnEditViewListener {
         void onMatch(EditView view, boolean matching);
+
         void onEndClick(View view);
+
         void onEditError(String err);
     }
 }

@@ -159,8 +159,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
 
         mEvPhone.configure(getString(R.string.tel_number), "");
         mEvCode.configure(getString(R.string.fill_confirm_code), getString(R.string.get_confirm_code));
-        mEvPass.configure(getString(R.string.password), "");
-        mEvPass2.configure(getString(R.string.fill_password_again), "");
+        mEvPass.configure(getString(R.string.password), "").setEyeMode(true);
+        mEvPass2.configure(getString(R.string.fill_password_again), "").setEyeMode(true);
 
         if (mPresenter != null) {
             mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? getString(R.string.have_account_to_login) : "");

@@ -30,8 +30,8 @@ public class RecordService extends Service {
     private VirtualDisplay virtualDisplay;
 
     private boolean running;
-    private int width = 720;
-    private int height = 1080;
+    private int width = 480;
+    private int height = 720;
     private int dpi;
     private String videoPath;
 

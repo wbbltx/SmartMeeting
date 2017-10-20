@@ -18,6 +18,7 @@ import com.newchinese.smartmeeting.database.LoginDataDao;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 
@@ -83,7 +84,7 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
     @Override
     public void jumpActivity() {
         Intent intent;
-        if (SharedPreUtils.getBoolean("isFirstInstall", true)) { //首次安装则跳引导页
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则跳引导页
             intent = new Intent(WelcomeActivity.this, GuideActivity.class);
         } else {
             LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();

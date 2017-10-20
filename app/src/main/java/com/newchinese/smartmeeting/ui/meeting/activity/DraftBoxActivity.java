@@ -115,8 +115,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-        super.onViewCreated(savedInstanceState);
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+            startActivity(new Intent(this, MaskActivity.class));
+        }
         XLog.d(TAG, TAG + "onViewCreated " + isFinishing());
+        super.onViewCreated(savedInstanceState);
         root_view = (ViewGroup) findViewById(R.id.rl_parent);
         //初始化地图弹出窗口view
         viewCreateRecord = LayoutInflater.from(this).inflate(R.layout.layout_create_record, null);
@@ -363,6 +366,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     }
                     break;
                 }
+            }
+            if (count == 1) {
+                EventBus.getDefault().post(new ConnectEvent(devices.get(0), 0));
+                return;
             }
             if (scanResultDialog != null && !isFinishing()) {
                 scanResultDialog.setContent(address, "0");

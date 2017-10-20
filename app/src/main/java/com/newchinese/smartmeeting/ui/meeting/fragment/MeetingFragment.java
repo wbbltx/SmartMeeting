@@ -15,9 +15,12 @@ import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
+import com.newchinese.smartmeeting.ui.meeting.activity.MaskActivity;
 import com.newchinese.smartmeeting.ui.meeting.adapter.MeetingClassifyRecyAdapter;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.umeng.analytics.MobclickAgent;
 
@@ -38,6 +41,8 @@ public class MeetingFragment extends BaseSimpleFragment {
     RecyclerView rvMeetingClassify;
     @BindView(R.id.iv_study)
     ImageView ivStudy;
+    @BindView(R.id.iv_mask_one)
+    ImageView ivMaskOne;
     private List<String> classifyNameList;
     private MeetingClassifyRecyAdapter adapter;
     private ExecutorService singleThreadExecutor; //单核心线程线程池
@@ -51,6 +56,7 @@ public class MeetingFragment extends BaseSimpleFragment {
     @Override
     protected void onFragViewCreated() {
         initRecyclerView();
+        initMaskView();
     }
 
     /**
@@ -63,6 +69,17 @@ public class MeetingFragment extends BaseSimpleFragment {
         rvMeetingClassify.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         //设置RecyclerView的动画
         rvMeetingClassify.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    /**
+     * 初始化蒙版
+     */
+    private void initMaskView(){
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则显示蒙版引导
+            ivMaskOne.setVisibility(View.VISIBLE);
+        }else {
+            ivMaskOne.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -103,13 +120,25 @@ public class MeetingFragment extends BaseSimpleFragment {
         ivStudy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(getActivity(), "classify_name", Constant.CLASSIFY_NAME_STUDY);
-                Intent intent = new Intent(mActivity, DraftBoxActivity.class);
-                intent.putExtra("classify_name", Constant.CLASSIFY_NAME_STUDY);
-                startActivity(intent);
-                setActiveNoteRecord(Constant.CLASSIFY_NAME_STUDY);
+                jumpIntent(DraftBoxActivity.class);
             }
         });
+
+        ivMaskOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ivMaskOne.setVisibility(View.GONE);
+                jumpIntent(DraftBoxActivity.class);
+            }
+        });
+    }
+
+    private void jumpIntent(Class c) {
+        MobclickAgent.onEvent(getActivity(), "classify_name", Constant.CLASSIFY_NAME_STUDY);
+        Intent intent = new Intent(mActivity, c);
+        intent.putExtra("classify_name", Constant.CLASSIFY_NAME_STUDY);
+        startActivity(intent);
+        setActiveNoteRecord(Constant.CLASSIFY_NAME_STUDY);
     }
 
     /**
