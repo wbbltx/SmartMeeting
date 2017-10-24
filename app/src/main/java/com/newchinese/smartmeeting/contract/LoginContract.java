@@ -16,7 +16,7 @@ public interface LoginContract {
 
     interface LoginIView<E> extends BaseToolbar {
 
-        void skipWhat();
+        void skipWhat(int flag);
 
         void updateView(E e);
 
@@ -62,7 +62,7 @@ public interface LoginContract {
 
         LoginIPresenter detach();
 
-        void getSpan(TextView tv, String txt);
+        void getSpan(TextView tv, String txt,int i);
 
         void onResult(boolean succ, String type, BaseResult<LoginData> data);
 

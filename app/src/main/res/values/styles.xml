@@ -75,4 +75,10 @@
         <item name="android:background">@drawable/shape_gray_circle_back</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+    <!--录屏时间栏字体样式-->
+    <style name="record_text">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">32px</item>
+        <item name="android:textColor">@color/simple_blue</item>
+    </style>
 </resources>

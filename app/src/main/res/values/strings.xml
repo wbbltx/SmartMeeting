@@ -101,8 +101,11 @@
     <!--记录模块-->
     <string name="search">搜索</string>
     <string name="page_number">第%d页</string>
+    <string name="style_meeting">会议</string>
     <!--我的模块-->
     <string name="save">保存</string>
+    <string name="record_cancel">放弃</string>
+    <string name="add">补充</string>
     <string name="change">修改</string>
     <string name="header">头像</string>
     <string name="up_load">提交</string>
@@ -136,6 +139,7 @@
     <string name="input_rules">最长包含15个汉字字符</string>
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
+    <string name="statement">注册即同意《用户协议》</string>
     <!--array-->
     <string-array name="selectIcon">
         <item>拍照</item>

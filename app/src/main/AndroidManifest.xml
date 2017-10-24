@@ -157,8 +157,11 @@
             android:name="UMENG_CHANNEL"
             android:value="Channel ID" />
 
-        <activity android:name=".ui.meeting.activity.MaskActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name=".ui.meeting.activity.MaskActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".ui.record.activity.CollectAddTypeActivity" />
+        <activity android:name=".ui.record.activity.CollectToAddListActivity"></activity>
     </application>
 
 </manifest>

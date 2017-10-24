@@ -165,7 +165,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void initStateAndData() {
         EventBus.getDefault().register(this);
 
-        classifyName = getIntent().getStringExtra("classify_name");
+        classifyName = getIntent().getStringExtra(BluCommonUtils.CLASSIFY_NAME);
         tvTitle.setText(classifyName);
         tvRight.setVisibility(View.GONE);
         ivRight.setImageResource(R.mipmap.icon_create);

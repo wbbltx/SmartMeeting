@@ -78,19 +78,19 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
     }
 
     @Override
-    public void getSpan(TextView tv, String txt) {
+    public void getSpan(TextView tv, String txt, final int i) {
         if (txt.length() < 2) {
             tv.setVisibility(View.GONE);
             return;
         }
         SpannableStringBuilder span = new SpannableStringBuilder(txt);
-        int start = txt.length() - 2;
+        int start = txt.length() - i;
         int end = txt.length();
         span.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 if (mV != null) {
-                    mV.skipWhat();
+                    mV.skipWhat(i);
                 }
             }
 

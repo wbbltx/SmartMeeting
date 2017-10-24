@@ -106,9 +106,9 @@ public class MeetingFragment extends BaseSimpleFragment {
         adapter.setOnItemClickedListener(new OnItemClickedListener() {
             @Override
             public void onClick(View view, int position) {
-                MobclickAgent.onEvent(getActivity(), "classify_name", classifyNameList.get(position));
+                MobclickAgent.onEvent(getActivity(), BluCommonUtils.CLASSIFY_NAME, classifyNameList.get(position));
                 Intent intent = new Intent(mActivity, DraftBoxActivity.class);
-                intent.putExtra("classify_name", classifyNameList.get(position));
+                intent.putExtra(BluCommonUtils.CLASSIFY_NAME, classifyNameList.get(position));
                 startActivity(intent);
                 setActiveNoteRecord(classifyNameList.get(position));
             }

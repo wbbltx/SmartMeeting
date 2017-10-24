@@ -124,6 +124,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView recordCount;
     @BindView(R.id.rl_record_count)
     RelativeLayout rlRecordCount;
+    @BindView(R.id.record_cancel)
+    TextView recordCancel;
     @BindView(R.id.iv_insert_image)
     ImageView ivInsertImage;
     @BindView(R.id.ll_insert_operate)
@@ -485,7 +487,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,R.id.record_cancel,
             R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.iv_right,
             R.id.rl_record_count, R.id.iv_image_delete, R.id.iv_image_cancle, R.id.iv_image_confirm})
     public void onViewClicked(View view) {
@@ -549,6 +551,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 MobclickAgent.onEvent(this, "record");
                 stopRecord();
                 break;
+            case R.id.record_cancel:
+                cancelRecord();
+                break;
             case R.id.rl_record_count://录屏图标
                 MobclickAgent.onEvent(this, "play_record");
                 Intent intent1 = new Intent(DrawingBoardActivity.this, RecordLibActivity.class);
@@ -580,6 +585,16 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             mPresenter.saveRecord(recordPath);
             recordTime.setText("00:00");
             mPresenter.queryRecordCount(pageIndex);
+        }
+    }
+
+    private void cancelRecord(){
+        recordBar.setVisibility(View.GONE);
+        startTimeDown = false;
+        if (recordService.isRunning()) {
+            recordService.stopRecord();
+            mPresenter.stopRecordTimer();
+            recordTime.setText("00:00");
         }
     }
 

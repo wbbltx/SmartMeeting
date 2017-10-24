@@ -92,7 +92,7 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         mBtnReg[position].setText(context.getString(R.string.login_space));
 
         if (mPresenter != null) {
-            mPresenter.getSpan(mTvSkip[position], position == 1 ? context.getString(R.string.no_account_to_regist) : "");
+            mPresenter.getSpan(mTvSkip[position], position == 1 ? context.getString(R.string.no_account_to_regist) : "",2);
         }
 
         updateBtn(position);

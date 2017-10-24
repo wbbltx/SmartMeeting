@@ -18,6 +18,7 @@ import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.presenter.record.CollectPageListActPresenter;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectPagesRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import butterknife.OnClick;
  * Date           2017/8/25 14:47
  */
 public class CollectPageListActivity extends BaseActivity<CollectPageListActPresenter, View>
-        implements CollectPageListActContract.View<View>, OnItemClickedListener {
+        implements CollectPageListActContract.View<View>, OnItemClickedListener, View.OnClickListener {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -40,6 +41,8 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     ImageView ivPen;
     @BindView(R.id.rv_collect_page_list)
     RecyclerView rvCollectPageList;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
     private CollectPagesRecyAdapter adapter;
     private CollectRecord activeRecord;
     private List<CollectPage> collectPageList = new ArrayList<>();
@@ -68,10 +71,18 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
         activeRecord = DataCacheUtil.getInstance().getActiveCollectRecord();
         //设置bar数据
         ivPen.setVisibility(View.GONE);
+        tvRight.setVisibility(View.VISIBLE);
+        tvRight.setText(R.string.add);
         tvTitle.setText(activeRecord.getCollectRecordName());
         //初始化适配器
         adapter = new CollectPagesRecyAdapter(this);
         rvCollectPageList.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //加载数据库数据
         mPresenter.loadAllCollectPageData();
     }
@@ -79,6 +90,7 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     @Override
     protected void initListener() {
         adapter.setOnItemClickedListener(this);
+        tvRight.setOnClickListener(this);
     }
 
     @Override
@@ -117,5 +129,14 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     @Override
     public void onLongClick(View view, int position) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.tv_right:
+                startActivity(new Intent(CollectPageListActivity.this,CollectAddTypeActivity.class));
+                break;
+        }
     }
 }

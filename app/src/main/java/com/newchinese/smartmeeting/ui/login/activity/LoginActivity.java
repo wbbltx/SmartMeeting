@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Lo
     }
 
     @Override
-    public void skipWhat() {
+    public void skipWhat(int i) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 

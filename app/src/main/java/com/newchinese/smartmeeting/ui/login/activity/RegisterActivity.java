@@ -36,6 +36,7 @@ import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
+import com.newchinese.smartmeeting.ui.mine.activity.DealActivity;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.NetUtil;
 import com.newchinese.smartmeeting.widget.EditView;
@@ -97,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private static String path = "/sdcard/myHead/";//sd路径
     private String sms, telCache;
     private String tel = "", code = "", password = "";
+    private TextView statement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +138,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPass2 = (EditView) findViewById(R.id.ev_regist_4);
         mBtnReg = (Button) findViewById(R.id.btn_regist_sub);
         mTvSkip = (TextView) findViewById(R.id.tv_regist_bottom);
+        statement = (TextView)findViewById(R.id.statement);
         if (mUi == UI_TYPE_UPD) {
             mRlIcon = (RelativeLayout) findViewById(R.id.rl_regist_icon);
             mIvIcon = (ImageView) findViewById(R.id.iv_regist_icon);
@@ -163,7 +166,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPass2.configure(getString(R.string.fill_password_again), "").setEyeMode(true);
 
         if (mPresenter != null) {
-            mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? getString(R.string.have_account_to_login) : "");
+            mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? getString(R.string.have_account_to_login) : "",2);
+            mPresenter.getSpan(statement,getResources().getString(R.string.statement),6);
         }
 
         mBtnReg.setText(mBtnTitles[mUi]);
@@ -192,8 +196,12 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     }
 
     @Override
-    public void skipWhat() {
+    public void skipWhat(int flag) {
+        if (flag == 2)
         startActivity(new Intent(this, LoginActivity.class));
+        else
+            startActivity(new Intent(this, DealActivity.class));
+
     }
 
     @Override
