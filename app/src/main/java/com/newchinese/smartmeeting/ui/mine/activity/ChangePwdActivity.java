@@ -56,9 +56,9 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         mEv3 = (EditView) findViewById(R.id.ev_update_3);
         mBtnSub = (Button) findViewById(R.id.btn_update_sub);
 
-        mEv1.configure(getString(R.string.old_password), null);
-        mEv2.configure(getString(R.string.new_password), null);
-        mEv3.configure(getString(R.string.fill_password_again), null);
+        mEv1.configure(getString(R.string.old_password), null).setEyeMode(true);
+        mEv2.configure(getString(R.string.new_password), null).setEyeMode(true);
+        mEv3.configure(getString(R.string.fill_password_again), null).setEyeMode(true);
 
         mEv1.setEditType(EditView.EDIT_TYPE_PASS);
         mEv2.setEditType(EditView.EDIT_TYPE_PASS);

@@ -32,6 +32,7 @@ import com.newchinese.smartmeeting.entity.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.entity.event.ConnectEvent;
 import com.newchinese.smartmeeting.entity.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
+import com.newchinese.smartmeeting.entity.event.OnHisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OpenBleEvent;
 import com.newchinese.smartmeeting.entity.event.ScanEvent;
 import com.newchinese.smartmeeting.entity.event.ScanResultEvent;
@@ -63,6 +64,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Description:
@@ -90,8 +92,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     RecyclerView rvPageList;
     @BindView(R.id.rl_remind)
     RelativeLayout rlRemind;
-    @BindView(R.id.progressbar)
-    ProgressBar progressBar;
+    @BindView(R.id.gifImageView)
+    GifImageView gifImageView;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
@@ -338,7 +340,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     .show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
-            EventBus.getDefault().post(new ScanResultEvent(0));
+//            EventBus.getDefault().post(new ScanResultEvent(0));
             onComplete();
         }
     }
@@ -355,9 +357,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
             CustomizedToast.showShort(this, getString(R.string.please_open_pen));
             setState(R.mipmap.pen_disconnect);
-            progressBar.setVisibility(View.GONE);
+            hideGif();
         } else {
-            XLog.d(TAG, TAG + " 搜索到笔 ");
+            XLog.d(TAG, TAG + " 搜索到笔 "+devices.size());
             for (BluetoothDevice device : devices) {
                 if (device.getName().equals(address)) {
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
@@ -372,6 +374,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 return;
             }
             if (scanResultDialog != null && !isFinishing()) {
+                EventBus.getDefault().post(new ScanResultEvent(1));
                 scanResultDialog.setContent(address, "0");
                 scanResultDialog.show();
             }
@@ -417,7 +420,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             mPresenter.disConnect();
         }
         mPresenter.connectDevice(type.getDevice());
-        progressBar.setVisibility(View.VISIBLE);
+        showGif();
     }
 
     /**
@@ -449,7 +452,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onSuccess() {
         XLog.d(TAG, TAG + " onSuccess");
-        progressBar.setVisibility(View.GONE);
+        hideGif();
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
@@ -460,7 +463,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onFailed() {
-        progressBar.setVisibility(View.GONE);
+        hideGif();
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
     }
@@ -474,7 +477,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onDisconnected() {
         XLog.d(TAG, TAG + " onDisconnected");
-        progressBar.setVisibility(View.GONE);
+        hideGif();
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
         CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
@@ -509,12 +512,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void showAnim() {
-        progressBar.setVisibility(View.VISIBLE);
+        EventBus.getDefault().post(new OnHisInfoEvent("deletingOrreading"));
+        showGif();
     }
 
     @Override
     public void dismissAnim() {
-        progressBar.setVisibility(View.GONE);
+        EventBus.getDefault().post(new OnHisInfoEvent("done"));
+        hideGif();
     }
 
     @Override
@@ -660,7 +665,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressBar.setVisibility(View.VISIBLE);
+                showGif();
             }
         });
     }
@@ -682,6 +687,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showGif(){
+        gifImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideGif(){
+        gifImageView.setVisibility(View.GONE);
     }
 }

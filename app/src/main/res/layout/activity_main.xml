@@ -67,4 +67,12 @@
                 android:gravity="center" />
         </RadioGroup>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/mask_one"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/mask_one"
+        android:visibility="gone"/>
 </RelativeLayout>

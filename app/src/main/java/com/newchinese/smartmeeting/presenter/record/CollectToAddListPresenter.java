@@ -113,8 +113,8 @@ public class CollectToAddListPresenter extends BasePresenter<CollectToAddListCon
         }
 
         if (mView != null) {
+            mView.showToast("添加成功！");
         }
-//            mView.showToast("转移成功！");
 
     }
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -21,7 +22,9 @@ import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.MainActContract;
+import com.newchinese.smartmeeting.entity.event.OnMaskClicked;
 import com.newchinese.smartmeeting.entity.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.entity.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.entity.event.OnStrokeCatchedEvent;
@@ -30,6 +33,10 @@ import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,7 +50,7 @@ import butterknife.BindView;
  * Date           2017/8/17 17:05
  */
 public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> implements MainActContract.View<BluetoothDevice>,
-        RadioGroup.OnCheckedChangeListener, OnPointListener {
+        RadioGroup.OnCheckedChangeListener, OnPointListener, View.OnClickListener {
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
     @BindView(R.id.iv_back)
@@ -52,9 +59,12 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
+    @BindView(R.id.mask_one)
+    ImageView ivMaskOne;
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
+    private Integer pageIndex;
 
     @Override
     protected int getLayoutId() {
@@ -86,12 +96,15 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         mineFragment = new MineFragment();
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
+
+        initMaskView();
     }
 
     @Override
     protected void initListener() {
         rgMain.setOnCheckedChangeListener(this);
         drawingboardAPI.setOnPointListener(this);
+        ivMaskOne.setOnClickListener(this);
     }
 
     /**
@@ -112,6 +125,17 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
             }
             //更换当前Fragment
             nowFragment = fragment;
+        }
+    }
+
+    /**
+     * 初始化蒙版
+     */
+    private void initMaskView(){
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则显示蒙版引导
+            ivMaskOne.setVisibility(View.VISIBLE);
+        }else {
+            ivMaskOne.setVisibility(View.GONE);
         }
     }
 
@@ -147,7 +171,8 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPointCatched(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-//        Log.e("test_point", "onPointCatched：" + notePoint.toString());
+//        XLog.d("test_point", "onPointCatched：" + notePoint.toString());
+        pageIndex = notePoint.getPageIndex();
         //存线点
         mPresenter.saveStrokeAndPoint(notePoint);
         //会议页才可跳页，其他的地方书写则只存数据库
@@ -163,7 +188,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onStrokeCached(int fromType, com.newchinese.coolpensdk.entity.NoteStroke noteStroke) {
-//        Log.e("test_point", "onStrokeCached：" + noteStroke.toString());
+//        XLog.d("test_point", "onStrokeCached：" + noteStroke.toString());
         EventBus.getDefault().post(new OnStrokeCatchedEvent(fromType, noteStroke));
     }
 
@@ -172,7 +197,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
      */
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
-//        Log.e("test_point", "onPageIndexChanged：" + notePoint.toString());
+//        XLog.d("test_point", "onPageIndexChanged：" + notePoint.toString());
         //存页
         mPresenter.savePage(notePoint);
         //保存录屏期间翻的页
@@ -189,7 +214,9 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         ActivityManager.RunningTaskInfo runningTaskInfo = runningTasks.get(0);
         ComponentName topActivity = runningTaskInfo.topActivity;
         if (!DrawingBoardActivity.class.getName().equals(topActivity.getClassName())) {
-            startActivity(new Intent(this, DrawingBoardActivity.class));
+            Intent intent = new Intent(this, DrawingBoardActivity.class);
+            intent.putExtra("selectPageIndex",pageIndex);
+            startActivity(intent);
         }
     }
 
@@ -204,6 +231,16 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         //刷新记录数据
         if (recordsFragment != null && recordsFragment.isAdded()) {
             ((RecordsFragment) recordsFragment).refreshData();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.mask_one:
+                ivMaskOne.setVisibility(View.GONE);
+                EventBus.getDefault().post(new OnMaskClicked());
+                break;
         }
     }
 }

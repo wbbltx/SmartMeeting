@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.widget;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,7 +25,8 @@ import com.newchinese.smartmeeting.util.log.XLog;
 public class EditView extends RelativeLayout implements TextWatcher, View.OnClickListener {
 
     private final String REGEX_PHONE = "1[3,4,5,7,8]\\d[\\s,-]?\\d{4}[\\s,-]?\\d{4}";
-    private final String REGEX_PASS = "^\\S{5,14}$";
+    private final String REGEX_CODE = "^\\S{6}$";
+    private final String REGEX_PASS = "^\\S{5,15}$";
     private TextInputLayout mTil;
     private EditText mEt;
     private TextView mTv;
@@ -67,17 +69,31 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
         mIv = (ImageView) findViewById(R.id.iv_edit_end);
     }
 
+    public EditView setMax(int length){
+        mEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(length)});
+        return this;
+    }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(CharSequence s, int start, int before, int count) {//分别是手机号码的匹配规则 密码的匹配规则(可见和不可见两种) 验证码的匹配规则
         mMatching = mEt.getInputType() == InputType.TYPE_CLASS_PHONE && s.toString().trim().matches(REGEX_PHONE)
                 || mEt.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_PASS)
-                || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && !TextUtils.isEmpty(mEt.getText().toString().trim());
-        XLog.d("hahehe", mMatching + " onTextChanged " + s);
+                || mEt.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD && s.toString().trim().matches(REGEX_PASS)
+                || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_CODE);
+//                || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && !TextUtils.isEmpty(mEt.getText().toString().trim());
+//        XLog.d("hahehe","结果0是："+
+//                (mEt.getInputType() == InputType.TYPE_CLASS_PHONE && s.toString().trim().matches(REGEX_PHONE)));
+//        XLog.d("hahehe","结果1是："+
+//                (mEt.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)));
+//        XLog.d("hahehe","结果11是："+
+//                (s.toString().trim().matches(REGEX_PASS)));
+//        XLog.d("hahehe","结果2是："+
+//                (mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_CODE)));
         if (mListener != null) {
             mListener.onMatch(this, mMatching);
         }
@@ -87,11 +103,9 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
     public void afterTextChanged(Editable s) {
         if (isEyeMode){
             if (0 == s.length()) {  //输入框为空的时候 显示忘记密码
-                XLog.d("hahehe", "afterTextChanged1 " + s.length());
                 mIv.setVisibility(GONE);
                 mTv.setVisibility(VISIBLE);
             } else {              //不为空显示小眼睛
-                XLog.d("hahehe", "afterTextChanged2 " + s.length());
                 mIv.setVisibility(VISIBLE);
                 mTv.setVisibility(GONE);
             }
@@ -116,7 +130,8 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
     private void setStyle() {
         isVisible = !isVisible;
         if (isVisible) {
-            mEt.setInputType(InputType.TYPE_CLASS_TEXT);
+            mEt.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+//            setEditType(EditView.EDIT_TYPE_PASS);
             mIv.setImageResource(R.mipmap.password_show);
         } else {
             setEditType(EditView.EDIT_TYPE_PASS);

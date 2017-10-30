@@ -46,12 +46,12 @@ import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
+import com.newchinese.smartmeeting.entity.event.OnHisInfoEvent;
 import com.newchinese.smartmeeting.entity.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.OnShareListener;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 import com.newchinese.smartmeeting.entity.listener.ShareCallBackListener;
-import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.entity.event.CheckBlueStateEvent;
@@ -69,6 +69,7 @@ import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CheckColorPopWin;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
@@ -90,6 +91,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Description:   画板Activity
@@ -132,8 +134,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     LinearLayout llInsertOperate;
     @BindView(R.id.iv_right)
     ImageView ivShare;
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
+    @BindView(R.id.gifImageView)
+    GifImageView gifImageView;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -724,11 +726,13 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         boolean bluetoothOpen = mPresenter.isBluetoothOpen();
         if (!bluetoothOpen) {
             //如果蓝牙没有打开，弹出是否打开蓝牙对话框
-            bluePopUpWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM, 0, 0);
+//            bluePopUpWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM, 0, 0);
+            CustomizedToast.showShort(this, "请开启蓝牙！");
         } else {
             //如果蓝牙已经打开，则去扫描
             EventBus.getDefault().post(new ScanEvent());
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
+            showGif();
             ivPen.setImageResource(R.mipmap.weilianjie);
         }
     }
@@ -887,12 +891,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (count == 0) {//如果没有搜索到笔，提示
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
             CustomizedToast.showShort(context, getString(R.string.please_open_pen));
-            progressBar.setVisibility(View.GONE);
+//            progressBar.setVisibility(View.GONE);
+            hideGif();
         } else {
             XLog.d(TAG, TAG + " 搜索到笔 ");
             for (BluetoothDevice device : devices) {
-                if (device.getAddress().equals(address)) {
+                XLog.d(TAG, TAG + " 搜索到笔2 " + device.getAddress());
+                if (device.getName().equals(address)) {
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
+                        XLog.d(TAG, TAG + " 搜索到笔1 " + device.getAddress());
                         EventBus.getDefault().post(new ConnectEvent(device, 0));
                         return;
                     }
@@ -959,14 +966,25 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
         XLog.d(TAG, TAG + " onSuccess");
-        progressBar.setVisibility(View.GONE);
         int flag = stateEvent.getFlag();
         if (flag == 0) {
+            showGif();
             ivPen.setImageResource(R.mipmap.weilianjie);
         } else if (flag == 1) {
+            hideGif();
             setConnState();
         } else if (flag == -1) {
+            hideGif();
             ivPen.setImageResource(R.mipmap.pen_disconnect);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(OnHisInfoEvent infoEvent) {
+        if (infoEvent.getFlag().equals("deletingOrreading")) {
+            showGif();
+        } else {
+            hideGif();
         }
     }
 
@@ -1041,6 +1059,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onDeviceClick(BluetoothDevice add) {
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
             EventBus.getDefault().post(new ConnectEvent(add, 0));
+            showGif();
         }
     }
 
@@ -1054,19 +1073,29 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            XLog.d(TAG, TAG + "onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
+            XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
             if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
                 setConnState();
             } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
                 ivPen.setImageResource(R.mipmap.weilianjie);
             } else {
                 ivPen.setImageResource(R.mipmap.pen_disconnect);
+                checkState();
             }
         }
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
+        hideGif();
+    }
+
+    private void showGif() {
+        gifImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideGif() {
+        gifImageView.setVisibility(View.GONE);
     }
 }

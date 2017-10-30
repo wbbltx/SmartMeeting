@@ -1,6 +1,9 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.newchinese.coolpensdk.entity.NotePoint;
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.R;
@@ -50,6 +54,8 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
             TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
+    @BindView(R.id.play_back_img)
+    ImageView playBackImg;
     private int selectPageIndex;
     private DataCacheUtil dataCacheUtil;
     private int playStatus = 0;//0未播放，1播放中, 2暂停
@@ -75,7 +81,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
             Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
-                    mPresenter.readData(playBackDrawview, selectPageIndex);
+                    mPresenter.readData(selectPageIndex);
                 }
             });
         }
@@ -83,7 +89,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
 
     @Override
     protected void initListener() {
-
+        playBackImg.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -102,6 +108,17 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
         tvTitle.setText(getString(R.string.record_page_index, pageIndex));
     }
 
+    @Override
+    public void insertPic(final String path, final Matrix matrix) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                playBackImg.setImageMatrix(matrix);
+                Glide.with(PlayBackActivity.this).load(path).into(playBackImg);
+            }
+        });
+    }
+
     @OnClick({R.id.play_back_start, R.id.iv_back})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -110,6 +127,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
                 finish();
                 break;
             case R.id.play_back_start: //开始按钮
+                mPresenter.hasPic(selectPageIndex);
                 playBack();
                 break;
         }

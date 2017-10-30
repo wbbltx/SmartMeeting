@@ -69,10 +69,11 @@
         android:src="@mipmap/empty_icon"
         android:visibility="gone"/>
 
-    <ProgressBar
+    <pl.droidsonroids.gif.GifImageView
         android:visibility="gone"
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:id="@+id/gifImageView"
+        android:layout_width="@dimen/gif_size"
+        android:layout_height="@dimen/gif_size"
+        android:layout_centerInParent="true"
+        android:src="@drawable/loadingicon"/>
 </RelativeLayout>

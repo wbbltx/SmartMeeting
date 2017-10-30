@@ -14,6 +14,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.util.CustomizedToast;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.EditView;
 
 /**
@@ -84,6 +85,9 @@ public class LoginPageAdapter extends PagerAdapter implements EditView.OnEditVie
         if (position == 1) {
             mEvPass[position].setEyeMode(true);
         }
+
+        mEvPhone[position].setMax(11);
+        mEvPass[position].setMax(position == 0?6:15);
 
         mEvPhone[position].setTag(position);
         mEvPass[position].setTag(position);

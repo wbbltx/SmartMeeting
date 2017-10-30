@@ -1,5 +1,8 @@
 package com.newchinese.smartmeeting.presenter.meeting;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Log;
 
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
@@ -14,6 +17,7 @@ import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,11 @@ public class PlayBackPresenter extends BasePresenter<PlayBackContract.View> impl
     private NotePage currentSelectPage;
     private int progressMax;
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;
+    private float insertImageX; //插入图片宽
+    private float insertImageY; //插入图片高
+    private float insertImageWidth;
+    private float insertImageHeight;
+    private String insertImagePath; //插入图片的路径
     @Override
     public void onPresenterCreated() {
         dataCacheUtil = DataCacheUtil.getInstance();
@@ -54,11 +63,11 @@ public class PlayBackPresenter extends BasePresenter<PlayBackContract.View> impl
 
     /**
      * 根据当前页查询出该页面的点，并保存到集合中 同时得到progressMax
-     * @param drawingBoardView
+     * @param
      * @param pageIndex
      */
     @Override
-    public void readData(final DrawingBoardView drawingBoardView, final int pageIndex) {
+    public void readData(final int pageIndex) {
         progressMax = 0;
         playBackList = new ArrayList<>();
         Runnable playBackRunnable = new Runnable() {
@@ -93,5 +102,41 @@ public class PlayBackPresenter extends BasePresenter<PlayBackContract.View> impl
             }
         };
         singleThreadExecutor.execute(playBackRunnable);
+    }
+
+    /**
+     * 如果该页有图片 则从数据库中读入
+     * @param pageIndex
+     */
+    @Override
+    public void hasPic(final int pageIndex) {
+        Runnable saveRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage currentPage = notePageDao.queryBuilder()
+                        .where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()),
+                                NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (currentPage != null && !currentPage.getInsertPicPath().isEmpty() && mView != null) {
+                    insertImagePath = currentPage.getInsertPicPath();
+                    insertImageX = currentPage.getX();
+                    insertImageY = currentPage.getY();
+                    insertImageWidth = currentPage.getWidth();
+                    insertImageHeight = currentPage.getHeight();
+                    Matrix insertImageMatrix = new Matrix();
+                    float matrixValue[] = new float[9];
+                    insertImageMatrix.getValues(matrixValue);
+                    matrixValue[0] = insertImageWidth;
+                    matrixValue[4] = insertImageHeight;
+                    matrixValue[2] = insertImageX;
+                    matrixValue[5] = insertImageY;
+                    insertImageMatrix.setValues(matrixValue);
+                    if (mView != null) {
+                        mView.insertPic(insertImagePath,insertImageMatrix);
+                    }
+                }
+            }
+        };
+        singleThreadExecutor.execute(saveRunnable);
+
     }
 }

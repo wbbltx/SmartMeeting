@@ -95,8 +95,10 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
                 albmIntent.setAction(Intent.ACTION_GET_CONTENT);
 //                Intent albmIntent = new Intent(Intent.ACTION_PICK);
 //                albmIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                if ("SettingActivity".equals(type))
+                if ("SettingActivity".equals(type)){
+                    albmIntent =new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     ((SettingActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
+                }
                 else if ("DrawingBoardActivity".equals(type))
                     ((DrawingBoardActivity) mContext).startActivityForResult(albmIntent, Constant.SELECT_PIC_KITKAT);
                 else if ("RegisterActivity".equals(type))

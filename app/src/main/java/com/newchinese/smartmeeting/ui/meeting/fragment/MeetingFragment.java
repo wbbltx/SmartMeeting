@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
+import com.newchinese.smartmeeting.entity.event.OnMaskClicked;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
@@ -23,6 +24,9 @@ import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +60,8 @@ public class MeetingFragment extends BaseSimpleFragment {
     @Override
     protected void onFragViewCreated() {
         initRecyclerView();
-        initMaskView();
+//        initMaskView();
+        EventBus.getDefault().register(this);
     }
 
     /**
@@ -74,10 +79,10 @@ public class MeetingFragment extends BaseSimpleFragment {
     /**
      * 初始化蒙版
      */
-    private void initMaskView(){
+    private void initMaskView() {
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则显示蒙版引导
             ivMaskOne.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             ivMaskOne.setVisibility(View.GONE);
         }
     }
@@ -123,14 +128,11 @@ public class MeetingFragment extends BaseSimpleFragment {
                 jumpIntent(DraftBoxActivity.class);
             }
         });
+    }
 
-        ivMaskOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ivMaskOne.setVisibility(View.GONE);
-                jumpIntent(DraftBoxActivity.class);
-            }
-        });
+    @Subscribe
+    public void onEvent(OnMaskClicked onMaskClicked) {
+        jumpIntent(DraftBoxActivity.class);
     }
 
     private void jumpIntent(Class c) {
@@ -162,5 +164,6 @@ public class MeetingFragment extends BaseSimpleFragment {
     public void onDestroy() {
         super.onDestroy();
         singleThreadExecutor.shutdownNow();
+        EventBus.getDefault().unregister(this);
     }
 }

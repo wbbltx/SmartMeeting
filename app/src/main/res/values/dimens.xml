@@ -2,4 +2,5 @@
 <resources>
     <dimen name="simple_lr_padding">15dp</dimen>
     <dimen name="simple_text_size">16sp</dimen>
+    <dimen name="gif_size">75dp</dimen>
 </resources>

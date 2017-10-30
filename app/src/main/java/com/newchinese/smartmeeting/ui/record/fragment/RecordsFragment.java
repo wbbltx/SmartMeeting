@@ -19,6 +19,7 @@ import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
 import com.newchinese.smartmeeting.ui.record.activity.CollectPageListActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;

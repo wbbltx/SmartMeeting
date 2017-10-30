@@ -154,7 +154,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         XLog.d(TAG, TAG + " onReadHistroyInfo");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
         if (mView != null){
-            mView.dismissAnim();
+            mView.showAnim();
         }
         Flowable.timer(3, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -163,6 +163,9 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
                     @Override
                     public void accept(Long aLong) throws Exception {
                         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+                        if (mView != null){
+                            mView.dismissAnim();
+                        }
                     }
                 });
     }

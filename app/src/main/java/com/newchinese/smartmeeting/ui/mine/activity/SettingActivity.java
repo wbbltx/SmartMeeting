@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.newchinese.coolpensdk.manager.BluetoothLe;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
@@ -34,6 +35,7 @@ import com.newchinese.smartmeeting.ui.login.activity.LoginActivity;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
 import org.reactivestreams.Publisher;
@@ -44,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -142,6 +145,7 @@ public class SettingActivity extends BaseSimpleActivity {
                         GreenDaoUtil.getInstance().getLoginDataDao().deleteAll();
                     }
                 }).start();
+                BluetoothLe.getDefault().disconnectBleDevice();
                 SharedPreUtils.setBoolean(Constant.IS_LOGIN, false);
                 intent = new Intent(SettingActivity.this, LoginActivity.class);
                 //清空所有栈中Activity

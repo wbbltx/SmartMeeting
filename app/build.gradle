@@ -76,4 +76,5 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 }

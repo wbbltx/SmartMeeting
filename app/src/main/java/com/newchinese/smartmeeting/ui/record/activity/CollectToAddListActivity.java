@@ -147,9 +147,6 @@ public class CollectToAddListActivity extends BaseActivity<CollectToAddListPrese
     public void onClick(View view, int position) {
         isSelectedList.set(position, !adapter.getIsSelectedList().get(position));
         adapter.setIsSelectedList(isSelectedList);
-        for (Boolean aBoolean : isSelectedList) {
-            XLog.d("hahehe", isSelectedList.size()+" 结果是：" + aBoolean);
-        }
         boolean temp = false;
         for (Boolean aBoolean : isSelectedList) {
             temp = temp | aBoolean;

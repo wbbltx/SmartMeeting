@@ -39,6 +39,7 @@ import com.newchinese.smartmeeting.presenter.login.LoginPresenterImpl;
 import com.newchinese.smartmeeting.ui.mine.activity.DealActivity;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.NetUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.EditView;
 import com.newchinese.smartmeeting.widget.TakePhotoPopWin;
 
@@ -96,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     private Bitmap headerBitmap;
     private File headerFile;
     private static String path = "/sdcard/myHead/";//sd路径
-    private String sms, telCache;
+    private String sms = "", telCache = "";
     private String tel = "", code = "", password = "";
     private TextView statement;
 
@@ -165,6 +166,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPass.configure(getString(R.string.password), "").setEyeMode(true);
         mEvPass2.configure(getString(R.string.fill_password_again), "").setEyeMode(true);
 
+        mEvPhone.setMax(11);
+        mEvCode.setMax(6);
+        mEvPass.setMax(15);
+        mEvPass2.setMax(15);
+
         if (mPresenter != null) {
             mPresenter.getSpan(mTvSkip, mUi == UI_TYPE_REG ? getString(R.string.have_account_to_login) : "",2);
             mPresenter.getSpan(statement,getResources().getString(R.string.statement),6);
@@ -226,6 +232,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         if (mUi == UI_TYPE_FOR) {
             enabled &= mEvPass2.getText().equals(mEvPass.getText());
         }
+        XLog.d("hahehe","最后结果是："+enabled);
         mBtnReg.setEnabled(enabled);
         ((GradientDrawable) mBtnReg.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
     }
@@ -289,11 +296,11 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                     String tel = mEvPhone.getText();
                     String code = mEvCode.getText();
                     String pass = mEvPass.getText();
-                    if (!tel.equals(telCache)) { //校验手机号
-                        CustomizedToast.showShort(this, getString(R.string.wrong_tel));
-                        break;
-                    } else if (!sms.equals(code)) { //校验验证码
+                    if (!sms.equals(code)){
                         CustomizedToast.showShort(this, getString(R.string.wrong_code));
+                        break;
+                    }else if (!tel.equals(telCache)) { //校验手机号
+                        CustomizedToast.showShort(this, getString(R.string.wrong_tel));
                         break;
                     }
                     if (mUi == UI_TYPE_REG) {

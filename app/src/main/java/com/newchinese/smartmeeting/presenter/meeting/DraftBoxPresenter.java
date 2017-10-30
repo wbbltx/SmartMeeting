@@ -95,7 +95,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     public void scanBlueDevice() {
         BluetoothLe
                 .getDefault()
-                .setScanPeriod(5000).startScan();
+                .setScanPeriod(5000)
+                .startScan();
     }
 
     @Override

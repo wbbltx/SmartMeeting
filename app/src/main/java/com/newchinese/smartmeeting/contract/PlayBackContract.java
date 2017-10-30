@@ -1,5 +1,8 @@
 package com.newchinese.smartmeeting.contract;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+
 import com.newchinese.coolpensdk.manager.DrawingBoardView;
 import com.newchinese.smartmeeting.base.BasePresenter;
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
@@ -16,11 +19,15 @@ public interface PlayBackContract {
 
         void setTitleText(int pageIndex);
 
+        void insertPic(String path, Matrix matrix);
+
     }
 
     interface Presenter extends BaseSimplePresenter<View>{
 
-        void readData(DrawingBoardView drawingBoardView,int pageIndex);
+        void readData(int pageIndex);
+
+        void hasPic(int pageIndex);
 
     }
 }
