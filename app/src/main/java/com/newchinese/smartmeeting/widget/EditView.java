@@ -86,14 +86,6 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
                 || mEt.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD && s.toString().trim().matches(REGEX_PASS)
                 || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_CODE);
 //                || mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && !TextUtils.isEmpty(mEt.getText().toString().trim());
-//        XLog.d("hahehe","结果0是："+
-//                (mEt.getInputType() == InputType.TYPE_CLASS_PHONE && s.toString().trim().matches(REGEX_PHONE)));
-//        XLog.d("hahehe","结果1是："+
-//                (mEt.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)));
-//        XLog.d("hahehe","结果11是："+
-//                (s.toString().trim().matches(REGEX_PASS)));
-//        XLog.d("hahehe","结果2是："+
-//                (mEt.getInputType() != InputType.TYPE_CLASS_PHONE && mEt.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) && s.toString().trim().matches(REGEX_CODE)));
         if (mListener != null) {
             mListener.onMatch(this, mMatching);
         }

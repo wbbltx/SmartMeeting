@@ -1,9 +1,14 @@
 package com.newchinese.smartmeeting.ui.mine.activity;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +19,7 @@ import com.newchinese.smartmeeting.contract.MineContract;
 import com.newchinese.smartmeeting.presenter.mine.UpdatePresenterImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 
-public class FBActivity extends AppCompatActivity implements MineContract.UpdateIVIew, BaseToolbar, View.OnClickListener {
+public class FBActivity extends AppCompatActivity implements MineContract.UpdateIVIew, BaseToolbar, View.OnClickListener, TextWatcher {
 
     private EditText mEtContact;
     private EditText mEtContent;
@@ -24,6 +29,7 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
     private String regemail = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
     private MineContract.UpdateIPresenter mPresenter;
     private ProgressDialog mPd;
+    private java.lang.String TAG = "FBActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +46,15 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     private void initListener() {
         mBtnSub.setOnClickListener(this);
+        mEtContent.addTextChangedListener(this);
+        mEtContact.addTextChangedListener(this);
     }
 
     private void initView() {
         mEtContact = (EditText) findViewById(R.id.et_fb_contact);
         mEtContent = (EditText) findViewById(R.id.et_fb_content);
         mBtnSub = (Button) findViewById(R.id.btn_fb_sub);
+        updateBtn(false);
     }
 
     @Override
@@ -99,5 +108,26 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
         if (mPresenter != null) {
             mPresenter.detach();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        boolean b = mEtContent.getText().toString().trim().length() > 0 && (mEtContact.getText().toString().trim().matches(regexp) || mEtContact.getText().toString().trim().matches(regemail));
+        updateBtn(b);
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    private void updateBtn(boolean enabled){
+        mBtnSub.setEnabled(enabled);
+        ((GradientDrawable) mBtnSub.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
     }
 }
