@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/simple_background"
-    android:padding="15dp">
+    android:padding="25dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,26 +20,26 @@
             android:id="@+id/ev_regist_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="25dp" />
 
         <com.newchinese.smartmeeting.widget.EditView
             android:id="@+id/ev_regist_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="25dp" />
 
         <com.newchinese.smartmeeting.widget.EditView
             android:id="@+id/ev_regist_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/btn_regist_sub"
-            android:layout_width="match_parent"
+            android:layout_width="265dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="37dp"
             android:background="@drawable/btn_corner_bg"
             android:text="@string/regist_title"
             android:textColor="@color/colorWhite"

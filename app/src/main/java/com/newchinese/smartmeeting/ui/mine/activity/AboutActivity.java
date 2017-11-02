@@ -8,16 +8,21 @@ import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
+import com.newchinese.smartmeeting.contract.AboutContract;
+import com.newchinese.smartmeeting.presenter.mine.AboutPresenterImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class AboutActivity extends BaseSimpleActivity {
+public class AboutActivity extends BaseSimpleActivity implements AboutContract.AboutIView {
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
+    @BindView(R.id.iv_dot)
+    ImageView ivDot;
+    private AboutContract.AboutIPresenter mPresenter;
 
     @Override
     protected int getLayoutId() {
@@ -26,7 +31,7 @@ public class AboutActivity extends BaseSimpleActivity {
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-
+        initPresenter();
     }
 
     @Override
@@ -40,6 +45,10 @@ public class AboutActivity extends BaseSimpleActivity {
 
     }
 
+    private void initPresenter(){
+        mPresenter = new AboutPresenterImpl().attach(this);
+    }
+
     @OnClick({R.id.iv_back, R.id.btn_deal, R.id.btn_update})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -51,6 +60,7 @@ public class AboutActivity extends BaseSimpleActivity {
                 break;
             case R.id.btn_update:
                 CustomizedToast.showLong(this, getString(R.string.already_new));
+                mPresenter.checkVersion();
                 break;
         }
     }

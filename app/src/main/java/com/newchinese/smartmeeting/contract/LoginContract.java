@@ -29,15 +29,6 @@ public interface LoginContract {
         void resetTime();
     }
 
-
-    abstract class LoginIView1<E> extends AppCompatActivity implements BaseView<E>, BaseToolbar {
-        abstract void skipRegist();
-
-        abstract void skipForget(String user);
-
-        abstract void skipLogin();
-    }
-
     interface LoginIPresenter<V> {
 
         void loginPhone(String user, String pass);

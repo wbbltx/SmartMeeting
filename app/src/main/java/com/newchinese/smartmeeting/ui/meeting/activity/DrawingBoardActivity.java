@@ -47,6 +47,7 @@ import com.newchinese.smartmeeting.contract.DrawingBoardActContract;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OnHisInfoEvent;
+import com.newchinese.smartmeeting.entity.event.RequestPowerEvent;
 import com.newchinese.smartmeeting.entity.listener.MulitPointTouchListener;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.OnShareListener;
@@ -108,6 +109,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     TextView tvTitle;
     @BindView(R.id.iv_pen)
     ImageView ivPen;
+    @BindView(R.id.tv_power)
+    TextView ivPower;
     @BindView(R.id.draw_view_meeting)
     DrawingBoardView drawViewMeeting;
     @BindView(R.id.iv_menu_btn)
@@ -244,6 +247,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private void initPenState() {
         int penState = dataCacheUtil.getPenState();
         if (penState == BluCommonUtils.PEN_CONNECTED) {
+            EventBus.getDefault().post(new RequestPowerEvent());
             setConnState();
         } else if (penState == BluCommonUtils.PEN_DISCONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
@@ -874,42 +878,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(ScanResultEvent scanResultEvent) {
         XLog.d(TAG, TAG + " onScanComplete ");
         int flag = scanResultEvent.getFlag();
-        if (flag == 0) {//如果是断开状态进行的搜索，应该判断
-            onComplete(this);
+        if (flag == 0) {
+            hideGif();
         } else if (flag == 1) {//如果是连接状态进行的搜索，显示结果
             scanResultDialog
                     .setContent(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME), "1")
                     .show();
-        }
-    }
-
-    protected void onComplete(Activity context) {
-        int count = scanResultDialog.getCount();
-        XLog.d(TAG, TAG + " onComplete " + count);
-        List<BluetoothDevice> devices = scanResultDialog.getDevices();
-        String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME);
-        if (count == 0) {//如果没有搜索到笔，提示
-            XLog.d(TAG, TAG + " 没有搜索到笔 ");
-            CustomizedToast.showShort(context, getString(R.string.please_open_pen));
-//            progressBar.setVisibility(View.GONE);
-            hideGif();
-        } else {
-            XLog.d(TAG, TAG + " 搜索到笔 ");
-            for (BluetoothDevice device : devices) {
-                XLog.d(TAG, TAG + " 搜索到笔2 " + device.getAddress());
-                if (device.getName().equals(address)) {
-                    if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
-                        XLog.d(TAG, TAG + " 搜索到笔1 " + device.getAddress());
-                        EventBus.getDefault().post(new ConnectEvent(device, 0));
-                        return;
-                    }
-                    break;
-                }
-            }
-            if (scanResultDialog != null) {
-                scanResultDialog.setContent(address, "0");
-                scanResultDialog.show();
-            }
         }
     }
 
@@ -933,6 +907,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
         int i = Integer.parseInt(value);
+        ivPower.setText(i+"");
+        XLog.d(TAG, TAG + " onElecReceived " + i);
         boolean lowPower = receivedEvent.isLowPower();
         if (lowPower) {
             ivPen.setImageResource(R.mipmap.pen_low_power);

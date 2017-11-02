@@ -198,6 +198,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     @Override
     public void onPageIndexChanged(int fromType, com.newchinese.coolpensdk.entity.NotePoint notePoint) {
 //        XLog.d("test_point", "onPageIndexChanged：" + notePoint.toString());
+        mPresenter.setWriteRecord();
         //存页
         mPresenter.savePage(notePoint);
         //保存录屏期间翻的页
@@ -232,6 +233,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         if (recordsFragment != null && recordsFragment.isAdded()) {
             ((RecordsFragment) recordsFragment).refreshData();
         }
+        mPresenter.checkRecord();
     }
 
     @Override

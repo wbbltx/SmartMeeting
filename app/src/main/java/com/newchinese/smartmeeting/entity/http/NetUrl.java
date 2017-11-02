@@ -23,4 +23,6 @@ public interface NetUrl {
     String UPDATE_NICK = HOST + "/user/m/update"; //更新用户昵称
     String UPDATE_ICON = HOST + "/user/m/update/icon"; //更新用户头像
     String FEED_BACK = HOST + "/user/m/feed_back"; //反馈
+
+    String VERSION_INFO = "";
 }

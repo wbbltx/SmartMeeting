@@ -34,6 +34,16 @@ public class DataCacheUtil {
     private List<CollectPage> activeCollectPageList = new ArrayList<>(); //缓存活动记录表中当前所有收藏页
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
+    private NoteRecord activeWriteRecord;
+
+    public NoteRecord getActiveWriteRecord() {
+        return activeWriteRecord;
+    }
+
+    public void setActiveWriteRecord(NoteRecord activeWriteRecord) {
+        this.activeWriteRecord = activeWriteRecord;
+    }
+
     private CollectRecord activeCollectRecord; //当前活动收藏记录
     private int progressMax;//笔记回放max
     private ArrayList<com.newchinese.coolpensdk.entity.NotePoint> playBackList;//笔记回放点的缓存

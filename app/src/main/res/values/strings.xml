@@ -42,7 +42,7 @@
     <string name="login_cancle">取消登录</string>
     <string name="wrong_tel">手机号码有误</string>
     <string name="wrong_net">网络连接失败</string>
-    <string name="third_login">第三方登录</string>
+    <string name="third_login">or</string>
     <string name="login_success">登录成功</string>
     <string name="wrong_confirm">验证码错误</string>
     <string name="active_password">动态密码</string>

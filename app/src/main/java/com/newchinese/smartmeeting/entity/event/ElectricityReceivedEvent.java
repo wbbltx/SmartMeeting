@@ -17,6 +17,10 @@ public class ElectricityReceivedEvent {
         isLowPower = lowPower;
     }
 
+    public ElectricityReceivedEvent(String value) {
+        this.value = value;
+    }
+
     public ElectricityReceivedEvent(String value, boolean isLowPower) {
 
         this.value = value;

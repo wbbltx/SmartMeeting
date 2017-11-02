@@ -55,6 +55,5 @@
         app:layout_constraintTop_toTopOf="@+id/til_edit_content"
         app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintLeft_toLeftOf="@+id/til_edit_content"
-        app:layout_constraintRight_toRightOf="@+id/til_edit_content"
-        />
+        app:layout_constraintRight_toRightOf="@+id/til_edit_content" />
 </android.support.constraint.ConstraintLayout>

@@ -8,15 +8,15 @@
         android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:paddingLeft="@dimen/simple_lr_padding"
         android:paddingRight="@dimen/simple_lr_padding">
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:paddingTop="7dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
             android:src="@mipmap/bar_back" />
 
         <TextView
@@ -24,25 +24,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginTop="5dp"
             android:text="@string/app_name"
             android:textColor="@color/simple_title"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_pen"
+            <RelativeLayout
                 android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@mipmap/pen_disconnect"
-                android:gravity="center"
-                android:textColor="@color/colorWhite" />
+                android:layout_height="32dp">
+                <ImageView
+                    android:id="@+id/iv_pen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:src="@mipmap/pen_disconnect"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:id="@+id/tv_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_right"

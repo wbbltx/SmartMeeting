@@ -32,6 +32,7 @@ import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.File;
 import java.util.List;
@@ -191,6 +192,21 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
         }
         //存当前日期
         SharedPreUtils.setString(Constant.DAY_NUM, currentDayNum);
+    }
+
+    /**
+     * 判断选择的会议类型与上次书写的是不是同一个
+     */
+    public void checkRecord() {
+        if (dataCacheUtil.getActiveWriteRecord() != null && dataCacheUtil.getActiveNoteRecord() != null){
+            if (!dataCacheUtil.getActiveWriteRecord().equals(dataCacheUtil.getActiveNoteRecord())){
+                dataCacheUtil.setActiveNoteRecord(dataCacheUtil.getActiveWriteRecord());
+            }
+        }
+    }
+
+    public void setWriteRecord(){
+        dataCacheUtil.setActiveWriteRecord(dataCacheUtil.getActiveNoteRecord());
     }
 
     /**

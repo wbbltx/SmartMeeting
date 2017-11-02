@@ -3,6 +3,7 @@ package com.newchinese.smartmeeting.entity.http;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.FeedBack;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.bean.VersionInfo;
 
 import io.reactivex.Flowable;
 import retrofit2.http.Body;
@@ -60,4 +61,8 @@ public interface ApiService {
     //微信登录
     @POST(NetUrl.LOGIN_WE_CHAT)
     Flowable<BaseResult<LoginData>> loginWeChat(@Body LoginData data);
+
+    //版本查询
+    @POST(NetUrl.VERSION_INFO)
+    Flowable<BaseResult<VersionInfo>> checkVersion();
 }

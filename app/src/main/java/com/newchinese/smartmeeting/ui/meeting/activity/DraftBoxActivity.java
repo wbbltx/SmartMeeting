@@ -1,6 +1,5 @@
 package com.newchinese.smartmeeting.ui.meeting.activity;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,14 +9,12 @@ import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,6 +85,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     TextView tvRight; //全选/全不选
     @BindView(R.id.iv_pen)
     ImageView ivPen; //笔图标
+    @BindView(R.id.tv_power)
+    TextView tvPower;
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
     @BindView(R.id.rl_remind)
@@ -150,7 +149,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
                 break;
             case BluCommonUtils.PEN_CONNECTING:
-                setState(R.mipmap.weilianjie);
+//                setState(R.mipmap.weilianjie);
                 break;
             default:
                 setState(R.mipmap.pen_disconnect);
@@ -305,28 +304,23 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().isFirstTime());
-        if (hasFocus) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-//                    if (!bluetoothOpen && DataCacheUtil.getInstance().isFirstTime()) {
-//                        bluePopUpWindow.showAtLocation(root_view, Gravity.BOTTOM, 0, 0);
-//                    } else {
-                    initView();
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().isFirstTime());
+//        if (hasFocus) {
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    initView();
+//                    if (DataCacheUtil.getInstance().isFirstTime()) {
+//                        DataCacheUtil.getInstance().setFirstTime(false);
+//                        checkBle(false);
 //                    }
-                    if (DataCacheUtil.getInstance().isFirstTime()) {
-                        DataCacheUtil.getInstance().setFirstTime(false);
-                        checkBle(false);
-                    }
-                }
-            }, 1500);
-        }
-    }
+//                }
+//            }, 1500);
+//        }
+//    }
 
     /**
      * 扫描结束调用该方法
@@ -340,7 +334,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     .show();
             EventBus.getDefault().post(new ScanResultEvent(1));
         } else {
-//            EventBus.getDefault().post(new ScanResultEvent(0));
             onComplete();
         }
     }
@@ -355,6 +348,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         String address = SharedPreUtils.getString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME);
         if (count == 0) {//如果没有搜索到笔，提示
             XLog.d(TAG, TAG + " 没有搜索到笔 ");
+            EventBus.getDefault().post(new ScanResultEvent(0));
             CustomizedToast.showShort(this, getString(R.string.please_open_pen));
             setState(R.mipmap.pen_disconnect);
             hideGif();
@@ -464,6 +458,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onFailed() {
         hideGif();
+        CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
         mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
     }
@@ -489,8 +484,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
         XLog.d(TAG, TAG + " onElecReceived " + i);
+        tvPower.setText(i+"");
+        EventBus.getDefault().post(new ElectricityReceivedEvent(s));
         boolean lowPower = DataCacheUtil.getInstance().isLowPower();
-        if (i <= 30) {//默认图标是电量正常，小于30才更换图标
+        if (i <= 30) {//默认图标是电量正常，小于30才更新图标
             if (!lowPower) {//只在电量发生变化的时候
                 EventBus.getDefault().post(new ElectricityReceivedEvent(s, true));
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_LOW);
@@ -578,6 +575,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                             ivRight.setVisibility(View.GONE);
                             ivEmpty.setVisibility(View.VISIBLE);
                         }
+                        checkBle(false);
                     }
                     if (tvRight != null) {
                         tvRight.setText(getString(R.string.select_all));
@@ -670,6 +668,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         });
     }
 
+    @Subscribe
+    public void onEvent(){
+        mPresenter.requestElectricity();
+    }
+
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
@@ -688,6 +691,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onDismiss(DialogInterface dialog) {
 //        progressBar.setVisibility(View.GONE);
+        initView();
+        hideGif();
     }
 
     private void showGif(){
