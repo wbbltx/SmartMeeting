@@ -140,6 +140,7 @@
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
     <string name="statement">注册即同意《用户协议》</string>
+    <string name="numexist">该手机号已存在，无需注册，快捷登录后去我的里设置密码即可使用普通登录！</string>
     <!--array-->
     <string-array name="selectIcon">
         <item>拍照</item>

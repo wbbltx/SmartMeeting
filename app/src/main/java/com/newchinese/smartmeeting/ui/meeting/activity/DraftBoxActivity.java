@@ -13,7 +13,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -93,6 +96,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     RelativeLayout rlRemind;
     @BindView(R.id.gifImageView)
     GifImageView gifImageView;
+    @BindView(R.id.dark_background)
+    ImageView bar;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
@@ -456,7 +461,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     @Override
-    public void onFailed() {
+    public void onFailed(int i) {//1是超时 0是其他
         hideGif();
         CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
@@ -696,10 +701,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void showGif(){
+        bar.setVisibility(View.VISIBLE);
         gifImageView.setVisibility(View.VISIBLE);
     }
 
     private void hideGif(){
         gifImageView.setVisibility(View.GONE);
+        bar.setVisibility(View.GONE);
     }
 }

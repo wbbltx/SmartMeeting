@@ -39,7 +39,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onConfirm(int tag) {//确认读取存储数据
         XLog.d(TAG, TAG + " onConfirm");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_STORAGE_CHANNEL);
-        if (mView != null){
+        if (mView != null) {
             mView.showAnim();
         }
         Flowable.timer(600, TimeUnit.MILLISECONDS)
@@ -56,7 +56,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onCancel(int i) {//删除存储数据
         XLog.d(TAG, TAG + " onCancel");
-        if (mView != null){
+        if (mView != null) {
             mView.showAnim();
         }
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
@@ -80,7 +80,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         return this;
     }
 
-    public void unInit(){
+    public void unInit() {
         mView = null;
     }
 
@@ -100,7 +100,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onConnected() {
         XLog.d(TAG, TAG + " 已连接");
         //友盟统计
-        MobclickAgent.onEvent(App.getAppliction(),"connect_success");
+        MobclickAgent.onEvent(App.getAppliction(), "connect_success");
         //连接成功将临时变量中的地址和名称放入sp中
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS, DataCacheUtil.getInstance().getDevice().getAddress());
         SharedPreUtils.setString(App.getAppliction(), BluCommonUtils.SAVE_CONNECT_BLU_INFO_NAME, DataCacheUtil.getInstance().getDevice().getName());
@@ -124,8 +124,9 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onFailed(int i) {
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_FAILED);
-        mView.onFailed();
-        XLog.d(TAG, "连接失败"+i);
+        if (mView != null)
+            mView.onFailed(i);
+        XLog.d(TAG, "连接失败" + i);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public void onReadHistroyInfo() {
         XLog.d(TAG, TAG + " onReadHistroyInfo");
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
-        if (mView != null){
+        if (mView != null) {
             mView.showAnim();
         }
         Flowable.timer(3, TimeUnit.SECONDS)
@@ -163,7 +164,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
                     @Override
                     public void accept(Long aLong) throws Exception {
                         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
-                        if (mView != null){
+                        if (mView != null) {
                             mView.dismissAnim();
                         }
                     }
@@ -182,7 +183,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void onHistroyInfoDeleted() {
         BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
-        if (mView != null){
+        if (mView != null) {
             mView.dismissAnim();
         }
     }

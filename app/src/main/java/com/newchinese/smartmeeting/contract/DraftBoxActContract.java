@@ -31,7 +31,7 @@ public interface DraftBoxActContract {
 //
         void onSuccess();
 //
-        void onFailed();
+        void onFailed(int i);
 //
         void onConnecting();
 //

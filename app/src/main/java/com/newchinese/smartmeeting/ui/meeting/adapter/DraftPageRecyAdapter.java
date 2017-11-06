@@ -14,7 +14,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +72,11 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.tvIndex.setText(notePageList.get(position).getPageIndex() + "");
         holder.tvDate.setText(DateUtils.formatLongDate1(notePageList.get(position).getDate()));
+        if (notePageList.get(position).getScreenPathList() != null && notePageList.get(position).getScreenPathList().size() != 0) {
+            holder.record_flag.setVisibility(View.VISIBLE);
+        } else {
+            holder.record_flag.setVisibility(View.GONE);
+        }
         Glide.with(context)
                 .load(notePageList.get(position).getThumbnailPath())
                 .transition(new DrawableTransitionOptions().crossFade(1000)) //淡入淡出1s
@@ -101,6 +110,8 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
         TextView tvDate;
         @BindView(R.id.rl_is_selected)
         RelativeLayout rlIsSelected;
+        @BindView(R.id.record_flag)
+        ImageView record_flag;
 
         MyViewHolder(View itemView) {
             super(itemView);

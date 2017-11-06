@@ -49,6 +49,14 @@
                 android:layout_margin="8dp"
                 android:src="@mipmap/draft_is_selected" />
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/record_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/record_flag"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
     <TextView

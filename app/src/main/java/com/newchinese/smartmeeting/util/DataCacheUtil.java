@@ -34,7 +34,7 @@ public class DataCacheUtil {
     private List<CollectPage> activeCollectPageList = new ArrayList<>(); //缓存活动记录表中当前所有收藏页
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
-    private NoteRecord activeWriteRecord;
+    private NoteRecord activeWriteRecord;//当前书写的记录
 
     public NoteRecord getActiveWriteRecord() {
         return activeWriteRecord;

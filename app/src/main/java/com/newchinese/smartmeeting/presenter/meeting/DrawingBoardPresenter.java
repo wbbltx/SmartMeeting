@@ -32,10 +32,12 @@ import com.newchinese.smartmeeting.entity.bean.NotePoint;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.bean.NoteStroke;
 import com.newchinese.smartmeeting.ui.meeting.service.RecordService;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.ImageUtil;
 import com.newchinese.smartmeeting.util.PointCacheUtil;
+import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 
 import java.io.BufferedOutputStream;

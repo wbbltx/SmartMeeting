@@ -77,8 +77,10 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     public static final int UI_TYPE_UPD = 2;//完善资料
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindView(R.id.iv_pen)
-    ImageView ivPen;
+    @BindView(R.id.rl_pen_state)
+    RelativeLayout ivPen;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
     private String[] mBtnTitles;
     private String[] mTitles;
     private EditView mEvPhone, mEvCode, mEvPass;
@@ -156,6 +158,8 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPhone.setVisibility(mUi == UI_TYPE_UPD ? View.INVISIBLE : View.VISIBLE);
         mEvCode.setVisibility(mUi == UI_TYPE_UPD ? View.INVISIBLE : View.VISIBLE);
         mEvPass.setVisibility(mUi == UI_TYPE_UPD ? View.INVISIBLE : View.VISIBLE);
+        tvRight.setVisibility(mUi == UI_TYPE_FOR ? View.VISIBLE : View.GONE);
+        mBtnReg.setVisibility(mUi == UI_TYPE_FOR ? View.GONE : View.VISIBLE);
 
         mEvPhone.setEditType(EditView.EDIT_TYPE_PHONE);
         mEvPass.setEditType(EditView.EDIT_TYPE_PASS);
@@ -165,6 +169,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvCode.configure(getString(R.string.fill_confirm_code), getString(R.string.get_confirm_code));
         mEvPass.configure(getString(R.string.password), "").setEyeMode(true);
         mEvPass2.configure(getString(R.string.fill_password_again), "").setEyeMode(true);
+        tvRight.setText(getString(R.string.btn_confirm));
 
         mEvPhone.setMax(11);
         mEvCode.setMax(6);
@@ -191,6 +196,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         mEvPass.setOnEditViewListener(this);
         mEvPass2.setOnEditViewListener(this);
         mBtnReg.setOnClickListener(this);
+        tvRight.setOnClickListener(this);
         if (mUi == UI_TYPE_UPD) {
             mIvIcon.setOnClickListener(this);
         }
@@ -283,6 +289,9 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mPd != null && mPd.isShowing()){
+            mPd.dismiss();
+        }
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -291,6 +300,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_right:
             case R.id.btn_regist_sub:
                 if (mUi == UI_TYPE_REG || mUi == UI_TYPE_FOR) {
                     String tel = mEvPhone.getText();

@@ -15,8 +15,8 @@ import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.LoginContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
-import com.newchinese.smartmeeting.model.LoginModelImpl;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
+import com.newchinese.smartmeeting.model.LoginModelImpl;
 import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
@@ -162,7 +162,8 @@ public class LoginPresenterImpl implements LoginContract.LoginIPresenter<LoginCo
                 } else if ("regist".equals(type)) {
                     CustomizedToast.showShort(App.getAppliction(), App.getContext().getString(R.string.wrong_confirm));
                 } else if ("该手机号已被注册".equals(data.msg)) {
-                    CustomizedToast.showShort(App.getAppliction(), data.msg);
+//                    CustomizedToast.showShort(App.getAppliction(), data.msg+"");
+                    CustomizedToast.showShort(App.getAppliction(),App.getAppliction().getString(R.string.numexist));
                     if (mV != null) {
                         mV.resetTime();
                     }

@@ -245,7 +245,8 @@ public class DrawingBoardView extends View {
         foreGroundCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);//0重绘过程中不允许滑动
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        layoutParams.setMargins((int) transX, (int) transY, (int) transX, (int) transY);//4个参数按顺序分别是左上右下
+        layoutParams.setMargins((int) transX, (int) transX, (int) transX, (int) transY);//4个参数按顺序分别是左上右下
+//        layoutParams.setMargins((int) transX, 0, (int) transX, 0);//4个参数按顺序分别是左上右下
         setLayoutParams(layoutParams);//此法只适合canvar外层就是最大父控件的时候
     }
 

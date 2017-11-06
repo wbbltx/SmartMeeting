@@ -227,7 +227,7 @@ public class DateUtils {
      * 将时间戳转换成时间
      */
     public static String timestampToDate2(String beginDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM.dd-HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String sd = sdf.format(new Date(Long.parseLong(beginDate)));
         return sd;
     }

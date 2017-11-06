@@ -112,6 +112,11 @@ public class CollectToAddListActivity extends BaseActivity<CollectToAddListPrese
 
     @Override
     public void showActivePage(List<NotePage> pageList) {
+        if (pageList.size() == 0){
+            CustomizedToast.showShort(this,"当前页面无内容，无法添加！");
+            finish();
+            return;
+        }
         notePageList.clear();
         notePageList.addAll(pageList);
         adapter.setNotePageList(notePageList);

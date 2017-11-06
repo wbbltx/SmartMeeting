@@ -12,6 +12,7 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
+import com.newchinese.smartmeeting.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class RecordLibAdapter extends RecyclerView.Adapter<RecordLibAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.recordLibTitle.setText(getTitle(recordPathList.get(position)));
+        holder.recordLibTitle.setText(DateUtils.timestampToDate2(getName(getTitle(recordPathList.get(position)))));
 //        holder.tvDate.setText(DateUtils.formatLongDate1(notePageList.get(position).getDate()));
 //        Glide.with(context)
 //                .load(notePageList.get(position).getThumbnailPath())
@@ -86,6 +87,10 @@ public class RecordLibAdapter extends RecyclerView.Adapter<RecordLibAdapter.MyVi
                 holder.rlIsSelected.setVisibility(View.GONE);
             }
         }
+    }
+
+    private String getName(String s){
+        return s.substring(0, s.length()-4);
     }
 
     @Override

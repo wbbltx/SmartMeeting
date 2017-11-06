@@ -38,6 +38,7 @@
             android:orientation="horizontal">
 
             <RelativeLayout
+                android:id="@+id/rl_pen_state"
                 android:layout_width="32dp"
                 android:layout_height="32dp">
                 <ImageView
