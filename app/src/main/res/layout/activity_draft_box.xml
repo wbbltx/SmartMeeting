@@ -61,12 +61,6 @@
             android:paddingRight="6dp" />
     </LinearLayout>
 
-    <ImageView
-        android:background="@color/black_alpha_55"
-        android:id="@+id/dark_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/iv_empty"
@@ -75,6 +69,14 @@
         android:layout_below="@+id/bar"
         android:background="@color/simple_background"
         android:src="@mipmap/empty_icon"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:background="@color/gray66"
+        android:id="@+id/dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone"/>
 
     <pl.droidsonroids.gif.GifImageView

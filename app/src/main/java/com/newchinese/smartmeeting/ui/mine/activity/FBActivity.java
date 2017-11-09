@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseToolbar;
@@ -23,7 +24,7 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     private EditText mEtContact;
     private EditText mEtContent;
-    private Button mBtnSub;
+    private TextView mBtnSub;
     //    private String regexp = "(^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$)|(^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$)";
     private String regexp = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$";
     private String regemail = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
@@ -53,7 +54,7 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
     private void initView() {
         mEtContact = (EditText) findViewById(R.id.et_fb_contact);
         mEtContent = (EditText) findViewById(R.id.et_fb_content);
-        mBtnSub = (Button) findViewById(R.id.btn_fb_sub);
+        mBtnSub = (TextView) findViewById(R.id.btn_fb_sub);
         updateBtn(false);
     }
 
@@ -128,6 +129,6 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     private void updateBtn(boolean enabled){
         mBtnSub.setEnabled(enabled);
-        ((GradientDrawable) mBtnSub.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
+//        ((GradientDrawable) mBtnSub.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
     }
 }

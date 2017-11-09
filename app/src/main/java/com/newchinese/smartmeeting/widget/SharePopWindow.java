@@ -36,7 +36,6 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener{
 
         mView.findViewById(R.id.share_qq).setOnClickListener(this);
         mView.findViewById(R.id.share_qzone).setOnClickListener(this);
-        mView.findViewById(R.id.share_weibo).setOnClickListener(this);
         mView.findViewById(R.id.share_moments).setOnClickListener(this);
         mView.findViewById(R.id.share_wechat).setOnClickListener(this);
         mView.findViewById(R.id.share_cancel).setOnClickListener(this);
@@ -45,10 +44,9 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener{
         this.setContentView(mView);
         //设置PopupWindow弹出窗体的宽
 //        this.setWidth(width*2/3);
-        this.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         //设置PopupWindow弹出窗体的高
-//        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.setHeight(height/2);
+        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         //设置PopupWindow弹出窗体可点击
         this.setFocusable(true);
         //设置SelectPicPopupWindow弹出窗体动画效果
@@ -83,11 +81,6 @@ public class SharePopWindow extends PopupWindow implements View.OnClickListener{
 
             case R.id.share_wechat:
                 onShareListener.onShare("3");
-                dismiss();
-                break;
-
-            case R.id.share_weibo:
-                onShareListener.onShare("4");
                 dismiss();
                 break;
             case R.id.share_cancel:

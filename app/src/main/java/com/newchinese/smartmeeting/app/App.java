@@ -42,7 +42,7 @@ public class App extends Application {
         UMShareAPI.get(this);
         //在Application中初始化酷神笔API (设置实际本的尺寸)
         DrawingboardAPI.getInstance().init(getApplicationContext(), APPKEY);
-//        DrawingboardAPI.getInstance().setBookSize(133,183);
+        DrawingboardAPI.getInstance().setBookSize(133,183);
         //初始化GreenDao
         GreenDaoUtil.getInstance().initDataBase(getApplicationContext());
         registerActivityLifecycleCallbacks(new ActivityLife());

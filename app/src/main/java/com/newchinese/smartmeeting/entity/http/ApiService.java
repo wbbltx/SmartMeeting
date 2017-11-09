@@ -3,10 +3,15 @@ package com.newchinese.smartmeeting.entity.http;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.FeedBack;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
+import com.newchinese.smartmeeting.entity.bean.RequestVersion;
 import com.newchinese.smartmeeting.entity.bean.VersionInfo;
+
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
 /**
@@ -64,5 +69,5 @@ public interface ApiService {
 
     //版本查询
     @POST(NetUrl.VERSION_INFO)
-    Flowable<BaseResult<VersionInfo>> checkVersion();
+    Flowable<BaseResult<VersionInfo>> checkVersion(@Body RequestVersion requestVersion);
 }

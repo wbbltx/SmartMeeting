@@ -18,6 +18,7 @@ import com.newchinese.smartmeeting.database.LoginDataDao;
 import com.newchinese.smartmeeting.entity.bean.LoginData;
 import com.newchinese.smartmeeting.presenter.login.WelcomePresenter;
 import com.newchinese.smartmeeting.ui.main.activity.MainActivity;
+import com.newchinese.smartmeeting.ui.main.activity.VideoActivity;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;

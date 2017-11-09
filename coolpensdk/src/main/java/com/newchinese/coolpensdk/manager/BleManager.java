@@ -451,22 +451,22 @@ public class BleManager {
         }
     };
 
-    private ScanCallback scanCallback  = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            super.onBatchScanResults(results);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            super.onScanFailed(errorCode);
-        }
-    };
+//    private ScanCallback scanCallback  = new ScanCallback() {
+//        @Override
+//        public void onScanResult(int callbackType, ScanResult result) {
+//            super.onScanResult(callbackType, result);
+//        }
+//
+//        @Override
+//        public void onBatchScanResults(List<ScanResult> results) {
+//            super.onBatchScanResults(results);
+//        }
+//
+//        @Override
+//        public void onScanFailed(int errorCode) {
+//            super.onScanFailed(errorCode);
+//        }
+//    };
 
     public void setOnBleScanListener(OnBleScanListener onBleScanListener){
         this.onBleScanListener = onBleScanListener;

@@ -16,10 +16,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,7 +73,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class RegisterActivity extends AppCompatActivity implements LoginContract.LoginIView<BaseResult<LoginData>>, EditView.OnEditViewListener, View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements LoginContract.LoginIView<BaseResult<LoginData>>, EditView.OnEditViewListener, View.OnClickListener, PopupWindow.OnDismissListener {
     public static final int UI_TYPE_REG = 0;//注册界面
     public static final int UI_TYPE_FOR = 1;//忘记密码
     public static final int UI_TYPE_UPD = 2;//完善资料
@@ -200,6 +202,7 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         if (mUi == UI_TYPE_UPD) {
             mIvIcon.setOnClickListener(this);
         }
+        takePhotoPopWin.setOnDismissListener(this);
     }
 
     @OnClick(R.id.iv_back)
@@ -357,8 +360,16 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
                     imm.hideSoftInputFromWindow(findViewById(R.id.rl_draw_base).getApplicationWindowToken(), 0);
                 }
                 takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                turnDark();
                 break;
         }
+    }
+
+    private void turnDark() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 
     @Override
@@ -520,5 +531,13 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
             mDisposable.dispose();
         }
         mEvCode.setEnd(getString(R.string.get_confirm_code), true);
+    }
+
+    @Override
+    public void onDismiss() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 }

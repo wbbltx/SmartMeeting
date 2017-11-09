@@ -30,6 +30,16 @@
             android:layout_gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="19sp" />
+
+        <TextView
+            android:id="@+id/btn_fb_sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/up_load"
+            android:layout_marginRight="20dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorWhite"
+            android:layout_gravity="end"/>
     </android.support.v7.widget.Toolbar>
 
     <EditText
@@ -40,7 +50,6 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
         android:background="@color/colorWhite"
-        android:elevation="1dp"
         android:ems="10"
         android:gravity="top"
         android:hint="@string/please_fill_fb_m"
@@ -59,10 +68,10 @@
     <EditText
         android:id="@+id/et_fb_contact"
         android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:background="@color/colorWhite"
         android:ems="10"
         android:hint="@string/please_leave_connect"
@@ -78,19 +87,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_fb_content" />
 
-    <Button
-        android:id="@+id/btn_fb_sub"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/btn_corner_bg"
-        android:text="@string/up_load"
-        android:textColor="@color/colorWhite"
-        android:textSize="18sp"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_fb_contact" />
+    <!--<Button-->
+        <!--android:id="@+id/btn_fb_sub"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--android:layout_marginTop="32dp"-->
+        <!--android:background="@drawable/btn_corner_bg"-->
+        <!--android:text="@string/up_load"-->
+        <!--android:textColor="@color/colorWhite"-->
+        <!--android:textSize="18sp"-->
+        <!--app:layout_constraintHorizontal_bias="0.501"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/et_fb_contact" />-->
 </android.support.constraint.ConstraintLayout>

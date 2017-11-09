@@ -145,7 +145,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
                 break;
             case R.id.iv_share: //分享
                 bgDark();
-                sharePopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.CENTER, 0, 0);
+                sharePopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.BOTTOM, 0, 0);
                 break;
         }
     }

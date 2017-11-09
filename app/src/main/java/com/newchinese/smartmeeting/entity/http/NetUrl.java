@@ -10,6 +10,7 @@ public interface NetUrl {
     String HOST = "http://newsso.coolpen.net"; //正式服
 //    String HOST = "http://182.92.99.12:9005"; //测试服
 //    String TEST = "http://192.168.1.65:8080"; //个人测试服
+    String THOST = "http://182.92.99.12:8087";
 
     String LOGIN_NORMAL = HOST + "/user/m/login"; //普通登录
     String DYNAMIC_PASS = HOST + "/user/m/sms_fastLogin"; //快捷登录
@@ -24,5 +25,5 @@ public interface NetUrl {
     String UPDATE_ICON = HOST + "/user/m/update/icon"; //更新用户头像
     String FEED_BACK = HOST + "/user/m/feed_back"; //反馈
 
-    String VERSION_INFO = "";
+    String VERSION_INFO = THOST+"/sas/wiseMeeting/app_v";//版本信息
 }

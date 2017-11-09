@@ -34,6 +34,7 @@ import com.newchinese.smartmeeting.entity.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OnHisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OpenBleEvent;
+import com.newchinese.smartmeeting.entity.event.RequestPowerEvent;
 import com.newchinese.smartmeeting.entity.event.ScanEvent;
 import com.newchinese.smartmeeting.entity.event.ScanResultEvent;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
@@ -98,6 +99,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     GifImageView gifImageView;
     @BindView(R.id.dark_background)
     ImageView bar;
+    private int time = 0;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
     private PopupWindow pwCreateRecord;
@@ -122,7 +124,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
-            startActivity(new Intent(this, MaskActivity.class));
+//            startActivity(new Intent(this, MaskActivity.class));
+            showMask(true,R.mipmap.mask_two);
         }
         XLog.d(TAG, TAG + "onViewCreated " + isFinishing());
         super.onViewCreated(savedInstanceState);
@@ -147,6 +150,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void initView() {
         switch (DataCacheUtil.getInstance().getPenState()) {
             case BluCommonUtils.PEN_CONNECTED:
+                mPresenter.requestElectricity();
                 if (DataCacheUtil.getInstance().isLowPower()) {
                     setState(R.mipmap.pen_low_power);
                 } else {
@@ -178,12 +182,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         ivRight.setVisibility(View.GONE);
         scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
-        XLog.d(TAG, TAG + "initStateAndData " + isFinishing());
         //初始化Adapter
         adapter = new DraftPageRecyAdapter(this);
         rvPageList.setAdapter(adapter);
-//        //初始化蓝牙图标状态
-//        initView();
     }
 
     @Override
@@ -194,6 +195,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         adapter.setOnItemClickedListener(this);
         tvCancel.setOnClickListener(this);
         tvCreate.setOnClickListener(this);
+        ivEmpty.setOnClickListener(this);
     }
 
     @Override
@@ -215,6 +217,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     createDialog();
                 } else {
                     Toast.makeText(this, getString(R.string.please_select_record), Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.iv_empty:
+                if (time == 0){
+                    showMask(false,0);
+                    checkBle(false);
+                }else if (time == 1){
+                    showMask(false,0);
                 }
                 break;
         }
@@ -309,24 +320,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().isFirstTime());
-//        if (hasFocus) {
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    initView();
-//                    if (DataCacheUtil.getInstance().isFirstTime()) {
-//                        DataCacheUtil.getInstance().setFirstTime(false);
-//                        checkBle(false);
-//                    }
-//                }
-//            }, 1500);
-//        }
-//    }
-
     /**
      * 扫描结束调用该方法
      */
@@ -358,9 +351,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             setState(R.mipmap.pen_disconnect);
             hideGif();
         } else {
-            XLog.d(TAG, TAG + " 搜索到笔 "+devices.size());
+            XLog.d(TAG, TAG + " 搜索到笔 " + devices.size());
             for (BluetoothDevice device : devices) {
-                if (device.getName().equals(address)) {
+                if (!address.equals("") && device.getName().equals(address)) {
                     if (DataCacheUtil.getInstance().getPenState() != BluCommonUtils.PEN_CONNECTED) {
                         EventBus.getDefault().post(new ConnectEvent(device, 0));
                         return;
@@ -451,6 +444,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onSuccess() {
         XLog.d(TAG, TAG + " onSuccess");
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)){
+            showMask(true,R.mipmap.mask_three);
+            time ++;
+        }
+        SharedPreUtils.setBoolean(BluCommonUtils.IS_FIRST_INSTALL, false); //首次安装标记置否
         hideGif();
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
@@ -489,7 +487,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onElecReceived(String s) {
         int i = Integer.parseInt(s);
         XLog.d(TAG, TAG + " onElecReceived " + i);
-        tvPower.setText(i+"");
+        tvPower.setText(i + "");
         EventBus.getDefault().post(new ElectricityReceivedEvent(s));
         boolean lowPower = DataCacheUtil.getInstance().isLowPower();
         if (i <= 30) {//默认图标是电量正常，小于30才更新图标
@@ -580,7 +578,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                             ivRight.setVisibility(View.GONE);
                             ivEmpty.setVisibility(View.VISIBLE);
                         }
-                        checkBle(false);
+                        XLog.d(TAG, "hahehe " + SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true));
+                        if (!SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+                            checkBle(false);
+                        }
                     }
                     if (tvRight != null) {
                         tvRight.setText(getString(R.string.select_all));
@@ -674,7 +675,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     @Subscribe
-    public void onEvent(){
+    public void onEvent(RequestPowerEvent requestPowerEvent) {
         mPresenter.requestElectricity();
     }
 
@@ -700,13 +701,22 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hideGif();
     }
 
-    private void showGif(){
+    private void showGif() {
         bar.setVisibility(View.VISIBLE);
         gifImageView.setVisibility(View.VISIBLE);
     }
 
-    private void hideGif(){
+    private void hideGif() {
         gifImageView.setVisibility(View.GONE);
         bar.setVisibility(View.GONE);
+    }
+
+    private void showMask(boolean show, int res) {
+        if (show) {
+            ivEmpty.setVisibility(View.VISIBLE);
+            ivEmpty.setImageResource(res);
+        }else {
+            ivEmpty.setImageResource(R.mipmap.empty_icon);
+        }
     }
 }

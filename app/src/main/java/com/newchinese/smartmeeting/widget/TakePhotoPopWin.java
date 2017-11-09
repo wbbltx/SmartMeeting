@@ -62,12 +62,12 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
         // 设置视图
         this.setContentView(this.view);
         // 设置弹出窗体的宽和高
-        this.setHeight(RelativeLayout.LayoutParams.MATCH_PARENT);
+        this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
         this.setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
         // 设置弹出窗体可点击
         this.setFocusable(true);
         // 实例化一个ColorDrawable颜色为透明
-        ColorDrawable dw = new ColorDrawable(0x00000000);
+        ColorDrawable dw = new ColorDrawable(0x333333);
         // 设置弹出窗体的背景
         this.setBackgroundDrawable(dw);
         // 设置弹出窗体显示时的动画，从底部向上弹出

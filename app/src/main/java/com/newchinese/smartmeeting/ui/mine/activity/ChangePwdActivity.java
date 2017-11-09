@@ -29,6 +29,7 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
     private ProgressDialog mPd;
     private MineContract.UpdateIPresenter mPresenter;
     private boolean hasPassword;
+    private TextView tvRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         mEv1 = (EditView) findViewById(R.id.ev_update_1);
         mEv2 = (EditView) findViewById(R.id.ev_update_2);
         mEv3 = (EditView) findViewById(R.id.ev_update_3);
-        mBtnSub = (Button) findViewById(R.id.btn_update_sub);
+        tvRight = (TextView) findViewById(R.id.tv_right);
 
         mEv1.configure(getString(R.string.old_password), null).setEyeMode(true);
         mEv2.configure(getString(R.string.new_password), null).setEyeMode(true);
@@ -64,6 +65,8 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         mEv2.setEditType(EditView.EDIT_TYPE_PASS);
         mEv3.setEditType(EditView.EDIT_TYPE_PASS);
 
+        tvRight.setVisibility(View.VISIBLE);
+        tvRight.setText(getString(R.string.save));
         if (hasPassword) {
             tvTitle.setText(getString(R.string.change_password));
             mEv1.setVisibility(View.VISIBLE);
@@ -74,7 +77,7 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
     }
 
     private void initListener() {
-        mBtnSub.setOnClickListener(this);
+        tvRight.setOnClickListener(this);
         findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +89,7 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_update_sub:
+            case R.id.tv_right:
                 if (mPresenter != null) {
                     if (hasPassword) { //修改密码
                         if (!mEv1.mMatching || !mEv2.mMatching) {

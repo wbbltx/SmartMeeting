@@ -9,31 +9,34 @@
 
     <include layout="@layout/bar_base" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="55dp"
-        android:paddingTop="35dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
 
         <EditText
             android:id="@+id/et_nick_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
+            android:layout_height="50dp"
+            android:background="@color/colorWhite"
             android:hint="@string/input_rules"
             android:lines="1"
             android:maxLength="15"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
             android:textColor="@color/simple_text"
             android:textColorHint="@color/gray9"
             android:textCursorDrawable="@drawable/shape_cursor_color"
             android:textSize="14sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#313131" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/delete_nick_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="17dp"
+            android:padding="10dp"
+            android:src="@mipmap/delete_name"
+            android:layout_centerVertical="true"
+            android:layout_alignRight="@id/et_nick_name"/>
+    </RelativeLayout>
 </LinearLayout>

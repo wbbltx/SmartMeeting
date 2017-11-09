@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/simple_background"
-        android:paddingBottom="19dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:paddingTop="14dp">
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"

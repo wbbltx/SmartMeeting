@@ -9,8 +9,8 @@ android {
         applicationId "com.newchinese.smartmeeting"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.1.7"
+        versionCode 3
+        versionName "1.2.10"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -74,7 +74,7 @@ dependencies {
     compile 'com.xw.repo:bubbleseekbar:3.6-lite'
     compile 'com.android.support:design:25.3.1'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 }

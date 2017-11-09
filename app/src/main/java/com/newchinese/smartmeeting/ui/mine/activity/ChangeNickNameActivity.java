@@ -18,7 +18,9 @@ import com.newchinese.smartmeeting.entity.http.ApiService;
 import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.entity.http.XApi;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.GreenDaoUtil;
+import com.newchinese.smartmeeting.util.log.XLog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -80,7 +82,7 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_right})
+    @OnClick({R.id.iv_back, R.id.tv_right, R.id.delete_nick_name})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -111,6 +113,10 @@ public class ChangeNickNameActivity extends BaseSimpleActivity {
                                 }
                             });
                 }
+                break;
+
+            case R.id.delete_nick_name:
+                etNickName.setText("");
                 break;
         }
     }

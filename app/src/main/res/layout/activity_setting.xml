@@ -12,15 +12,17 @@
         layout="@layout/bar_base" />
 
     <LinearLayout
+        android:id="@+id/hahaha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bar"
+        android:layout_marginTop="15dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_header"
             style="@style/simple_white_back"
-            android:layout_height="60dp">
+            android:layout_height="80dp">
 
             <TextView
                 style="@style/simple_text"
@@ -29,8 +31,8 @@
 
             <ImageView
                 android:id="@+id/iv_header"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:scaleType="fitXY"
@@ -40,7 +42,7 @@
         <RelativeLayout
             android:id="@+id/rl_nick_name"
             style="@style/simple_white_back"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="15dp">
 
             <TextView
                 style="@style/simple_text"
@@ -50,16 +52,25 @@
             <TextView
                 android:id="@+id/tv_nick_name"
                 style="@style/simple_text"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/hehehe"
+                android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
                 android:maxLength="14" />
+
+            <ImageView
+                android:id="@+id/hehehe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_right_arrow" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_change_pwd"
             android:visibility="visible"
             style="@style/simple_white_back"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="1dp">
 
             <TextView
                 style="@style/simple_text"
@@ -71,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/iv_arrow"
                 android:text="@string/change"
                 android:textColor="@color/simple_blue"
@@ -87,17 +98,15 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <Button
+    <TextView
         android:id="@+id/btn_exit_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/shape_blue_circle_back"
+        android:layout_height="50dp"
+        android:layout_below="@id/hahaha"
+        android:layout_marginTop="45dp"
+        android:background="@color/colorWhite"
+        android:gravity="center"
         android:text="@string/exit_login"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/simple_blue"
         android:textSize="18sp" />
 </RelativeLayout>

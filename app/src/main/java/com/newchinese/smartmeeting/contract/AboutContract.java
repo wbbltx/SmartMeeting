@@ -18,6 +18,8 @@ public interface AboutContract {
         void checkVersion();
 
         void loading();
+
+        void result();
     };
 
     interface AboutIModel{

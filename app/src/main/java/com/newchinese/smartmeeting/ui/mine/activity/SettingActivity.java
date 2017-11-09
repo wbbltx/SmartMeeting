@@ -11,7 +11,9 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +63,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * 设置Activity
  */
-public class SettingActivity extends BaseSimpleActivity {
+public class SettingActivity extends BaseSimpleActivity implements PopupWindow.OnDismissListener {
     private static String path = "/sdcard/myHead/";//sd路径
     @BindView(R.id.tv_title)
     TextView tvTitle;
@@ -115,7 +117,7 @@ public class SettingActivity extends BaseSimpleActivity {
 
     @Override
     protected void initListener() {
-
+        takePhotoPopWin.setOnDismissListener(this);
     }
 
     @OnClick({R.id.iv_back, R.id.rl_header, R.id.rl_nick_name, R.id.rl_change_pwd, R.id.btn_exit_login})
@@ -127,6 +129,7 @@ public class SettingActivity extends BaseSimpleActivity {
                 break;
             case R.id.rl_header: //修改头像
                 takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                turnDark();
                 break;
             case R.id.rl_nick_name: //修改昵称
                 intent = new Intent(SettingActivity.this, ChangeNickNameActivity.class);
@@ -153,6 +156,13 @@ public class SettingActivity extends BaseSimpleActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    private void turnDark() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 
     @Override
@@ -403,5 +413,13 @@ public class SettingActivity extends BaseSimpleActivity {
         }
         System.gc();
         super.onDestroy();
+    }
+
+    @Override
+    public void onDismiss() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 1f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 }

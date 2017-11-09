@@ -20,12 +20,13 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/about_us_icon" />
 
-    <Button
+    <TextView
         android:id="@+id/btn_deal"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_above="@+id/btn_update"
         android:layout_margin="15dp"
+        android:gravity="center"
         android:background="@drawable/btn_conner_white"
         android:text="@string/service"
         android:textColor="@color/simple_blue"

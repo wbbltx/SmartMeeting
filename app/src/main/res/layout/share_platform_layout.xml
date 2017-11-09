@@ -2,91 +2,82 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#f2f2f2"
     android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="@string/share_to"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@mipmap/share_bg"
-        android:orientation="vertical">
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:id="@+id/share_wechat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:drawableTop="@mipmap/share_wechat"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/share_to"
-            android:textSize="20sp" />
+            android:text="@string/wechat" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/share_moments"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="80dp"
-            android:paddingRight="80dp">
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:drawableTop="@mipmap/share_moments"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/we_friend" />
 
-            <TextView
-                android:id="@+id/share_wechat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:drawableTop="@mipmap/share_wechat"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/wechat" />
+        <TextView
+            android:id="@+id/share_qq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/share_moments"
+            android:layout_below="@+id/share_moments"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:drawableTop="@mipmap/share_qq"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/qqchat" />
 
-            <TextView
-                android:id="@+id/share_moments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:drawablePadding="5dp"
-                android:drawableTop="@mipmap/share_moments"
-                android:padding="10dp"
-                android:text="@string/we_friend" />
-
-            <TextView
-                android:id="@+id/share_qq"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="5dp"
-                android:drawableTop="@mipmap/share_qq"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/qqchat"
-                android:layout_below="@+id/share_moments"
-                android:layout_alignStart="@+id/share_moments" />
-
-            <TextView
-                android:id="@+id/share_qzone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/share_wechat"
-                android:drawablePadding="5dp"
-                android:drawableTop="@mipmap/share_qzone"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/qzone" />
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/share_weibo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/share_moments"
-                android:layout_below="@id/share_moments"
-                android:drawablePadding="5dp"
-                android:drawableTop="@mipmap/share_weibo"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/weibo" />
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/share_qzone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/share_wechat"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:drawableTop="@mipmap/share_qzone"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/qzone" />
     </LinearLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/share_cancel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:src="@mipmap/share_cancel" />
+        android:layout_height="49dp"
+        android:gravity="center"
+        android:background="@color/colorWhite"
+        android:textColor="@color/simple_blue"
+        android:textSize="20sp"
+        android:text="@string/btn_cancel"/>
 </LinearLayout>

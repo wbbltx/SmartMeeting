@@ -20,6 +20,8 @@
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         android:text="@string/au_title"
+        android:drawableStart="@mipmap/about_us"
+        android:drawablePadding="10dp"
         android:textColor="@color/gray5"
         android:textSize="16sp"
         app:layout_constraintHorizontal_bias="0.0"
@@ -116,6 +118,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@string/pen_info"
+            android:drawableStart="@mipmap/pen_name"
+            android:drawablePadding="10dp"
             android:textColor="@color/gray5"
             android:textSize="16sp" />
 
@@ -142,6 +146,8 @@
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         android:text="@string/fb_title"
+        android:drawableStart="@mipmap/feedback"
+        android:drawablePadding="10dp"
         android:textColor="@color/gray5"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
