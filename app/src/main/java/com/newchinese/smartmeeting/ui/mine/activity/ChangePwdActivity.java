@@ -1,6 +1,8 @@
 package com.newchinese.smartmeeting.ui.mine.activity;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -22,7 +24,7 @@ import com.newchinese.smartmeeting.widget.EditView;
  * author         xulei
  * Date           2017/9/26 11:19
  */
-public class ChangePwdActivity extends AppCompatActivity implements MineContract.UpdateIVIew, View.OnClickListener {
+public class ChangePwdActivity extends AppCompatActivity implements MineContract.UpdateIVIew, View.OnClickListener, EditView.OnEditViewListener {
     private TextView tvTitle;
     private EditView mEv1, mEv2, mEv3;
     private Button mBtnSub;
@@ -66,6 +68,7 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         mEv3.setEditType(EditView.EDIT_TYPE_PASS);
 
         tvRight.setVisibility(View.VISIBLE);
+        tvRight.setTextColor(getResources().getColor(R.color.gray9));
         tvRight.setText(getString(R.string.save));
         if (hasPassword) {
             tvTitle.setText(getString(R.string.change_password));
@@ -78,6 +81,9 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
 
     private void initListener() {
         tvRight.setOnClickListener(this);
+        mEv1.setOnEditViewListener(this);
+        mEv2.setOnEditViewListener(this);
+        mEv3.setOnEditViewListener(this);
         findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,4 +165,27 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
             mPresenter.detach();
         }
     }
+
+    @Override
+    public void onMatch(EditView view, boolean matching) {
+        updateBtn();
+    }
+
+    @Override
+    public void onEndClick(View view) {
+
+    }
+
+    @Override
+    public void onEditError(String err) {
+
+    }
+
+    private void updateBtn() {
+        boolean enabled = (mEv1.mMatching && mEv2.mMatching && mEv3.mMatching);
+        tvRight.setEnabled(enabled);
+//        ((GradientDrawable) mBtnReg.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
+        tvRight.setTextColor(enabled ? getResources().getColor(R.color.colorWhite) : Color.parseColor("#999999"));
+    }
+
 }

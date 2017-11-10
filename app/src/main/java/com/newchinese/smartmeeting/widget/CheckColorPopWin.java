@@ -110,7 +110,12 @@ public class CheckColorPopWin extends PopupWindow {
                             public void onSelectFinish(int color) {
                                 lastColor = color;
                                 colors[5] = color;
+
+                                resetSelect();
+                                isSelectedList.set(5, true);
+                                hListViewAdapter.setIsSelectedList(isSelectedList);
                                 hListViewAdapter.notifyDataSetChanged();
+
                                 SharedPreUtils.setInteger(mContext, "lastcolor", color);
                                 DataCacheUtil.getInstance().setCurrentColorPosition(5);
                                 onSelectListener.onSelect();

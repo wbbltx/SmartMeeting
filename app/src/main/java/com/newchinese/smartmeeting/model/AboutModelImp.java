@@ -1,5 +1,8 @@
 package com.newchinese.smartmeeting.model;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.google.gson.Gson;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.AboutContract;
@@ -12,6 +15,7 @@ import com.newchinese.smartmeeting.entity.http.NetError;
 import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.entity.http.XApi;
+import com.newchinese.smartmeeting.ui.mine.service.UpdateService;
 import com.newchinese.smartmeeting.util.DeviceUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 
@@ -33,16 +37,21 @@ public class AboutModelImp implements AboutContract.AboutIModel {
 
     private final AboutContract.AboutIPresenter mPresenter;
     private final ApiService mServices;
+    private final Context context;
+    private String interiorAppUrl;
 
-    public AboutModelImp(AboutContract.AboutIPresenter aboutIPresenter) {
+    public AboutModelImp(AboutContract.AboutIPresenter aboutIPresenter, Context context) {
         this.mPresenter = aboutIPresenter;
+        this.context = context;
         XApi.registerProvider(new NetProviderImpl());
         mServices = XApi.get(NetUrl.THOST, ApiService.class);
     }
 
     @Override
     public void checkVersion() {
-        Flowable<BaseResult<VersionInfo>> baseResultFlowable = mServices.checkVersion(new RequestVersion().setPlatform("1").setVersion("1.0"));
+        RequestVersion requestVersion = new RequestVersion().setPlatform("1").setVersion("1.0");
+
+        Flowable<BaseResult<VersionInfo>> baseResultFlowable = mServices.checkVersion(requestVersion);
 
         baseResultFlowable
                 .subscribeOn(Schedulers.io())
@@ -59,16 +68,24 @@ public class AboutModelImp implements AboutContract.AboutIModel {
                 .subscribe(new ApiSubscriber<BaseResult<VersionInfo>>() {
                     @Override
                     protected void onFail(NetError error) {
-                        XLog.d("hahehe"," onFail "+error.getMessage());
+                        XLog.d("hahehe", " onFail " + error.getMessage());
                     }
 
                     @Override
                     public void onNext(BaseResult<VersionInfo> versionInfoBaseResult) {
-                        XLog.d("hahehe",versionInfoBaseResult.msg+" ++ "+versionInfoBaseResult.data);
-                        DeviceUtils.getVersionCode(App.getAppliction());
-
-//                        mPresenter.result();
+                        VersionInfo data = versionInfoBaseResult.data;
+                        XLog.d("hahehe", versionInfoBaseResult.msg + " ++ " + data);
+                        String versionCode = DeviceUtils.getVersionCode(App.getAppliction());
+                        if (Integer.parseInt(versionCode) < Integer.parseInt(data.getVersion())) {
+                            interiorAppUrl = data.getInteriorAppUrl();
+                            mPresenter.showDialog();
+                        }
                     }
                 });
+    }
+
+    @Override
+    public void downLoad() {
+        context.startService(new Intent(context,UpdateService.class));
     }
 }

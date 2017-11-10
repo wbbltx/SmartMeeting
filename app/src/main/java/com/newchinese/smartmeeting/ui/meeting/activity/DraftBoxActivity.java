@@ -125,7 +125,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void onViewCreated(Bundle savedInstanceState) {
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
 //            startActivity(new Intent(this, MaskActivity.class));
-            showMask(true,R.mipmap.mask_two);
+            showMask(true, R.mipmap.mask_two);
         }
         XLog.d(TAG, TAG + "onViewCreated " + isFinishing());
         super.onViewCreated(savedInstanceState);
@@ -195,7 +195,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         adapter.setOnItemClickedListener(this);
         tvCancel.setOnClickListener(this);
         tvCreate.setOnClickListener(this);
-        ivEmpty.setOnClickListener(this);
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+            ivEmpty.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -221,11 +223,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 break;
 
             case R.id.iv_empty:
-                if (time == 0){
-                    showMask(false,0);
+                if (time == 0) {
+                    showMask(false, 0);
                     checkBle(false);
-                }else if (time == 1){
-                    showMask(false,0);
+                } else if (time == 1) {
+                    showMask(false, 0);
                 }
                 break;
         }
@@ -393,6 +395,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED && !isClick) {
                 mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
             } else {
+                if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+                    createHintDialog();
+                    return;
+                }
                 if (!mPresenter.isScanning()) {
                     EventBus.getDefault().post(new ScanEvent());
                     mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
@@ -444,9 +450,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Override
     public void onSuccess() {
         XLog.d(TAG, TAG + " onSuccess");
-        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)){
-            showMask(true,R.mipmap.mask_three);
-            time ++;
+        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+            showMask(true, R.mipmap.mask_three);
+            time++;
         }
         SharedPreUtils.setBoolean(BluCommonUtils.IS_FIRST_INSTALL, false); //首次安装标记置否
         hideGif();
@@ -476,6 +482,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onDisconnected() {
         XLog.d(TAG, TAG + " onDisconnected");
         hideGif();
+        tvPower.setText("");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
 //        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_DISCONNECT);
         CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
@@ -578,7 +585,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                             ivRight.setVisibility(View.GONE);
                             ivEmpty.setVisibility(View.VISIBLE);
                         }
-                        XLog.d(TAG, "hahehe " + SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true));
                         if (!SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
                             checkBle(false);
                         }
@@ -696,7 +702,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-//        progressBar.setVisibility(View.GONE);
         initView();
         hideGif();
     }
@@ -714,9 +719,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private void showMask(boolean show, int res) {
         if (show) {
             ivEmpty.setVisibility(View.VISIBLE);
+            ivEmpty.setBackground(getResources().getDrawable(R.mipmap.empty_icon));
             ivEmpty.setImageResource(res);
-        }else {
+        } else {
             ivEmpty.setImageResource(R.mipmap.empty_icon);
+            ivEmpty.setOnClickListener(null);
         }
     }
 }

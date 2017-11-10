@@ -85,13 +85,13 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenter, View> implem
     @Override
     public void jumpActivity() {
         Intent intent;
-        if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则跳引导页
+        boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
+        if (!isLogin) { //首次安装则跳引导页
             intent = new Intent(WelcomeActivity.this, GuideActivity.class);
         } else {
             LoginDataDao loginDataDao = GreenDaoUtil.getInstance().getLoginDataDao();
             LoginData loginData = loginDataDao.queryBuilder().unique();
             //判断是否登录过
-            boolean isLogin = SharedPreUtils.getBoolean(Constant.IS_LOGIN, false);
             if (loginData != null && isLogin) {
                 intent = new Intent(WelcomeActivity.this, MainActivity.class);
             } else {

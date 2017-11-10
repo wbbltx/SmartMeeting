@@ -74,12 +74,12 @@
     <string name="not_select_all">全不选</string>
     <string name="loading_media">正在录屏</string>
     <string name="unknow_service">未知设备</string>
-    <string name="scan_blue_pen">扫描蓝牙笔</string>
-    <string name="select_photo">选择本地照片</string>
+    <string name="scan_blue_pen">正在扫描</string>
+    <string name="select_photo">从相册选择照片</string>
     <string name="follow_weibo">关注官方微博</string>
     <string name="change_record_title">会议名称</string>
     <string name="write_page_index">| 第%d页</string>
-    <string name="record_page_index">录屏，第%d页</string>
+    <string name="record_page_index">笔迹回放</string>
     <string name="please_collect">请将以下记录归档！</string>
     <string name="create_current_record">生成本次档案</string>
     <string name="please_input_title">请输入记录标题名称</string>
@@ -136,11 +136,15 @@
     <string name="wrong_connect">联系方式不正确</string>
     <string name="loading_request_m">正在请求…</string>
     <string name="please_fill_fb">请填写反馈内容</string>
-    <string name="input_rules">最长包含15个汉字字符</string>
+    <string name="input_rules">最长包含18个汉字字符</string>
     <string name="please_fill_fb_m">请填写您要反馈的内容…</string>
     <string name="please_leave_connect">请留下您的联系方式：手机/邮箱</string>
     <string name="statement">注册即同意《用户协议》</string>
     <string name="numexist">该手机号已存在，无需注册，快捷登录后去我的里设置密码即可使用普通登录！</string>
+    
+    <string name="update_dialog">有新版本，是否更新</string>
+    <string name="update_nexttime">下次再说</string>
+    <string name="update_now">现在更新</string>
     <!--array-->
     <string-array name="selectIcon">
         <item>拍照</item>

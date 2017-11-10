@@ -730,4 +730,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     public boolean isScanning() {
         return BluetoothLe.getDefault().getScanning();
     }
+
+    public void stopScan(){
+        BluetoothLe.getDefault().stopScan();
+    }
 }

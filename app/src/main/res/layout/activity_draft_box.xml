@@ -61,29 +61,30 @@
             android:paddingRight="6dp" />
     </LinearLayout>
 
-
+<!--本页面没有内容时 显示的图案-->
     <ImageView
         android:id="@+id/iv_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/bar"
         android:background="@color/simple_background"
-        android:src="@mipmap/empty_icon"
         android:scaleType="fitXY"
-        android:visibility="gone"/>
+        android:src="@mipmap/empty_icon"
+        android:visibility="gone" />
 
+    <!--搜索显示加载图标时 背景变暗-->
     <ImageView
-        android:background="@color/gray66"
         android:id="@+id/dark_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
-
+        android:background="@color/gray66"
+        android:visibility="gone" />
+    <!--加载图标-->
     <pl.droidsonroids.gif.GifImageView
-        android:visibility="gone"
         android:id="@+id/gifImageView"
         android:layout_width="@dimen/gif_size"
         android:layout_height="@dimen/gif_size"
         android:layout_centerInParent="true"
-        android:src="@drawable/loadingicon"/>
+        android:src="@drawable/loadingicon"
+        android:visibility="gone" />
 </RelativeLayout>

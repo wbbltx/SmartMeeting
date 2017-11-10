@@ -93,7 +93,7 @@ public class MineFragment extends BaseSimpleFragment implements View.OnClickList
         Log.e("test_login",""+data.toString());
         if (data != null) {
             Glide.with(this).load(data.icon)
-                    .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_mine)
+                    .apply(new RequestOptions().circleCrop().placeholder(R.mipmap.default_mine)
                             .error(R.mipmap.default_mine))
                     .into(mIvIcon);
             mTvNick.setText(data.nickname);

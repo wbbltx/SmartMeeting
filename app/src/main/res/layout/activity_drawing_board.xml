@@ -140,6 +140,14 @@
             style="@style/record_text" />
     </RelativeLayout>
 
+    <!--搜索显示加载图标时 背景变暗-->
+    <ImageView
+        android:id="@+id/dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray66"
+        android:visibility="gone" />
+
     <pl.droidsonroids.gif.GifImageView
         android:visibility="gone"
         android:id="@+id/gifImageView"

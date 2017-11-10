@@ -129,6 +129,6 @@ public class FBActivity extends AppCompatActivity implements MineContract.Update
 
     private void updateBtn(boolean enabled){
         mBtnSub.setEnabled(enabled);
-//        ((GradientDrawable) mBtnSub.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
+        mBtnSub.setTextColor(enabled ? getResources().getColor(R.color.colorWhite) : Color.parseColor("#999999"));
     }
 }

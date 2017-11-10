@@ -50,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@mipmap/password_hide"
+        android:layout_marginTop="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/til_edit_content"
         app:layout_constraintTop_toTopOf="@+id/til_edit_content"

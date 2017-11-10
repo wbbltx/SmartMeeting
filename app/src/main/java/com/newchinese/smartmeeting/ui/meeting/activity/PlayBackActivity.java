@@ -105,7 +105,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
     @Override
     public void setTitleText(int pageIndex) {
         ivPen.setVisibility(View.GONE);
-        tvTitle.setText(getString(R.string.record_page_index, pageIndex));
+        tvTitle.setText(getString(R.string.record_page_index));
     }
 
     @Override

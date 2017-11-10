@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 
+import com.newchinese.smartmeeting.R;
+
 import java.io.File;
 
 /**
@@ -36,6 +38,10 @@ public class UpdateService extends Service {
         return null;
     }
 
+    private void downLoad(){
+        initNotification();
+    }
+
     /**
      * 自动更新
      *
@@ -51,7 +57,7 @@ public class UpdateService extends Service {
 
     private void initNotification() {
         builder = new NotificationCompat.Builder(mContext)
-//                .setSmallIcon(R.mipmap.)
+                .setSmallIcon(R.mipmap.app_icon)
                 .setContentText("0%")
                 .setContentTitle("正在更新")
                 .setProgress(100, 0, false);

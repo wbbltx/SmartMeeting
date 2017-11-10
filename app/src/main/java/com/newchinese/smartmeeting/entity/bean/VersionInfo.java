@@ -14,8 +14,20 @@ public class VersionInfo {
 
     private String version;
     private String create_date;
-    private String interiorAppUrl;
+    private String update_url;
     private String description;
+    private String interiorAppUrl;
+
+    @Override
+    public String toString() {
+        return "VersionInfo{" +
+                "version='" + version + '\'' +
+                ", create_date='" + create_date + '\'' +
+                ", update_url='" + update_url + '\'' +
+                ", description='" + description + '\'' +
+                ", interiorAppUrl='" + interiorAppUrl + '\'' +
+                '}';
+    }
 
     public String getVersion() {
         return version;
@@ -27,6 +39,14 @@ public class VersionInfo {
 
     public String getCreate_date() {
         return create_date;
+    }
+
+    public String getUpdate_url() {
+        return update_url;
+    }
+
+    public void setUpdate_url(String update_url) {
+        this.update_url = update_url;
     }
 
     public void setCreate_date(String create_date) {
@@ -49,13 +69,4 @@ public class VersionInfo {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "VersionInfo{" +
-                "version=" + version +
-                ", create_date='" + create_date + '\'' +
-                ", interiorAppUrl='" + interiorAppUrl + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

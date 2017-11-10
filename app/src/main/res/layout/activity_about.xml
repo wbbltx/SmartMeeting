@@ -19,11 +19,22 @@
         android:layout_marginTop="111dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/about_us_icon" />
+    
+    <TextView
+        android:id="@+id/version_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/gray9" />
 
     <TextView
         android:id="@+id/btn_deal"
-        android:layout_width="match_parent"
+        android:layout_width="310dp"
         android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
         android:layout_above="@+id/btn_update"
         android:layout_margin="15dp"
         android:gravity="center"
@@ -35,8 +46,9 @@
     w
     <RelativeLayout
         android:id="@+id/btn_update"
-        android:layout_width="match_parent"
+        android:layout_width="310dp"
         android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="15dp"

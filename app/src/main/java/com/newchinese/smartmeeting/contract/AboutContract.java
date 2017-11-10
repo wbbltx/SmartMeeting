@@ -19,12 +19,16 @@ public interface AboutContract {
 
         void loading();
 
+        void showDialog();
+
         void result();
     };
 
     interface AboutIModel{
 
         void checkVersion();
+
+        void downLoad();
 
     };
 }

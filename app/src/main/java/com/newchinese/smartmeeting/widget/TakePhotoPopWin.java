@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.constant.Constant;
@@ -35,9 +36,9 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
         this.mContext = mContext;
         this.type = type;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.take_photo_pop, null);
-        Button btn_take_photo = (Button) view.findViewById(R.id.btn_take_photo);
-        Button btn_pick_photo = (Button) view.findViewById(R.id.btn_pick_photo);
-        Button btn_edit_photo = (Button) view.findViewById(R.id.btn_cancel_photo);
+        TextView btn_take_photo = (TextView) view.findViewById(R.id.btn_take_photo);
+        TextView btn_pick_photo = (TextView) view.findViewById(R.id.btn_pick_photo);
+        TextView btn_edit_photo = (TextView) view.findViewById(R.id.btn_cancel_photo);
         // 设置按钮监听
         btn_pick_photo.setOnClickListener(this);
         btn_take_photo.setOnClickListener(this);

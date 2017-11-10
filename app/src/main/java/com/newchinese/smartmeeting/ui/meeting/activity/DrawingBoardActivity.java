@@ -136,6 +136,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     ImageView ivShare;
     @BindView(R.id.gifImageView)
     GifImageView gifImageView;
+    @BindView(R.id.dark_background)
+    ImageView bar;
     private View strokeWidthView;
     private RadioGroup rgStrkoeWidth;
     private PopupWindow pwStrkoeWidth;
@@ -286,6 +288,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                 return true;
             }
         });
+        takePhotoPopWin.setOnDismissListener(this);
     }
 
     /**
@@ -496,7 +499,9 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
-                if (recordService != null && recordService.isRunning()) {
+                if (mPresenter.isScanning()){
+                    mPresenter.stopScan();
+                }else if (recordService != null && recordService.isRunning()) {
                     showDialog1(getString(R.string.leave_warning));
                 } else {
                     finish();
@@ -794,7 +799,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
 
     private void showTakePhotoWindow() {
+        turnDark();
         takePhotoPopWin.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    private void turnDark() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setAttributes(lp);
     }
 
     /**
@@ -938,7 +951,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
-        XLog.d(TAG, TAG + " onSuccess");
+        XLog.d(TAG, TAG + " onEvent");
         int flag = stateEvent.getFlag();
         if (flag == 0) {
             showGif();
@@ -1065,10 +1078,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     private void showGif() {
+        bar.setVisibility(View.VISIBLE);
         gifImageView.setVisibility(View.VISIBLE);
     }
 
     private void hideGif() {
+        bar.setVisibility(View.GONE);
         gifImageView.setVisibility(View.GONE);
     }
 }

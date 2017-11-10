@@ -173,7 +173,7 @@ public class SettingActivity extends BaseSimpleActivity implements PopupWindow.O
             tvNickName.setText(TextUtils.isEmpty(loginData.getNickname()) ? "" : loginData.getNickname());
             Glide.with(this)
                     .load(loginData.getIcon())
-                    .apply(new RequestOptions().centerCrop().placeholder(R.mipmap.default_setting)
+                    .apply(new RequestOptions().circleCrop().placeholder(R.mipmap.default_setting)
                             .error(R.mipmap.default_setting))
                     .into(ivHeader);
         }

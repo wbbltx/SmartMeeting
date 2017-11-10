@@ -5,22 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.newchinese.smartmeeting.ui.meeting.activity.PlayBackActivity">
+
     <include
         android:id="@+id/bar"
         layout="@layout/bar_base" />
 
     <ImageView
         android:id="@+id/play_back_img"
-        android:layout_below="@id/bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="matrix"/>
-
-    <com.newchinese.coolpensdk.manager.DrawingBoardView
-        android:id="@+id/play_back_drawview"
         android:layout_below="@id/bar"
+        android:scaleType="matrix" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/bar">
+        <com.newchinese.coolpensdk.manager.DrawingBoardView
+            android:id="@+id/play_back_drawview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/record_play_bar"
@@ -38,32 +44,31 @@
 
         <ProgressBar
             android:id="@+id/play_back_seekbar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="13dp"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/play_back_start"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            />
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/play_back_start" />
 
         <TextView
             android:id="@+id/play_back_start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/play_back_seekbar"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="9dp"
-            android:layout_alignLeft="@id/play_back_seekbar"
             android:text="00:00:00"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/play_back_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@id/play_back_seekbar"
             android:layout_alignBottom="@id/play_back_start_time"
+            android:layout_alignRight="@id/play_back_seekbar"
             android:text="00:00:00"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
     </RelativeLayout>
 </RelativeLayout>

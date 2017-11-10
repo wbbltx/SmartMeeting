@@ -241,7 +241,6 @@ public class RegisterActivity extends AppCompatActivity implements LoginContract
         if (mUi == UI_TYPE_FOR) {
             enabled &= mEvPass2.getText().equals(mEvPass.getText());
         }
-//        XLog.d("hahehe","最后结果是："+enabled);
         mBtnReg.setEnabled(enabled);
         ((GradientDrawable) mBtnReg.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
     }
