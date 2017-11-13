@@ -89,15 +89,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     TextView tvRight; //全选/全不选
     @BindView(R.id.iv_pen)
     ImageView ivPen; //笔图标
-    @BindView(R.id.tv_power)
+    @BindView(R.id.tv_power)//电量
     TextView tvPower;
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
-    @BindView(R.id.rl_remind)
+    @BindView(R.id.rl_remind)//归档提醒
     RelativeLayout rlRemind;
     @BindView(R.id.gifImageView)
     GifImageView gifImageView;
-    @BindView(R.id.dark_background)
+    @BindView(R.id.dark_background)//背景
     ImageView bar;
     private int time = 0;
     private View viewCreateRecord;
@@ -226,8 +226,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 if (time == 0) {
                     showMask(false, 0);
                     checkBle(false);
+                    time++;
                 } else if (time == 1) {
                     showMask(false, 0);
+                    ivEmpty.setOnClickListener(null);
                 }
                 break;
         }
@@ -260,6 +262,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 isEditMode = true;
                 ivRight.setVisibility(View.GONE);
                 tvRight.setVisibility(View.VISIBLE);
+//                adapter.setIsSelectedList(isSelectedList);
+                adapter.setIsSelectable(true);
                 pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
             case R.id.iv_close:
@@ -292,7 +296,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             }
         });
         builder.setCancelableMethod(false);
-        builder.setInputText(classifyName + DateUtils.formatLongDate3(System.currentTimeMillis()));
+        builder.setInputText(classifyName + DateUtils.formatLongDate5(System.currentTimeMillis()));
         builder.createDoubleButton().show();
     }
 
@@ -316,6 +320,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         isEditMode = false;
         ivRight.setVisibility(View.VISIBLE);
         tvRight.setVisibility(View.GONE);
+        adapter.setIsSelectable(false);
         pwCreateRecord.dismiss();
         for (int i = 0; i < isSelectedList.size(); i++) {
             isSelectedList.set(i, false);
@@ -452,7 +457,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         XLog.d(TAG, TAG + " onSuccess");
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
             showMask(true, R.mipmap.mask_three);
-            time++;
         }
         SharedPreUtils.setBoolean(BluCommonUtils.IS_FIRST_INSTALL, false); //首次安装标记置否
         hideGif();
@@ -723,7 +727,6 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             ivEmpty.setImageResource(res);
         } else {
             ivEmpty.setImageResource(R.mipmap.empty_icon);
-            ivEmpty.setOnClickListener(null);
         }
     }
 }

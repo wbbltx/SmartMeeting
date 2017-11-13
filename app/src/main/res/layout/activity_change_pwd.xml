@@ -6,16 +6,13 @@
     android:background="@color/simple_background"
     android:orientation="vertical"
     tools:context="com.newchinese.smartmeeting.ui.mine.activity.ChangePwdActivity">
-
     <include layout="@layout/bar_base" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+        android:orientation="vertical">
 
         <com.newchinese.smartmeeting.widget.EditView
             android:id="@+id/ev_update_1"
@@ -31,15 +28,5 @@
             android:id="@+id/ev_update_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <!--<Button-->
-            <!--android:id="@+id/btn_update_sub"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="32dp"-->
-            <!--android:background="@drawable/btn_corner_bg"-->
-            <!--android:text="@string/mine_confirm"-->
-            <!--android:textColor="@color/colorWhite"-->
-            <!--android:textSize="18sp" />-->
     </LinearLayout>
 </LinearLayout>

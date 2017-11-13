@@ -178,6 +178,11 @@ public class EditView extends RelativeLayout implements TextWatcher, View.OnClic
         return this;
     }
 
+    public EditView setBackColor(int color){
+        mEt.setBackgroundColor(color);
+        return this;
+    }
+
     public interface OnEditViewListener {
         void onMatch(EditView view, boolean matching);
 

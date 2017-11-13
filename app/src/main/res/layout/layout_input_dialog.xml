@@ -19,21 +19,21 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="53dp"
+                android:layout_height="45dp"
                 android:gravity="center"
                 android:text="@string/change_record_title"
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="@color/graye" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="5dp"-->
+                <!--android:background="@color/graye" />-->
 
             <LinearLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="106dp"
+                android:layout_height="85dp"
                 android:background="@color/colorWhite"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -51,7 +51,7 @@
                     android:textSize="15sp" />
 
                 <View
-                    android:layout_width="210dp"
+                    android:layout_width="150dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="8dp"
                     android:background="@color/gray3" />
@@ -60,6 +60,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:layout_marginTop="10dp"
                 android:background="@color/graydc" />
 
             <LinearLayout
@@ -81,7 +82,7 @@
                     android:background="@null"
                     android:gravity="center"
                     android:text="C@string/btn_cancel"
-                    android:textColor="@color/gray3"
+                    android:textColor="#007aff"
                     android:textSize="16sp" />
 
                 <View
@@ -98,7 +99,7 @@
                     android:background="@null"
                     android:gravity="center"
                     android:text="@string/btn_confirm"
-                    android:textColor="@color/gray3"
+                    android:textColor="#007aff"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

@@ -38,6 +38,7 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
     private List<Boolean> isSelectedList = new ArrayList<>();
     private LayoutInflater inflater;
     private OnItemClickedListener onItemClickedListener;
+    private boolean isSelectable = false;
 
     public DraftPageRecyAdapter(Context context) {
         this.context = context;
@@ -53,6 +54,12 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
         this.isSelectedList = isSelectedList;
         notifyDataSetChanged();
     }
+
+    public void setIsSelectable(boolean isSelectable) {
+        this.isSelectable = isSelectable;
+        notifyDataSetChanged();
+    }
+
 
     public List<Boolean> getIsSelectedList() {
         return isSelectedList;
@@ -81,13 +88,19 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
                 .load(notePageList.get(position).getThumbnailPath())
                 .transition(new DrawableTransitionOptions().crossFade(1000)) //淡入淡出1s
                 .into(holder.ivThumnbail);
-        holder.rlIsSelected.setVisibility(View.GONE);
-        if (isSelectedList.size() != 0 && isSelectedList.size() == notePageList.size()) {
+        if (isSelectable) {  //是否处于可选择状态
+            holder.rlIsSelected.setVisibility(View.VISIBLE);
+            holder.iv_tick.setVisibility(View.GONE);
+        }else {
+            holder.rlIsSelected.setVisibility(View.GONE);
+            holder.iv_tick.setVisibility(View.GONE);
+        }
+        if (isSelectable && isSelectedList.size() != 0 && isSelectedList.size() == notePageList.size()) {
             boolean isSelected = isSelectedList.get(position); //是否被选中
             if (isSelected) {
-                holder.rlIsSelected.setVisibility(View.VISIBLE);
+                holder.iv_tick.setVisibility(View.VISIBLE);
             } else {
-                holder.rlIsSelected.setVisibility(View.GONE);
+                holder.iv_tick.setVisibility(View.GONE);
             }
         }
     }
@@ -112,6 +125,8 @@ public class DraftPageRecyAdapter extends RecyclerView.Adapter<DraftPageRecyAdap
         RelativeLayout rlIsSelected;
         @BindView(R.id.record_flag)
         ImageView record_flag;
+        @BindView(R.id.iv_tick)
+        ImageView iv_tick;
 
         MyViewHolder(View itemView) {
             super(itemView);

@@ -67,6 +67,10 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
         mEv2.setEditType(EditView.EDIT_TYPE_PASS);
         mEv3.setEditType(EditView.EDIT_TYPE_PASS);
 
+        mEv1.setBackColor(getResources().getColor(R.color.colorWhite));
+        mEv2.setBackColor(getResources().getColor(R.color.colorWhite));
+        mEv3.setBackColor(getResources().getColor(R.color.colorWhite));
+
         tvRight.setVisibility(View.VISIBLE);
         tvRight.setTextColor(getResources().getColor(R.color.gray9));
         tvRight.setText(getString(R.string.save));
@@ -182,7 +186,12 @@ public class ChangePwdActivity extends AppCompatActivity implements MineContract
     }
 
     private void updateBtn() {
-        boolean enabled = (mEv1.mMatching && mEv2.mMatching && mEv3.mMatching);
+        boolean enabled;
+        if (hasPassword){
+            enabled = (mEv1.mMatching && mEv2.mMatching && mEv3.mMatching);
+        } else {
+            enabled = (mEv2.mMatching && mEv3.mMatching);
+        }
         tvRight.setEnabled(enabled);
 //        ((GradientDrawable) mBtnReg.getBackground()).setColor(enabled ? getResources().getColor(R.color.simple_blue) : Color.parseColor("#999999"));
         tvRight.setTextColor(enabled ? getResources().getColor(R.color.colorWhite) : Color.parseColor("#999999"));

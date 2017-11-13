@@ -132,7 +132,8 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     @Override
     public void isConnecting() {
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTING);
-        mView.onConnecting();
+        if (mView != null)
+            mView.onConnecting();
         XLog.d(TAG, TAG + " 连接中...");
     }
 

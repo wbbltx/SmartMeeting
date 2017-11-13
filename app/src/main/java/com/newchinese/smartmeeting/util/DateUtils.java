@@ -30,6 +30,11 @@ public class DateUtils {
         return sdf.format(longDate);
     }
 
+    public static String formatLongDate5(long longDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmm");
+        return sdf.format(longDate);
+    }
+
     /**
      * 两个时间相差距离多少天多少小时多少分多少秒
      *
