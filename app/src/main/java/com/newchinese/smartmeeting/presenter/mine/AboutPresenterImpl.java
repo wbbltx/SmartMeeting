@@ -2,6 +2,7 @@ package com.newchinese.smartmeeting.presenter.mine;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
@@ -17,6 +18,7 @@ import com.newchinese.smartmeeting.util.log.XLog;
 public class AboutPresenterImpl implements AboutContract.AboutIPresenter<AboutContract.AboutIView> {
 
 
+    private static final java.lang.String TAG = "AboutPresenterImpl";
     private final Context context;
     private AboutContract.AboutIView mV;
     private AboutModelImp mModel;
@@ -45,7 +47,7 @@ public class AboutPresenterImpl implements AboutContract.AboutIPresenter<AboutCo
 
     @Override
     public void loading() {
-        XLog.d("hahehe"," loading ");
+        XLog.d(TAG," loading ");
     }
 
     @Override
@@ -65,6 +67,16 @@ public class AboutPresenterImpl implements AboutContract.AboutIPresenter<AboutCo
                     }
                 })
                 .create().show();
+    }
+
+    public void showProgressDialog() {
+        ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setProgressNumberFormat("%1d KB/%2d KB");
+        dialog.setTitle("下载");
+        dialog.setMessage("正在下载，请稍后...");
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override

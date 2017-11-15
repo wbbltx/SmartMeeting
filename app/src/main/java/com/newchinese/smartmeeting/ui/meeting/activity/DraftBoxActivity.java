@@ -418,7 +418,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     @Subscribe
-    public void onEvent(ConnectEvent type) {//重新连接
+    public void onEvent(ConnectEvent type) {//连接
         if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
             mPresenter.disConnect();
         }
@@ -558,6 +558,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     public void onDeviceClick(BluetoothDevice add) {
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
             EventBus.getDefault().post(new ConnectEvent(add, 0));
+            showGif();
         }
     }
 

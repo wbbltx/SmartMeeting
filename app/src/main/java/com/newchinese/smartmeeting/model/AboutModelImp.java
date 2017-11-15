@@ -3,7 +3,6 @@ package com.newchinese.smartmeeting.model;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.gson.Gson;
 import com.newchinese.smartmeeting.app.App;
 import com.newchinese.smartmeeting.contract.AboutContract;
 import com.newchinese.smartmeeting.entity.bean.BaseResult;
@@ -11,18 +10,16 @@ import com.newchinese.smartmeeting.entity.bean.RequestVersion;
 import com.newchinese.smartmeeting.entity.bean.VersionInfo;
 import com.newchinese.smartmeeting.entity.http.ApiService;
 import com.newchinese.smartmeeting.entity.http.ApiSubscriber;
+import com.newchinese.smartmeeting.entity.http.Kits;
 import com.newchinese.smartmeeting.entity.http.NetError;
 import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
 import com.newchinese.smartmeeting.entity.http.NetUrl;
 import com.newchinese.smartmeeting.entity.http.XApi;
 import com.newchinese.smartmeeting.ui.mine.service.UpdateService;
-import com.newchinese.smartmeeting.util.DeviceUtils;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 
 import org.reactivestreams.Subscription;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -75,10 +72,14 @@ public class AboutModelImp implements AboutContract.AboutIModel {
                     public void onNext(BaseResult<VersionInfo> versionInfoBaseResult) {
                         VersionInfo data = versionInfoBaseResult.data;
                         XLog.d("hahehe", versionInfoBaseResult.msg + " ++ " + data);
-                        String versionCode = DeviceUtils.getVersionCode(App.getAppliction());
-                        if (Integer.parseInt(versionCode) < Integer.parseInt(data.getVersion())) {
+                        int versionCode = Kits.Package.getVersionCode(App.getAppliction());
+                        if ((versionCode) < data.getVersion()) {
                             interiorAppUrl = data.getInteriorAppUrl();
                             mPresenter.showDialog();
+                        }else {
+                            XLog.d("hahehe", " 已经是最新版本！ ");
+//                            提示已经是最新版本
+//                            CustomizedToast.showLong(context, context.getString(R.string.already_new));
                         }
                     }
                 });
@@ -86,6 +87,9 @@ public class AboutModelImp implements AboutContract.AboutIModel {
 
     @Override
     public void downLoad() {
-        context.startService(new Intent(context,UpdateService.class));
+        XLog.d("hahehe", " 开启服务下载apk");
+        Intent intent = new Intent(context, UpdateService.class);
+        intent.putExtra(BluCommonUtils.VERSION_PATH,interiorAppUrl);
+        context.startService(intent);
     }
 }

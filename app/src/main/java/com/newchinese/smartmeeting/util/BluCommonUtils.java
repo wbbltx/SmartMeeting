@@ -10,6 +10,7 @@ public class BluCommonUtils {
     public static final String IS_FIRST_LAUNCH = "isFirstLaunch";//是否曾经连接成功过
     public static final String IS_FIRST_INSTALL = "isFirstInstall";//是否首次安装
     public static final String CLASSIFY_NAME = "classify_name";
+    public static final String VERSION_PATH = "version_url";
 
     public static final int PEN_CONNECTED = 1;
     public static final int PEN_DISCONNECTED = 0;

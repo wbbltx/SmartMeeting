@@ -46,9 +46,11 @@
             android:screenOrientation="portrait" />
 
         <service android:name=".ui.meeting.service.RecordService" />
+        <service android:name=".ui.mine.service.UpdateService"/>
 
         <activity
             android:name=".ui.meeting.activity.DraftBoxActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask" />
         <activity
             android:name=".ui.login.activity.RegisterActivity"
@@ -66,13 +68,20 @@
             android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".ui.meeting.activity.DrawingBoardActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask" />
-        <activity android:name=".ui.record.activity.CollectPageListActivity" />
-        <activity android:name=".ui.record.activity.CollectPageDetailActivity" />
-        <activity android:name=".ui.record.activity.CollectRecordFilterActivity" />
-        <activity android:name=".ui.meeting.activity.RecordPlayActivity" />
-        <activity android:name=".ui.meeting.activity.PlayBackActivity" />
-        <activity android:name=".ui.meeting.activity.RecordLibActivity" />
+        <activity android:name=".ui.record.activity.CollectPageListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.record.activity.CollectPageDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.record.activity.CollectRecordFilterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.meeting.activity.RecordPlayActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.meeting.activity.PlayBackActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.meeting.activity.RecordLibActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- 分享需要的activity -->
         <activity
@@ -161,6 +170,7 @@
         <activity android:name=".ui.record.activity.CollectAddTypeActivity" />
         <activity android:name=".ui.record.activity.CollectToAddListActivity" />
         <activity android:name=".ui.main.activity.VideoActivity"></activity>
+
     </application>
 
 </manifest>

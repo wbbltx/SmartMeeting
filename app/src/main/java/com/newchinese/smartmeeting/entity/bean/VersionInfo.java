@@ -12,7 +12,7 @@ public class VersionInfo {
 //             "description": "111",
 //             "interiorAppUrl": "http://182.92.99.12:8080/images/M00/00/68/tlxjDFoCesyAPrbbAAACJUGgFsg045.txt"
 
-    private String version;
+    private int version;
     private String create_date;
     private String update_url;
     private String description;
@@ -29,11 +29,11 @@ public class VersionInfo {
                 '}';
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

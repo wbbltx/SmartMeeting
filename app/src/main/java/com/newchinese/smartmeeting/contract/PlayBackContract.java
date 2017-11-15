@@ -21,6 +21,9 @@ public interface PlayBackContract {
 
         void insertPic(String path, Matrix matrix);
 
+        void getDataBasePoint(com.newchinese.coolpensdk.entity.NotePoint notePoint, int strokeColor,
+                              float strokeWidth, int cachePageIndex);
+
     }
 
     interface Presenter extends BaseSimplePresenter<View>{

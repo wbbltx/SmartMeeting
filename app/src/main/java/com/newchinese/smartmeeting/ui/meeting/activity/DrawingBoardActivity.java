@@ -81,6 +81,7 @@ import com.umeng.socialize.media.UMImage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.reactivestreams.Subscription;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -88,6 +89,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -181,7 +184,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         scanResultDialog = new ScanResultDialog(this);
         dataCacheUtil = DataCacheUtil.getInstance();
         //初始化笔状态
-        initPenState();
+        initPenState(true);
         initStrokeWidthWindow();
         ivInsertImage.setBackgroundColor(Color.TRANSPARENT);
         ivShare.setVisibility(View.VISIBLE);
@@ -217,7 +220,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             pageIndex = intent.getIntExtra("selectPageIndex", 0);
             setTitleText(pageIndex); //设置当前页数
             //延时一会儿再加载数据库，防止View还未初始化完毕
-            Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+            Flowable.timer(100, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
                     mPresenter.readDataBasePoint(pageIndex);
@@ -243,13 +246,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         recordTime.setText("00:00");
     }
 
-    private void initPenState() {
+    private void initPenState(boolean isClicked) {
         int penState = dataCacheUtil.getPenState();
         if (penState == BluCommonUtils.PEN_CONNECTED) {
             EventBus.getDefault().post(new RequestPowerEvent());
             setConnState();
         } else if (penState == BluCommonUtils.PEN_DISCONNECTED) {
             ivPen.setImageResource(R.mipmap.pen_disconnect);
+            checkState(isClicked);
         } else if (penState == BluCommonUtils.PEN_CONNECTING || mPresenter.isScanning()) {
             ivPen.setImageResource(R.mipmap.weilianjie);
         }
@@ -493,22 +497,22 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic,R.id.record_cancel,
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.iv_menu_btn, R.id.iv_screen, R.id.iv_insert_pic, R.id.record_cancel,
             R.id.iv_stroke_color, R.id.iv_pen_stroke, R.id.iv_review, R.id.save_record, R.id.iv_right,
             R.id.rl_record_count, R.id.iv_image_delete, R.id.iv_image_cancle, R.id.iv_image_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回键
-                if (mPresenter.isScanning()){
+                if (mPresenter.isScanning()) {
                     mPresenter.stopScan();
-                }else if (recordService != null && recordService.isRunning()) {
+                } else if (recordService != null && recordService.isRunning()) {
                     showDialog1(getString(R.string.leave_warning));
                 } else {
                     finish();
                 }
                 break;
             case R.id.iv_pen: //笔图标
-                checkState();
+                checkState(true);
                 break;
             case R.id.iv_menu_btn: //菜单
                 if (!isMenuBtnClicked) showMenu();
@@ -596,7 +600,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     }
 
-    private void cancelRecord(){
+    private void cancelRecord() {
         recordBar.setVisibility(View.GONE);
         startTimeDown = false;
         if (recordService.isRunning()) {
@@ -728,18 +732,18 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         }
     };
 
-    private void checkState() {
-        boolean bluetoothOpen = mPresenter.isBluetoothOpen();
-        if (!bluetoothOpen) {
-            //如果蓝牙没有打开，弹出是否打开蓝牙对话框
-//            bluePopUpWindow.showAtLocation(findViewById(R.id.rl_draw_base), Gravity.BOTTOM, 0, 0);
-            CustomizedToast.showShort(this, "请开启蓝牙！");
-        } else {
-            //如果蓝牙已经打开，则去扫描
-            EventBus.getDefault().post(new ScanEvent());
-//            progressBar.setVisibility(View.VISIBLE);
-            showGif();
-            ivPen.setImageResource(R.mipmap.weilianjie);
+    private void checkState(boolean isClicked) {
+        if (isClicked) {
+            boolean bluetoothOpen = mPresenter.isBluetoothOpen();
+            if (!bluetoothOpen) {
+                //如果蓝牙没有打开，弹出是否打开蓝牙对话框
+                CustomizedToast.showShort(this, "请开启蓝牙！");
+            } else {
+                //如果蓝牙已经打开，则去扫描
+                EventBus.getDefault().post(new ScanEvent());
+                showGif();
+                ivPen.setImageResource(R.mipmap.weilianjie);
+            }
         }
     }
 
@@ -917,7 +921,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     public void onEvent(ElectricityReceivedEvent receivedEvent) {
         String value = receivedEvent.getValue();
         int i = Integer.parseInt(value);
-        ivPower.setText(i+"");
+        ivPower.setText(i + "");
         XLog.d(TAG, TAG + " onElecReceived " + i);
         boolean lowPower = receivedEvent.isLowPower();
         if (lowPower) {
@@ -1044,8 +1048,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     public void onDeviceClick(BluetoothDevice add) {
         if (!add.getAddress().equals(SharedPreUtils.getString(this, BluCommonUtils.SAVE_CONNECT_BLU_INFO_ADDRESS)) || !mPresenter.isConnected()) {
-            EventBus.getDefault().post(new ConnectEvent(add, 0));
             showGif();
+            EventBus.getDefault().post(new ConnectEvent(add, 0));
         }
     }
 
@@ -1055,26 +1059,27 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         mPresenter.queryRecordCount(pageIndex);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
-            if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
-                setConnState();
-            } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
-                ivPen.setImageResource(R.mipmap.weilianjie);
-            } else {
-                ivPen.setImageResource(R.mipmap.pen_disconnect);
-                checkState();
-            }
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus) {
+//            XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
+//            if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
+//                setConnState();
+//            } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
+//                ivPen.setImageResource(R.mipmap.weilianjie);
+//            } else {
+//                ivPen.setImageResource(R.mipmap.pen_disconnect);
+//                checkState(false);
+//            }
+//        }
+//    }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
 //        progressBar.setVisibility(View.GONE);
         hideGif();
+        initPenState(false);
     }
 
     private void showGif() {

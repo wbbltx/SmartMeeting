@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.style.BulletSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +26,8 @@ import com.newchinese.smartmeeting.util.PlayBackUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.xw.repo.BubbleSeekBar;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +36,12 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 import static com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity.TAG_PAGE_INDEX;
@@ -78,7 +87,7 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
             selectPageIndex = intent.getIntExtra("selectPageIndex", 0);
             setTitleText(selectPageIndex); //设置当前页数
             //延时一会儿再加载数据库，防止View还未初始化完毕
-            Flowable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+            Flowable.timer(100, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
                     mPresenter.readData(selectPageIndex);
@@ -119,6 +128,16 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
         });
     }
 
+    @Override
+    public void getDataBasePoint(final NotePoint notePoint, int strokeColor, float strokeWidth, int cachePageIndex) {
+        if (selectPageIndex == cachePageIndex && playBackDrawview != null) { //当前页的点才绘制，防止当前页还未加载完点时翻到下一页，造成点数据绘制错乱
+            //转换点对象为SDK所需格式并绘制
+            playBackDrawview.drawDataBase(notePoint, strokeColor, strokeWidth);
+        }
+
+
+    }
+
     @OnClick({R.id.play_back_start, R.id.iv_back})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -128,7 +147,29 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
                 break;
             case R.id.play_back_start: //开始按钮
                 mPresenter.hasPic(selectPageIndex);
-                playBack();
+//                Flowable.timer(500, TimeUnit.MILLISECONDS)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .doOnNext(new Consumer<Long>() {
+//                    @Override
+//                    public void accept(Long aLong) throws Exception {
+//                        progress++;
+//                        playBackSeekbar.setProgress(progress);
+//                        playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+//                    }
+//                })
+//                        .doOnComplete(new Action() {
+//                            @Override
+//                            public void run() throws Exception {
+//                                progress = 0;
+//                                playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+//                            }
+//                        }).subscribe(new Consumer<Long>() {
+//                    @Override
+//                    public void accept(Long aLong) throws Exception {
+//                        mPresenter.readData(selectPageIndex);
+//                    }
+//                });
+//                playBack();
                 break;
         }
     }

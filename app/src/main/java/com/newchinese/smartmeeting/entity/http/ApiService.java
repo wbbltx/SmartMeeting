@@ -9,9 +9,12 @@ import com.newchinese.smartmeeting.entity.bean.VersionInfo;
 import java.util.Map;
 
 import io.reactivex.Flowable;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -70,4 +73,8 @@ public interface ApiService {
     //版本查询
     @POST(NetUrl.VERSION_INFO)
     Flowable<BaseResult<VersionInfo>> checkVersion(@Body RequestVersion requestVersion);
+
+    //下载新版本
+    @GET("http://182.92.99.12:8080/images/M00/00/69/tlxjDFoKsXeAfFkuAIANTG_1BTI289.apk")
+    Call<ResponseBody> loadApk();
 }

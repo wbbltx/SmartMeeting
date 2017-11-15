@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.mine.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +10,8 @@ import android.widget.TextView;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.contract.AboutContract;
+import com.newchinese.smartmeeting.entity.http.Kits;
 import com.newchinese.smartmeeting.presenter.mine.AboutPresenterImpl;
-import com.newchinese.smartmeeting.util.CustomizedToast;
-import com.newchinese.smartmeeting.util.DeviceUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -35,7 +35,7 @@ public class AboutActivity extends BaseSimpleActivity implements AboutContract.A
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
-        versionName = DeviceUtils.getVersionName(this);
+        versionName = Kits.Package.getVersionName(this);
         initPresenter();
     }
 
@@ -65,7 +65,7 @@ public class AboutActivity extends BaseSimpleActivity implements AboutContract.A
                 startActivity(new Intent(this, DealActivity.class));
                 break;
             case R.id.btn_update:
-                CustomizedToast.showLong(this, getString(R.string.already_new));
+//                CustomizedToast.showLong(this, getString(R.string.already_new));
                 mPresenter.checkVersion();
                 break;
         }
