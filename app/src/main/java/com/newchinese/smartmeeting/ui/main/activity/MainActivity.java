@@ -1,9 +1,11 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
@@ -97,7 +99,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
 
-        initMaskView();
+        mPresenter.checkVersion();
     }
 
     @Override
@@ -131,7 +133,8 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     /**
      * 初始化蒙版
      */
-    private void initMaskView(){
+    @Override
+    public void initMaskView(){
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) { //首次安装则显示蒙版引导
             ivMaskOne.setVisibility(View.VISIBLE);
         }else {
@@ -224,6 +227,27 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     @Override
     public void showToast(String toastMsg) {
         Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.update_dialog))
+                .setNegativeButton(getString(R.string.update_nexttime), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        initMaskView();
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(getString(R.string.update_now), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mPresenter.downLoadApk(MainActivity.this);
+                        initMaskView();
+                    }
+                })
+                .create().show();
     }
 
     @Override

@@ -32,7 +32,6 @@ import io.reactivex.functions.Consumer;
 public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyListener, OnLeNotificationListener, OnElectricityRequestListener, PopWindowListener {
 
     private DraftBoxActivity mView;
-    private boolean isInited;
     private static String TAG = "BleListener";
 
     @Override
@@ -75,7 +74,6 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
     public BleListener init(DraftBoxActivity iView) {
         if (mView == null) {
             mView = iView;
-//            isInited = true;
         }
         return this;
     }
@@ -109,6 +107,7 @@ public class BleListener implements OnBleScanListener, OnConnectListener, OnKeyL
         //设置当前蓝牙的连接状态
         DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_CONNECTED);
 //        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+        if (mView != null)
         mView.onSuccess();
     }
 

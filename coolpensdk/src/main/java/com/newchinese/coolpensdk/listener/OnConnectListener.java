@@ -6,11 +6,19 @@ package com.newchinese.coolpensdk.listener;
 
 public interface OnConnectListener {
 
-    public abstract void onConnected();
+    void onConnected();
 
-    public abstract void onDisconnected();
+    void onDisconnected();
 
-    public abstract void onFailed(int i);
+    /**
+     * 0 超时 在一定时间内匹配失败连接失败
+     * 1 没有正确设置关于key的监听
+     * 2 有key 写入失败  可能是已经连接是没有清除之前的记录
+     * 3 无key 写入失败  暂时不清楚可能出现的情况
+     * 1 2 3会重新发生会导致onDisconnected()被调用
+     * @param i
+     */
+    void onFailed(int i);
 
-    public abstract void isConnecting();
+    void isConnecting();
 }

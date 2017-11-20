@@ -11,6 +11,7 @@ import com.newchinese.smartmeeting.contract.DraftBoxActContract;
 import com.newchinese.smartmeeting.database.CollectPageDao;
 import com.newchinese.smartmeeting.database.CollectRecordDao;
 import com.newchinese.smartmeeting.database.NotePageDao;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.manager.CollectPageManager;
 import com.newchinese.smartmeeting.manager.CollectRecordManager;
@@ -95,6 +96,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     public void scanBlueDevice() {
         BluetoothLe
                 .getDefault()
+                .setScanByServiceUUID(null)
                 .setScanPeriod(5000)
                 .startScan();
     }
@@ -102,7 +104,8 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
     @Override
     public void requestElectricity() {
         XLog.d(TAG, "发送请求电量命令");
-        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OBTAIN_ELECTRICITY);
+        if (isConnected())
+            BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OBTAIN_ELECTRICITY);
     }
 
     @Override
@@ -165,7 +168,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
      */
     @Override
     public void createSelectedRecords(final List<NotePage> notePages, List<Boolean> isSelecteds,
-                                      final String recordName) {
+                                      final String recordName, final String pageMode) {
         isSelectedList.clear();
         isSelectedList.addAll(isSelecteds);
         notePageList.clear();
@@ -173,20 +176,22 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         Runnable saveRecordsRunnable = new Runnable() {
             @Override
             public void run() {
-                CollectRecord collectRecord = collectRecordManager.insertCollectRecord(collectRecordDao, classifyName, recordName);
+                CollectRecord collectRecord = pageMode.equals(BluCommonUtils.DELETE_MODE) ? null : collectRecordManager.insertCollectRecord(collectRecordDao, classifyName, recordName);
                 for (int i = 0; i < isSelectedList.size(); i++) {
                     if (isSelectedList.get(i)) {
                         //存收藏页
                         NotePage selectPage = notePageList.get(i);
-                        collectPageManager.insertCollectPage(collectPageDao, collectRecord.getId(),
-                                selectPage.getPageIndex(), selectPage.getDate(),
-                                selectPage.getThumbnailPath(), selectPage.getScreenPathList());
+                        if (pageMode.equals(BluCommonUtils.EDIT_MODE)) { //如果是归档模式，创建记录本，删除书写页  如果是删除模式，跳过该步骤，直接删除记录页
+                            collectPageManager.insertCollectPage(collectPageDao, collectRecord.getId(),
+                                    selectPage.getPageIndex(), selectPage.getDate(),
+                                    selectPage.getThumbnailPath(), selectPage.getScreenPathList());
+                        }
                         //删记录页
                         notePageDao.delete(selectPage);
                     }
                 }
                 if (mView != null) {
-                    mView.showToast(App.getContext().getString(R.string.create_record_success));
+                    mView.showToast(pageMode.equals(BluCommonUtils.DELETE_MODE) ? "删除成功！" : App.getContext().getString(R.string.create_record_success));
                 }
                 //存完刷新页面
                 loadActivePageList();

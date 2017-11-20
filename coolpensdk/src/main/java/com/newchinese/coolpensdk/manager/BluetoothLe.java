@@ -28,9 +28,8 @@ public class BluetoothLe {
     private static final String TAG = BluetoothLe.class.getName();
     private BleManager bleManager;
     private int scanPeriod = 30000;
-    private int errorCount = 1;
     private UUID[] serviceUUID = {BluUUIDUtils.BtSmartUuid.UUID_SERVICE.getUuid()};
-//    private OnBleScanListener onBleScanListener;
+    //    private OnBleScanListener onBleScanListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private boolean is_Receive_No_Key_Write_Success_State;
     private boolean is_Receive_Have_Key_Write_Success_State;
@@ -68,7 +67,6 @@ public class BluetoothLe {
     private Runnable runnableObtainKeyState;
     private Runnable runnableNoKeyStateWrite;
     private Runnable runnableHaveKeyWite;
-    private Runnable runnableDiscoverService;
     private OnCharacterReadListener onCharacterReadListener;
     private boolean autoConnect = false;
 
@@ -300,68 +298,29 @@ public class BluetoothLe {
             Log.i(TAG, "onConnectionStateChange---" + status + "-------" + newState);
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 Log.i(TAG, "connected 1 level");
-//                bleManager.setIsConnected(true);
-                errorCount = 1;
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (gatt.getDevice().getBondState() != BluetoothDevice.BOND_BONDING) {
                             Log.i(TAG, "pipixia lets go discoverService");
+                            bleManager.setPaired(true);
                             gatt.discoverServices();
                         }
                     }
                 }, 100);
-
-                runnableDiscoverService = new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "if Service is discovered" + isServiceDiscovered + getConnected());
-                        if (!isServiceDiscovered) {
-                            disconnectBleDevice();
-                            if (onConnectListener != null) {
-                                onConnectListener.onFailed(0);
-                            }
-                        }
-                    }
-                };
-                mHandler.postDelayed(runnableDiscoverService, 10000);
-
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "onConnectionStateChange STATE_DISCONNECTED called");
                 bleManager.close();
                 bleManager.setIsConnected(false);
-                if (status == 133) {
-                    Log.i(TAG, "onConnectionStateChange 133 " + errorCount);
-                    final String address = gatt.getDevice().getAddress();
-                    bleManager.resetRetryConfig();
-                    if (errorCount != 0) {
-                        connectBleDevice(address);
-                        errorCount--;
-                    } else {
-                        errorCount = 1;
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (onConnectListener != null) {
-                                    onConnectListener.onFailed(0);
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    Log.i(TAG, "onConnectionStateChange disconnected normal");
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (onConnectListener != null) {
-                                onConnectListener.onDisconnected();
-                            }else {
-                            }
+                bleManager.setPaired(false);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (onConnectListener != null) {
+                            onConnectListener.onDisconnected();
                         }
-                    });
-                    bleManager.setIsConnected(false);
-                    Log.i(TAG, "disconnected " + status);
-                }
+                    }
+                });
             }
         }
 
@@ -370,7 +329,6 @@ public class BluetoothLe {
             super.onServicesDiscovered(gatt, status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 isServiceDiscovered = true;
-                mHandler.removeCallbacks(runnableDiscoverService);
                 Log.i(TAG, "onServicesDiscovered received: go enable notification");
                 bleManager.enableCharacteristicNotification();
 //                Log.i(TAG, "onServicesDiscovered received: 发送命令获取key状态 看是否收到响应" + System.currentTimeMillis());
@@ -526,6 +484,14 @@ public class BluetoothLe {
                         mHandler.removeCallbacks(runnableNoKeyStateWrite);
                         Log.i(TAG, "笔内没有保存key信息，写入失败,暂时还不知道什么情况会导致这种失败");
                         disconnectBleDevice();
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (onConnectListener != null) {
+                                    onConnectListener.onFailed(3);
+                                }
+                            }
+                        });
 
                     } else if (bluMessage.startsWith(BluUUIDUtils.BluInstructReplyMsg.HAVE_KEY_WRITE_SUCCEED_STATE.getMsg())) {
                         Log.i(TAG, "connected 2 level, send QUERY_STORAGE_INFO and query historical info");
@@ -555,7 +521,7 @@ public class BluetoothLe {
                             @Override
                             public void run() {
                                 if (onConnectListener != null) {
-                                    onConnectListener.onFailed(1);
+                                    onConnectListener.onFailed(2);
                                 }
                             }
                         });
@@ -698,7 +664,7 @@ public class BluetoothLe {
         this.onKeyListener = onKeyListener;
     }
 
-    public void setOnBleScanListener(OnBleScanListener onBleScanListener){
+    public void setOnBleScanListener(OnBleScanListener onBleScanListener) {
         bleManager.setOnBleScanListener(onBleScanListener);
 //        this.onBleScanListener = onBleScanListener;
     }
@@ -724,7 +690,7 @@ public class BluetoothLe {
     }
 
     //超时设置 默认10s
-    public BluetoothLe setConnectTimeOut(int delayTime){
+    public BluetoothLe setConnectTimeOut(int delayTime) {
         bleManager.setDelayTime(delayTime);
         return this;
     }

@@ -42,8 +42,8 @@ public class BleManager {
     private static final int DEFAULT_TIMEOUT = 800;
 
     private boolean mRetryConnectEnable = false;
-    private boolean isServiceDiscovered;
     private boolean isConnected = false;
+    private boolean isPaired = false;
     private boolean isScanning = false;
 
     private int connectTimeoutMillis = DEFAULT_TIMEOUT;
@@ -54,7 +54,7 @@ public class BleManager {
     private Handler mHandler;
     private Timer mTimer;
     private TimerTask mTimerTask;
-    private int delayTime = 20000;
+    private int delayTime = 15000;
     private OnBleScanListener onBleScanListener;
 
     BleManager(Context context, Handler handler) {
@@ -183,6 +183,14 @@ public class BleManager {
         }
     }
 
+    public boolean isPaired() {
+        return isPaired;
+    }
+
+    public void setPaired(boolean paired) {
+        isPaired = paired;
+    }
+
     void setIsConnected(boolean isConnected) {
 //        Log.i(TAG, "接收返回的连接消息-----" + isConnected);
         this.isConnected = isConnected;
@@ -194,17 +202,11 @@ public class BleManager {
      */
     void connect(Object remote, boolean autoConnect, BluetoothGattCallback bluetoothGattCallback, final OnConnectListener onConnectListener) {
         if (isConnected) {
-//            Log.i(TAG, "已经连接");
             return;
         }
-
-//        Log.i(TAG, "连接之前判断 如果gatt不为空，则先close");
         close();
-//        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice remoteDevice = getBluetoothDevice(remote);
-
         Log.i(TAG, "start connect:" + remoteDevice.getAddress());
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             gatt = remoteDevice.connectGatt(context, autoConnect, bluetoothGattCallback, TRANSPORT_LE);
         } else {
@@ -219,16 +221,13 @@ public class BleManager {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getConnected() == false){
+                if (!getConnected() && !isPaired){
                     Log.i(TAG, "connect timeout...");
-//                    isConnected = true;
-//                    disconnect();
                     onConnectListener.onFailed(0);
                 }
             }
         },delayTime);
-        Log.i(TAG, "connecting...");
-        checkConnected(remote, autoConnect, bluetoothGattCallback, onConnectListener);
+//        checkConnected(remote, autoConnect, bluetoothGattCallback, onConnectListener);
     }
 
     private BluetoothDevice getBluetoothDevice(Object remote) {
@@ -361,7 +360,7 @@ public class BleManager {
             cancelReadRssiTimerTask();
             Log.i(TAG, "gatt not null，close gatt");
             isConnected = false;
-            isServiceDiscovered = false;
+            isPaired = false;
             gatt.close();
             gatt = null;
         }
@@ -371,7 +370,7 @@ public class BleManager {
         if (isConnected && gatt != null) {
             cancelReadRssiTimerTask();
             isConnected = false;
-            isServiceDiscovered = false;
+            isPaired = false;
             mHandler.removeCallbacksAndMessages(null);
             Log.e(TAG, "final disconnect is called");
             gatt.disconnect();

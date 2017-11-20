@@ -71,14 +71,19 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/iv_right"
+            <RelativeLayout
+                android:id="@+id/rl_right"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="15dp"
-                android:src="@mipmap/icon_create"
-                android:visibility="gone" />
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/iv_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+                    android:src="@mipmap/icon_menu"
+                    android:visibility="gone" />
+            </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

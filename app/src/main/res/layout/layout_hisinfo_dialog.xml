@@ -20,6 +20,8 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -29,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/his_info_hint"
                     android:textColor="@color/gray3"
-                    android:textSize="25sp"/>
+                    android:textSize="23sp"/>
 
                 <TextView
                     android:id="@+id/etInput"
@@ -37,10 +39,9 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-                    android:lines="1"
-                    android:maxLength="18"
+                    android:lineSpacingExtra="2dp"
                     android:text="@string/read_channel"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <View

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.newchinese.smartmeeting.entity.event.OpenBleEvent;
 import com.newchinese.smartmeeting.entity.event.RequestPowerEvent;
 import com.newchinese.smartmeeting.entity.event.ScanEvent;
 import com.newchinese.smartmeeting.entity.event.ScanResultEvent;
+import com.newchinese.smartmeeting.entity.http.Kits;
 import com.newchinese.smartmeeting.entity.listener.OnDeviceItemClickListener;
 import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
@@ -51,6 +53,8 @@ import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.BluePopUpWindow;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
+import com.newchinese.smartmeeting.widget.GuiDangInfoWindow;
+import com.newchinese.smartmeeting.widget.MenuPopUpWindow;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import com.umeng.analytics.MobclickAgent;
 
@@ -74,7 +78,7 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothDevice> implements
         DraftBoxActContract.View<BluetoothDevice>, PopWindowListener, OnDeviceItemClickListener,
-        OnItemClickedListener, View.OnClickListener, DialogInterface.OnDismissListener {
+        OnItemClickedListener, View.OnClickListener, DialogInterface.OnDismissListener, MenuPopUpWindow.OnMenuClicked {
     private static final String TAG = "DraftBoxActivity";
     //    private static boolean isFirstTime = true;
     @BindView(R.id.iv_empty)
@@ -82,7 +86,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @BindView(R.id.iv_back)
     ImageView ivBack; //返回
     @BindView(R.id.iv_right)
-    ImageView ivRight; //创建会议
+    ImageView ivRight; //归档 删除
     @BindView(R.id.tv_title)
     TextView tvTitle; //标题
     @BindView(R.id.tv_right)
@@ -106,6 +110,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private CustomInputDialog.Builder builder;
 
     private boolean isEditMode = false;
+    private String pageMode = BluCommonUtils.NORMAL_MODE;
     private String classifyName; //分类名
     private List<NotePage> notePageList = new ArrayList<>();
     private List<Boolean> isSelectedList = new ArrayList<>();
@@ -115,6 +120,8 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private ViewGroup root_view;
     private DraftPageRecyAdapter adapter;
     private FirstTimeHintDialog.Builder hintbuilder;
+    private MenuPopUpWindow menuPopUpWindow;
+    private GuiDangInfoWindow guiDangInfoWindow;
 
     @Override
     protected int getLayoutId() {
@@ -127,7 +134,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 //            startActivity(new Intent(this, MaskActivity.class));
             showMask(true, R.mipmap.mask_two);
         }
-        XLog.d(TAG, TAG + "onViewCreated " + isFinishing());
+        Log.d(TAG, TAG + "onViewCreated " + isFinishing());
         super.onViewCreated(savedInstanceState);
         root_view = (ViewGroup) findViewById(R.id.rl_parent);
         //初始化地图弹出窗口view
@@ -145,6 +152,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         rvPageList.setHasFixedSize(true);
         rvPageList.setLayoutManager(new GridLayoutManager(this, 2));
         rvPageList.setItemAnimator(new DefaultItemAnimator());
+
+        //初始化菜单popupWindow
+        menuPopUpWindow = new MenuPopUpWindow(this);
+
+        //归档提示弹出框
+        guiDangInfoWindow = new GuiDangInfoWindow(this, this);
     }
 
     private void initView() {
@@ -178,7 +191,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         classifyName = getIntent().getStringExtra(BluCommonUtils.CLASSIFY_NAME);
         tvTitle.setText(classifyName);
         tvRight.setVisibility(View.GONE);
-        ivRight.setImageResource(R.mipmap.icon_create);
+        ivRight.setImageResource(R.mipmap.icon_menu);
         ivRight.setVisibility(View.GONE);
         scanResultDialog = new ScanResultDialog(this);
         bluePopUpWindow = new BluePopUpWindow(this, this);
@@ -198,6 +211,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         if (SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
             ivEmpty.setOnClickListener(this);
         }
+        menuPopUpWindow.setOnMenuClicked(this);
     }
 
     @Override
@@ -205,9 +219,10 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         switch (view.getId()) {
             case R.id.tv_cancel: //取消
                 resetEditMode();
+                pageMode = BluCommonUtils.NORMAL_MODE;
                 adapter.setIsSelectedList(isSelectedList);
                 break;
-            case R.id.tv_create: //生成记录
+            case R.id.tv_create: //选择响应的页之后 点击确认 生成记录或者删除
                 //先判断是否未选择
                 boolean isSelectEmpty = true;
                 for (Boolean isSelected : isSelectedList) {
@@ -216,7 +231,12 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     }
                 }
                 if (!isSelectEmpty) {
-                    createDialog();
+                    if (pageMode.equals(BluCommonUtils.DELETE_MODE)) {//直接删除之后将模式设置为普通模式
+                        mPresenter.createSelectedRecords(notePageList, isSelectedList, null, pageMode);
+                        resetEditMode();
+                    } else if (pageMode.equals(BluCommonUtils.EDIT_MODE)) {//弹出归档提示框
+                        guiDangInfoWindow.showAtLocation(findViewById(R.id.rl_parent), Gravity.CENTER, 0, 0);
+                    }
                 } else {
                     Toast.makeText(this, getString(R.string.please_select_record), Toast.LENGTH_SHORT).show();
                 }
@@ -235,7 +255,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.iv_right, R.id.iv_close})
+    @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.rl_right, R.id.iv_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -258,13 +278,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
                 adapter.setIsSelectedList(isSelectedList);
                 break;
-            case R.id.iv_right:
-                isEditMode = true;
-                ivRight.setVisibility(View.GONE);
-                tvRight.setVisibility(View.VISIBLE);
+            case R.id.rl_right:  //点击菜单按钮之后，弹出菜单
 //                adapter.setIsSelectedList(isSelectedList);
-                adapter.setIsSelectable(true);
-                pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                menuPopUpWindow.showAtLocation(findViewById(R.id.ll_root), Gravity.RIGHT | Gravity.TOP, (int) Kits.Dimens.pxToDp(this, 50), (int) Kits.Dimens.pxToDp(this, 280));
                 break;
             case R.id.iv_close:
                 rlRemind.setVisibility(View.GONE);
@@ -275,7 +291,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     /**
      * 创建Dialog
      */
-    private void createDialog() {
+    private void createDialog() {  //最终生成记录之后将模式重置为普通模式
         builder = new CustomInputDialog.Builder(this);
         builder.setTitle(getString(R.string.change_record_title));
         builder.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
@@ -284,7 +300,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     Toast.makeText(DraftBoxActivity.this, getString(R.string.please_input_title), Toast.LENGTH_SHORT).show();
                 } else {
                     MobclickAgent.onEvent(DraftBoxActivity.this, "create_archives");
-                    mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText());
+                    mPresenter.createSelectedRecords(notePageList, isSelectedList, builder.getInputText(), pageMode);
                     dialog.dismiss();
                     resetEditMode();
                 }
@@ -292,6 +308,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         });
         builder.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                pageMode = BluCommonUtils.NORMAL_MODE;
                 dialog.dismiss();
             }
         });
@@ -304,7 +321,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hintbuilder = new FirstTimeHintDialog.Builder(this);
         hintbuilder.setPositiveButton(new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                EventBus.getDefault().post(new ScanEvent());
+                EventBus.getDefault().post(new ScanEvent().setSource("createHintDialog"));
                 CustomizedToast.showShort(DraftBoxActivity.this, getString(R.string.scan_blue_pen));
                 dialog.dismiss();
             }
@@ -405,7 +422,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                     return;
                 }
                 if (!mPresenter.isScanning()) {
-                    EventBus.getDefault().post(new ScanEvent());
+                    EventBus.getDefault().post(new ScanEvent().setSource("checkBle"));
                     mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
                 }
             }
@@ -427,24 +444,34 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     /**
-     * 点击确认打开蓝牙 同时弹出使用提示框
+     * 0 点击确认打开蓝牙 同时弹出使用提示框
+     * 3 弹出归档不可编辑的提示框，点击了确认之后，弹出更改名称的提示框
      */
     @Override
     public void onConfirm(int tag) {
-        XLog.d(TAG, TAG + " onConfirm");
-        mPresenter.openBle();
-        boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
-        if (b) {//第一次启动应用，弹出如何使用对话框
-            createHintDialog();
-        } else {//不是第一次启动该应用，不弹出，直接扫描蓝牙
-            Flowable.timer(3, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
-                @Override
-                public void accept(Long aLong) throws Exception {
-                    EventBus.getDefault().post(new ScanEvent());
+        XLog.d(TAG, " onConfirm " + tag);
+        switch (tag) {
+            case 0:
+                mPresenter.openBle();
+                boolean b = SharedPreUtils.getBoolean(App.getAppliction(), BluCommonUtils.IS_FIRST_LAUNCH, true);
+                if (b) {//第一次启动应用，弹出如何使用对话框
+                    createHintDialog();
+                } else {//不是第一次启动该应用，不弹出，直接扫描蓝牙
+                    Flowable.timer(3, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            EventBus.getDefault().post(new ScanEvent().setSource("onConfirm"));
+                        }
+                    });
+                    mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
                 }
-            });
-            mPresenter.updatePenState(DraftBoxPresenter.BSTATE_SCANNING);
+                break;
+
+            case 3:
+                createDialog();
+                break;
         }
+
     }
 
     @Override
@@ -462,14 +489,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         hideGif();
         EventBus.getDefault().post(new CheckBlueStateEvent(1));
 //        将该页图标设置为连接成功
-//        mPresenter.updatePenState(DraftBoxPresenter.BSTATE_CONNECTED_NORMAL);
         setState(R.mipmap.pen_normal_power);
 //        开启定时任务获取电量
         mPresenter.startTimer();
     }
 
     @Override
-    public void onFailed(int i) {//1是超时 0是其他
+    public void onFailed(int i) {//0是超时 1是其他
         hideGif();
         CustomizedToast.showShort(this, "连接失败 请点击图标重新连接");
         EventBus.getDefault().post(new CheckBlueStateEvent(-1));
@@ -590,10 +616,13 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                             ivRight.setVisibility(View.GONE);
                             ivEmpty.setVisibility(View.VISIBLE);
                         }
-                        if (!SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true)) {
+                        //进入这个界面如果经过查询没有页时才去连接
+                        XLog.d(TAG, "状态是 " + pageMode);
+                        if (!SharedPreUtils.getBoolean(BluCommonUtils.IS_FIRST_INSTALL, true) && pageMode == BluCommonUtils.NORMAL_MODE) {
                             checkBle(false);
                         }
                     }
+                    pageMode = BluCommonUtils.NORMAL_MODE;
                     if (tvRight != null) {
                         tvRight.setText(getString(R.string.select_all));
                         tvRight.setVisibility(View.GONE);
@@ -675,7 +704,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @Subscribe
     public void onEvent(ScanEvent scanEvent) {
 //        DataCacheUtil.getInstance().setPenState(BluCommonUtils.PEN_SCANNING);
-        XLog.d(TAG, TAG + " 将蓝牙状态设置为扫描");
+        XLog.d(TAG, TAG + " 将蓝牙状态设置为扫描 " + scanEvent.getSource());
         mPresenter.scanBlueDevice();
         runOnUiThread(new Runnable() {
             @Override
@@ -694,6 +723,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         DataCacheUtil.getInstance().setFirstTime(true);
+        if (mPresenter.isScanning()) {
+            mPresenter.stopScan();
+        }
         super.onDestroy();
     }
 
@@ -712,8 +744,14 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     }
 
     private void showGif() {
-        bar.setVisibility(View.VISIBLE);
-        gifImageView.setVisibility(View.VISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                bar.setVisibility(View.VISIBLE);
+                gifImageView.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     private void hideGif() {
@@ -728,6 +766,27 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
             ivEmpty.setImageResource(res);
         } else {
             ivEmpty.setImageResource(R.mipmap.empty_icon);
+        }
+    }
+
+    /**
+     * 点击右上角菜单的每一个item之后 进入编辑状态，同时弹出下方的归档或者删除框 点击进入相应的模式
+     *
+     * @param flag
+     */
+    @Override
+    public void onMenuClicked(int flag) {
+        isEditMode = true;
+        ivRight.setVisibility(View.GONE);
+        tvRight.setVisibility(View.VISIBLE);
+        adapter.setIsSelectable(true);
+        pwCreateRecord.showAtLocation(findViewById(R.id.rl_parent), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        if (flag == 1) {//归档模式
+            tvCreate.setText(getString(R.string.create_current_record));
+            pageMode = BluCommonUtils.EDIT_MODE;
+        } else if (flag == 2) {//删除模式
+            tvCreate.setText(getString(R.string.delete));
+            pageMode = BluCommonUtils.DELETE_MODE;
         }
     }
 }

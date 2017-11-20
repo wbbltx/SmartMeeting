@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -167,6 +168,14 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     private Bitmap shareBitmap;
     private ScanResultDialog scanResultDialog;
 
+    static final int NONE = 0;//无
+    static final int DRAG = 1;//拖曳
+    static final int ZOOM = 2;//缩放
+    static final int FLING = 3;//翻页
+    int mode = NONE;
+    float oldDist = 1f;
+    PointF start = new PointF();//触摸起始点
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_drawing_board;
@@ -293,6 +302,197 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             }
         });
         takePhotoPopWin.setOnDismissListener(this);
+        initGestureListener();
+    }
+
+    private void initGestureListener() {
+        drawViewMeeting.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (DataCacheUtil.getInstance().getActiveNotePage() != null) {
+
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+                        case MotionEvent.ACTION_DOWN://一点触摸down【也是多点触摸第一点down】
+                            start.set(event.getX(), event.getY());
+                            if (drawViewMeeting.getScaleX() > 1 && drawViewMeeting.getScaleY() > 1 && ivInsertImage.getScaleX() > 1 && ivInsertImage.getScaleY() > 1) {
+                                mode = DRAG;
+                            } else {
+                                mode = FLING;
+                            }
+                            mPosX = event.getX();
+                            mPosY = event.getY();
+                            //Log.d(TAG, "mode=NONE");
+                            break;
+                        case MotionEvent.ACTION_POINTER_DOWN://多点触摸第二点down
+                            oldDist = spacing(event);
+//                            Log.e("aaaa", "olddist" + oldDist);
+                            if (oldDist > 10f) {
+                                mode = ZOOM;
+                            }
+                            break;
+                        case MotionEvent.ACTION_MOVE://挪动
+                            mCurPosX = event.getX();
+
+                            mCurPosY = event.getY();
+                            if (mode == DRAG) {//一点就是拖曳
+                                ivInsertImage.setClickable(false);
+                                if (drawViewMeeting.getScaleX() > 1 && drawViewMeeting.getScaleY() > 1 && ivInsertImage.getScaleX() > 1 && ivInsertImage.getScaleY() > 1) {
+                                    drawViewMeeting.scrollTo((int) ((mPosX - event.getX()) / 2), (int) ((mPosY - event.getY()) / 2));
+                                    ivInsertImage.scrollTo((int) ((mPosX - event.getX()) / 2), (int) ((mPosY - event.getY()) / 2));
+                                }
+
+                            } else if (mode == ZOOM) {//多点就是缩放
+                                if (event.getPointerCount() >= 2) {
+                                    float newDist = spacing(event);
+                                    Log.d(TAG, "ACTION_MOVE_mode == DRAG：" + newDist);
+                                    if (newDist > 10f) {
+                                        float scale = newDist / oldDist;
+                                        if (drawViewMeeting.getScaleX() * scale > 2) {
+                                            drawViewMeeting.setScaleY(2);
+                                            drawViewMeeting.setScaleX(2);
+                                            ivInsertImage.setScaleX(2);
+                                            ivInsertImage.setScaleY(2);
+                                        } else if (drawViewMeeting.getScaleX() * scale < 1) {
+                                            drawViewMeeting.setScaleY(1);
+                                            drawViewMeeting.setScaleX(1);
+                                            ivInsertImage.setScaleX(1);
+                                            ivInsertImage.setScaleY(1);
+                                            drawViewMeeting.scrollTo(0, 0);
+                                            ivInsertImage.scrollTo(0, 0);
+                                        } else {
+                                            drawViewMeeting.setScaleY(drawViewMeeting.getScaleY() * scale);
+                                            drawViewMeeting.setScaleX(drawViewMeeting.getScaleX() * scale);
+                                            ivInsertImage.setScaleX(ivInsertImage.getScaleX() * scale);
+                                            ivInsertImage.setScaleY(ivInsertImage.getScaleY() * scale);
+                                        }
+//                                        Log.e("aaaa", "newDist" + newDist);
+                                    }
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if (event.getPointerCount() == 1 && mode == FLING && drawViewMeeting.getScaleX() == 1 && drawViewMeeting.getScaleY() == 1 && ivInsertImage.getScaleX() == 1 && ivInsertImage.getScaleY() == 1) {
+//                                GreenDaoUtil.getInstance().getDaoSession().clear();
+//                                notePageList.clear();
+//                                notePageList = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(dataCacheUtil.getActiveNoteBook().getId())).orderAsc(NotePageDao.Properties.PageIndex).list();
+                                //左滑
+                                if (mCurPosX - mPosX > 0
+                                        && (Math.abs(mCurPosX - mPosX) > 25)) {
+//                                    Log.e("kkk", "initGestureListener--左滑");
+                                    int tempPosition = -1;
+                                    drawViewMeeting.scrollTo(0, 0);
+                                    ivInsertImage.scrollTo(0, 0);
+                                    drawViewMeeting.setScaleY(1);
+                                    drawViewMeeting.setScaleX(1);
+                                    ivInsertImage.setScaleX(1);
+                                    ivInsertImage.setScaleY(1);
+//                                    for (int i = 0; i < notePageList.size(); i++) {
+//                                        if (currentNotePage != null && currentNotePage.getPageIndex() == notePageList.get(i).getPageIndex()) {
+//                                            tempPosition = i;
+//                                        }
+//                                    }
+
+//                                    for (int i = 0; i < notePageList.size(); i++) {
+//                                        Log.e("==========", "all" + tempPosition + "=============" + notePageList.get(i).getPageIndex() + "======" + notePageList.get(i).getId());
+//
+//                                    }
+//                                    Log.e("kkk", "tempposition" + tempPosition);
+//                                    if ((tempPosition != -1) && (tempPosition - 1 >= 0)) {
+////                                        Log.e("kkk", "tempposition1=" + tempPosition);
+//                                        saveBitmapFile(getcanvarBit(main_view));
+//                                        currentNotePage = notePageList.get(tempPosition - 1);
+//                                        if (currentNotePage != null) {
+//                                            if (drawViewMeeting != null) {
+//                                                drawViewMeeting.clearCanvars();
+//                                                ivInsertImage.setImageDrawable(null);
+//                                                ivInsertImage.refreshDrawableState();
+//                                                Log.e("kkk", "tempposition2=" + tempPosition);
+//                                            }
+//                                            DataCacheUtil.getInstance().setActiveNotePage(currentNotePage);
+//                                            DrawingboardAPI.getInstance().clearCache();
+//                                            if (GreenDaoUtil.getInstance().getDaoSession().getInsertImageDao().queryBuilder().where(InsertImageDao.Properties.PageId.eq(currentNotePage.getId())).list().size() > 0) {
+//                                                InsertImage insertImage = GreenDaoUtil.getInstance().getDaoSession().getInsertImageDao().queryBuilder().where(InsertImageDao.Properties.PageId.eq(currentNotePage.getId())).list().get(0);
+//                                                showImage(insertImage);
+//                                            } else {
+//                                                ivInsertImage.setImageDrawable(null);
+//                                                ivInsertImage.refreshDrawableState();
+//                                            }
+//                                            Log.e("kkk", "tempposition3=" + tempPosition);
+//                                            readDataBaseData();
+//
+//                                        }
+//                                    }
+                                } else if (mCurPosX - mPosX < 0
+                                        && (Math.abs(mCurPosX - mPosX) > 25)) {
+
+                                    //右滑
+                                    Log.e("kkk", "initGestureListener--右滑");
+                                    int tempPosition = -1;
+                                    drawViewMeeting.scrollTo(0, 0);
+                                    ivInsertImage.scrollTo(0, 0);
+                                    drawViewMeeting.setScaleY(1);
+                                    drawViewMeeting.setScaleX(1);
+                                    ivInsertImage.setScaleX(1);
+                                    ivInsertImage.setScaleY(1);
+//                                    for (int i = 0; i < notePageList.size(); i++) {
+//                                        if (currentNotePage != null && currentNotePage.getPageIndex() == notePageList.get(i).getPageIndex()) {
+//                                            tempPosition = i;
+//                                        }
+//                                    }
+//                                    if ((tempPosition != -1) && (tempPosition + 1 < notePageList.size())) {
+//                                        saveBitmapFile(getcanvarBit(main_view));
+//                                        currentNotePage = notePageList.get(tempPosition + 1);
+//                                        if (currentNotePage != null) {
+//                                            if (drawViewMeeting != null) {
+//                                                drawViewMeeting.clearCanvars();
+//                                                ivInsertImage.setImageDrawable(null);
+//                                                ivInsertImage.refreshDrawableState();
+//                                                page_text.setText("第" + currentNotePage.getPageIndex() + "页");
+//                                                time_text.setText(DateUtils.timestampToDate3(currentNotePage.getCreateTime()));
+//                                            }
+//                                            DataCacheUtil.getInstance().setActiveNotePage(currentNotePage);
+//                                            DrawingboardAPI.getInstance().clearCache();
+//                                            if (GreenDaoUtil.getInstance().getDaoSession().getInsertImageDao().queryBuilder().where(InsertImageDao.Properties.PageId.eq(currentNotePage.getId())).list().size() > 0) {
+//                                                InsertImage insertImage = GreenDaoUtil.getInstance().getDaoSession().getInsertImageDao().queryBuilder().where(InsertImageDao.Properties.PageId.eq(currentNotePage.getId())).list().get(0);
+//                                                showImage(insertImage);
+//                                            } else {
+//                                                ivInsertImage.setImageDrawable(null);
+//                                                ivInsertImage.refreshDrawableState();
+//                                            }
+//                                            readDataBaseData();
+//                                        }
+//                                    }
+                                }
+                            } else {
+
+                            }
+                            break;
+                        case MotionEvent.ACTION_POINTER_UP:
+                            mode = NONE;
+                            break;
+
+                    }
+                }
+//                if (ll_menu.getVisibility() == View.VISIBLE) {
+//                    return false;
+//                } else {
+//                }
+                    return false;
+            }
+
+        });
+
+    }
+
+    private float spacing(MotionEvent event) {
+        Log.d(TAG, "spacing：event.getX(0)" + "=" + event.getX(0) + ";event.getX(1)" + "=" + event.getX(1));
+        Log.d(TAG, "spacing：event.getY(0)" + "=" + event.getY(0) + ";event.getY(1)" + "=" + event.getY(1));
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     /**

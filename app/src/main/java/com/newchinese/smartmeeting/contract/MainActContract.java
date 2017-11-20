@@ -1,6 +1,7 @@
 package com.newchinese.smartmeeting.contract;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.newchinese.smartmeeting.base.BaseSimplePresenter;
 import com.newchinese.smartmeeting.base.BaseView;
@@ -14,6 +15,10 @@ import com.newchinese.smartmeeting.base.BaseView;
 public interface MainActContract {
     interface View<E> extends BaseView<E> {
         void showToast(String toastMsg);
+
+        void showDialog();
+
+        void initMaskView();
     }
 
     interface Presenter extends BaseSimplePresenter<View> {
@@ -32,5 +37,9 @@ public interface MainActContract {
         void saveRecordPage(int i);
 
         void disconnect();
+
+        void checkVersion();
+
+        void downLoadApk(Context context);
     }
 }

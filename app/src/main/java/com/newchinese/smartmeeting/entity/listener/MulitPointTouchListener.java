@@ -110,7 +110,6 @@ public class MulitPointTouchListener implements View.OnTouchListener {
                 sb.append(";");
         }
         sb.append("]");
-        //Log.d(TAG, sb.toString());
     }
 
     private float spacing(MotionEvent event) {

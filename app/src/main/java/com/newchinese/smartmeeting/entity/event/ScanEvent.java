@@ -5,4 +5,14 @@ package com.newchinese.smartmeeting.entity.event;
  */
 
 public class ScanEvent {
+    private String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public ScanEvent setSource(String source) {
+        this.source = source;
+        return this;
+    }
 }

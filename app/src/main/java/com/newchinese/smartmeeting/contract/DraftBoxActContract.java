@@ -67,7 +67,7 @@ public interface DraftBoxActContract {
 
         void loadActivePageList();
 
-        void createSelectedRecords(List<NotePage> notePageList, List<Boolean> isSelectedList, String recordName);
+        void createSelectedRecords(List<NotePage> notePageList, List<Boolean> isSelectedList, String recordName,String pageMode);
 
         void requestElectricity();
 

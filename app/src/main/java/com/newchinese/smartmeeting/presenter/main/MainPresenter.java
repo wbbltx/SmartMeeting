@@ -1,5 +1,7 @@
 package com.newchinese.smartmeeting.presenter.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
@@ -16,16 +18,28 @@ import com.newchinese.smartmeeting.database.NotePageDao;
 import com.newchinese.smartmeeting.database.NotePointDao;
 import com.newchinese.smartmeeting.database.NoteRecordDao;
 import com.newchinese.smartmeeting.database.NoteStrokeDao;
+import com.newchinese.smartmeeting.entity.bean.BaseResult;
 import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.bean.NoteRecord;
 import com.newchinese.smartmeeting.entity.bean.NoteStroke;
+import com.newchinese.smartmeeting.entity.bean.RequestVersion;
+import com.newchinese.smartmeeting.entity.bean.VersionInfo;
+import com.newchinese.smartmeeting.entity.http.ApiService;
+import com.newchinese.smartmeeting.entity.http.ApiSubscriber;
+import com.newchinese.smartmeeting.entity.http.Kits;
+import com.newchinese.smartmeeting.entity.http.NetError;
+import com.newchinese.smartmeeting.entity.http.NetProviderImpl;
+import com.newchinese.smartmeeting.entity.http.NetUrl;
+import com.newchinese.smartmeeting.entity.http.XApi;
 import com.newchinese.smartmeeting.manager.CollectPageManager;
 import com.newchinese.smartmeeting.manager.CollectRecordManager;
 import com.newchinese.smartmeeting.manager.NotePageManager;
 import com.newchinese.smartmeeting.manager.NotePointManager;
 import com.newchinese.smartmeeting.manager.NoteRecordManager;
 import com.newchinese.smartmeeting.manager.NoteStrokeManager;
+import com.newchinese.smartmeeting.model.AboutModelImp;
+import com.newchinese.smartmeeting.ui.mine.service.UpdateService;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
@@ -34,10 +48,16 @@ import com.newchinese.smartmeeting.util.PointCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 
+import org.reactivestreams.Subscription;
+
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Description:
@@ -64,6 +84,8 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     private PointCacheUtil pointCacheUtil;
     private ExecutorService singleThreadExecutor;
     private List<NotePage> activeNotePageList;
+    private ApiService mServices;
+    private String interiorAppUrl;
 
     /**
      * 获取当前线程池对象
@@ -94,6 +116,9 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
         pointCacheUtil.setCanAddFlag(true);
         //初始化线程池
         singleThreadExecutor = Executors.newSingleThreadExecutor();
+
+        XApi.registerProvider(new NetProviderImpl());
+        mServices = XApi.get(NetUrl.THOST, ApiService.class);
     }
 
     @Override
@@ -314,6 +339,47 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     public void disconnect() {
 //        退出应用 蓝牙断开 状态初始化为断开
         if (dataCacheUtil.getPenState() == BluCommonUtils.PEN_CONNECTED)
+            dataCacheUtil.setPenState(BluCommonUtils.PEN_DISCONNECTED);
             BluetoothLe.getDefault().disconnectBleDevice();
+    }
+
+    @Override
+    public void checkVersion() {
+        RequestVersion requestVersion = new RequestVersion().setPlatform("1").setVersion("1.0");
+        mServices.checkVersion(requestVersion).subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Consumer<Subscription>() {
+                    @Override
+                    public void accept(Subscription subscription) throws Exception {
+
+                    }
+                })
+                .compose(XApi.<BaseResult<VersionInfo>>getApiTransformer())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ApiSubscriber<BaseResult<VersionInfo>>() {
+                    @Override
+                    protected void onFail(NetError error) {
+                        XLog.d(TAG, " onFail " + error.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(BaseResult<VersionInfo> versionInfoBaseResult) {
+                        VersionInfo data = versionInfoBaseResult.data;
+                        XLog.d(TAG, versionInfoBaseResult.msg + " ++ " + data);
+                        int versionCode = Kits.Package.getVersionCode(App.getAppliction());
+                        if ((versionCode) < data.getVersion()) {
+                            interiorAppUrl = data.getInteriorAppUrl();
+                            mView.showDialog();
+                        }else {
+                            mView.initMaskView();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void downLoadApk(Context context) {
+        Intent intent = new Intent(context, UpdateService.class);
+        intent.putExtra(BluCommonUtils.VERSION_PATH,interiorAppUrl);
+        context.startService(intent);
     }
 }

@@ -33,6 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 public class AboutModelImp implements AboutContract.AboutIModel {
 
     private final AboutContract.AboutIPresenter mPresenter;
+    private static final String TAG = "AboutModelImp";
     private final ApiService mServices;
     private final Context context;
     private String interiorAppUrl;
@@ -65,19 +66,19 @@ public class AboutModelImp implements AboutContract.AboutIModel {
                 .subscribe(new ApiSubscriber<BaseResult<VersionInfo>>() {
                     @Override
                     protected void onFail(NetError error) {
-                        XLog.d("hahehe", " onFail " + error.getMessage());
+                        XLog.d(TAG, " onFail " + error.getMessage());
                     }
 
                     @Override
                     public void onNext(BaseResult<VersionInfo> versionInfoBaseResult) {
                         VersionInfo data = versionInfoBaseResult.data;
-                        XLog.d("hahehe", versionInfoBaseResult.msg + " ++ " + data);
+                        XLog.d(TAG, versionInfoBaseResult.msg + " ++ " + data);
                         int versionCode = Kits.Package.getVersionCode(App.getAppliction());
                         if ((versionCode) < data.getVersion()) {
                             interiorAppUrl = data.getInteriorAppUrl();
                             mPresenter.showDialog();
                         }else {
-                            XLog.d("hahehe", " 已经是最新版本！ ");
+                            XLog.d(TAG, " 已经是最新版本！ ");
 //                            提示已经是最新版本
 //                            CustomizedToast.showLong(context, context.getString(R.string.already_new));
                         }
@@ -87,7 +88,7 @@ public class AboutModelImp implements AboutContract.AboutIModel {
 
     @Override
     public void downLoad() {
-        XLog.d("hahehe", " 开启服务下载apk");
+        XLog.d(TAG, " 开启服务下载apk");
         Intent intent = new Intent(context, UpdateService.class);
         intent.putExtra(BluCommonUtils.VERSION_PATH,interiorAppUrl);
         context.startService(intent);
