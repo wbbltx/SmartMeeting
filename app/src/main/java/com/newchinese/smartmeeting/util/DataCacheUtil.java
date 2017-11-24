@@ -35,6 +35,15 @@ public class DataCacheUtil {
     private NotePage activeNotePage; //当前活动页
     private NoteRecord activeNoteRecord; //当前活动记录
     private NoteRecord activeWriteRecord;//当前书写的记录
+    private String name = "全部";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public NoteRecord getActiveWriteRecord() {
         return activeWriteRecord;

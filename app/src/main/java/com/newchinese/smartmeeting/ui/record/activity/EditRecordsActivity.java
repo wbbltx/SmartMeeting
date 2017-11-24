@@ -75,6 +75,7 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
         tvCancel.setText("删除");
         tvCancel.setEnabled(false);
         tvCreate.setText("重命名");
+        tvTitle.setText("选中0项");
         tvCreate.setEnabled(false);
 //        初始化RecyclerView
         rvEdit.setHasFixedSize(true);
@@ -85,7 +86,8 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
         adapter.setIsSelectable(true);
         rvEdit.setAdapter(adapter);
 
-        mPresenter.queryCollectRecords(DataCacheUtil.getInstance().getChosenClassifyName());
+        mPresenter.queryCollectRecords(DataCacheUtil.getInstance().getName());
+        XLog.d(TAG,DataCacheUtil.getInstance().getName());
     }
 
     @Override
@@ -143,6 +145,7 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
                 i ++;
             }
         }
+        tvTitle.setText("选中"+i+"项");
         if (i != 0){
             if (i == 1){
                 tvCreate.setEnabled(true);
@@ -165,14 +168,23 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
     public void showQueryResult(List<CollectRecord> collectRecordList) {
         this.collectRecordList.clear();
         this.collectRecordList.addAll(collectRecordList);
-        initIsSelectedStatus(this.collectRecordList);
-        adapter.setCollectRecordList(this.collectRecordList);
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initIsSelectedStatus(EditRecordsActivity.this.collectRecordList);
+                adapter.setCollectRecordList(EditRecordsActivity.this.collectRecordList);
+            }
+        });
     }
 
     @Override
-    public void showToast(String info) {
-        CustomizedToast.showShort(this,info);
+    public void showToast(final String info) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomizedToast.showShort(EditRecordsActivity.this,info);
+            }
+        });
     }
 
     private void initIsSelectedStatus(List<CollectRecord> pageList) {

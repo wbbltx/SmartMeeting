@@ -176,7 +176,7 @@
         <activity android:name=".ui.record.activity.CollectAddTypeActivity" />
         <activity android:name=".ui.record.activity.CollectToAddListActivity" />
         <activity android:name=".ui.main.activity.VideoActivity" />
-        <activity android:name=".ui.record.activity.EditRecordsActivity"></activity>
+        <activity android:name=".ui.record.activity.EditRecordsActivity" />
     </application>
 
 </manifest>

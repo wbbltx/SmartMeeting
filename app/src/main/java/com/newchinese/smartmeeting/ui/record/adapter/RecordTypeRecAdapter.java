@@ -44,7 +44,7 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final CollectRecord collectRecord = collectRecordList.get(position);
-        XLog.d("hahehe",collectRecord.getClassifyName()+" onBindViewHolder："+collectRecordList.size());
+//        XLog.d("hahehe",collectRecord.getClassifyName()+" onBindViewHolder："+collectRecordList.size());
         holder.tvRecordTypTitle.setText(collectRecord.getCollectRecordName());
         holder.tvRecordTypTime.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));
         if (isSelectable){

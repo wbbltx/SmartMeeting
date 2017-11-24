@@ -1,31 +1,39 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
+import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.RecordsFragContract;
 import com.newchinese.smartmeeting.entity.bean.CollectRecord;
-import com.newchinese.smartmeeting.entity.event.EditModeEvent;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
-import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
 import com.newchinese.smartmeeting.ui.record.adapter.RecordTypeFragmentAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import com.newchinese.smartmeeting.widget.NoPreloadViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import magicindicator.MagicIndicator;
+import magicindicator.ViewPagerHelper;
+import magicindicator.buildins.commonnavigator.CommonNavigator;
+import magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
+import magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
+import magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
+import magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
+import magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleView;
 
 
 /**
@@ -33,7 +41,7 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/17 17:30
  */
-public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View, ViewPager.OnPageChangeListener {
+public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View{
     @BindView(R.id.et_search_content)
     EditText etSearchContent;
     @BindView(R.id.iv_search)
@@ -41,9 +49,9 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
 //    @BindView(R.id.rv_record_list)
 //    RecyclerView rvRecordList;
     @BindView(R.id.tab_record_fragment)
-    TabLayout mTabLayout;
+    MagicIndicator mTabLayout;
     @BindView(R.id.vp_record_fragment)
-    ViewPager mViewPager;
+    NoPreloadViewPager mViewPager;
 //    private CollectRecordsRecyAdapter adapter;
     private List<CollectRecord> collectRecordList = new ArrayList<>();
     private RecordTypeFragmentAdapter recordTypeFragmentAdapter;
@@ -65,27 +73,52 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     @Override
     protected void onFragViewCreated() {
         super.onFragViewCreated();
-        //初始化RecyclerView
-//        rvRecordList.setHasFixedSize(true);
-//        rvRecordList.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
-//        rvRecordList.setItemAnimator(new DefaultItemAnimator());
         recordTypeFragmentAdapter = new RecordTypeFragmentAdapter(getActivity(), getChildFragmentManager());
         mViewPager.setAdapter(recordTypeFragmentAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
     protected void initStateAndData() {
-//        adapter = new CollectRecordsRecyAdapter(mContext, "records");
-//        rvRecordList.setAdapter(adapter);
-//        mPresenter.loadAllCollectRecordData();
-        DataCacheUtil.getInstance().setChosenClassifyName("全部");
+        CommonNavigator commonNavigator = new CommonNavigator(getActivity());
+        commonNavigator.setAdapter(new CommonNavigatorAdapter() {
+            @Override
+            public int getCount() {
+                return Constant.titleList.length;
+            }
+
+            @Override
+            public IPagerTitleView getTitleView(Context context, final int index) {
+                final ColorTransitionPagerTitleView colorTransitionPagerTitleView = new ColorTransitionPagerTitleView(context);
+                colorTransitionPagerTitleView.setNormalColor(getActivity().getResources().getColor(R.color.gray3));
+                colorTransitionPagerTitleView.setSelectedColor(getActivity().getResources().getColor(R.color.simple_blue));
+                colorTransitionPagerTitleView.setText(Constant.titleList[index]);
+                colorTransitionPagerTitleView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DataCacheUtil.getInstance().setName(Constant.titleList[index]);
+                        mViewPager.setCurrentItem(index);
+                    }
+                });
+                return colorTransitionPagerTitleView;
+            }
+
+            @Override
+            public IPagerIndicator getIndicator(Context context) {
+                LinePagerIndicator indicator = new LinePagerIndicator(context);
+                indicator.setColors(getActivity().getResources().getColor(R.color.simple_blue));
+                return indicator;
+            }
+        });
+        mTabLayout.setNavigator(commonNavigator);
+        ViewPagerHelper.bind(mTabLayout, mViewPager);
+        DataCacheUtil.getInstance().setName("全部");
     }
 
     @Override
     protected void initListener() {
 //        adapter.setOnItemClickedListener(this);
-        mViewPager.addOnPageChangeListener(this);
+//        mViewPager.addOnPageChangeListener(this);
+//        mViewPager.setOnPageChangeListener(this);
         //搜索输入框内容改变监听
         etSearchContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -146,21 +179,18 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+    public void onResume() {
+        super.onResume();
+        XLog.d(TAG,TAG+"onResume");
     }
 
-    @Override
-    public void onPageSelected(int position) {
-        String pageTitle = (String) recordTypeFragmentAdapter.getPageTitle(position);
-
-        DataCacheUtil.getInstance().setChosenClassifyName(pageTitle);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
+//    @Override
+//    public void onPageSelected(int position) {
+////        String pageTitle = (String) recordTypeFragmentAdapter.getPageTitle(position);
+//        XLog.d(TAG,TAG+"onPageSelected");
+//        String pageTitle = titleList.get(position);
+//        DataCacheUtil.getInstance().setName(pageTitle);
+//    }
 
 //    /**
 //     * 列表点击事件

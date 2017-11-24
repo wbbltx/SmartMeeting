@@ -41,39 +41,56 @@ public class EditRecordsPresenter extends BasePresenter<EditRecordContract.View>
     }
 
     @Override
-    public void queryCollectRecords(String typeName) {
-        List<CollectRecord> collectRecords = null;
+    public void queryCollectRecords(final String typeName) {
         this.typeName = typeName;
-        if (typeName != null) {
-            if (typeName.equals("全部")) {
-                collectRecords = collectRecordDao.queryBuilder().orderDesc(CollectRecordDao.Properties.CollectDate).list();
-            } else {
-                collectRecords = collectRecordDao.queryBuilder().where(CollectRecordDao.Properties.ClassifyName.eq(typeName)).list();
+        Runnable queryRunnable = new Runnable() {
+            @Override
+            public void run() {
+                List<CollectRecord> collectRecords = null;
+                if (typeName != null) {
+                    if (typeName.equals("全部")) {
+                        collectRecords = collectRecordDao.queryBuilder().orderDesc(CollectRecordDao.Properties.CollectDate).list();
+                    } else {
+                        collectRecords = collectRecordDao.queryBuilder().where(CollectRecordDao.Properties.ClassifyName.eq(typeName)).list();
+                    }
+                    if (mView != null) {
+                        mView.showQueryResult(collectRecords);
+                    }
+                }
             }
-            if (mView != null) {
-                mView.showQueryResult(collectRecords);
-            }
+        };
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(queryRunnable);
         }
     }
 
     @Override
-    public void deleteCollectRecords(List<CollectRecord> collectRecords, List<Boolean> isSelecteds) {
+    public void deleteCollectRecords(final List<CollectRecord> collectRecords, final List<Boolean> isSelecteds) {
         isSelectedList.clear();
         isSelectedList.addAll(isSelecteds);
         notePageList.clear();
         notePageList.addAll(collectRecords);
-        for (int i = 0; i < isSelecteds.size(); i++) {
-            if (isSelecteds.get(i)) {
-                CollectRecord collectRecord = collectRecords.get(i);
-                List<CollectPage> pageList = collectRecord.getPageList();
-                for (CollectPage collectPage : pageList) {
-                    collectPageDao.delete(collectPage);
+        Runnable deleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < isSelecteds.size(); i++) {
+                    if (isSelecteds.get(i)) {
+                        CollectRecord collectRecord = collectRecords.get(i);
+                        List<CollectPage> pageList = collectRecord.getPageList();
+                        for (CollectPage collectPage : pageList) {
+                            collectPageDao.delete(collectPage);
+                        }
+                        collectRecordDao.delete(collectRecord);
+                    }
                 }
-                collectRecordDao.delete(collectRecord);
+                queryCollectRecords(typeName);
+                if (mView != null)
+                    mView.showToast("删除成功");
             }
+        };
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(deleteRunnable);
         }
-        queryCollectRecords(typeName);
-        mView.showToast("删除成功");
     }
 
     /**
@@ -84,20 +101,29 @@ public class EditRecordsPresenter extends BasePresenter<EditRecordContract.View>
      * @param newName
      */
     @Override
-    public void reNameCollectRecords(List<CollectRecord> collectRecords, List<Boolean> isSelecteds, String newName) {
+    public void reNameCollectRecords(final List<CollectRecord> collectRecords, final List<Boolean> isSelecteds, final String newName) {
         isSelectedList.clear();
         isSelectedList.addAll(isSelecteds);
         notePageList.clear();
         notePageList.addAll(collectRecords);
-        for (int i = 0; i < isSelecteds.size(); i++) {
-            if (isSelecteds.get(i)) {
-                CollectRecord collectRecord = collectRecords.get(i);
-                collectRecord.setCollectRecordName(newName);
-                collectRecordDao.update(collectRecord);
+        Runnable renameRunnable = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < isSelecteds.size(); i++) {
+                    if (isSelecteds.get(i)) {
+                        CollectRecord collectRecord = collectRecords.get(i);
+                        collectRecord.setCollectRecordName(newName);
+                        collectRecordDao.update(collectRecord);
+                    }
+                }
+                queryCollectRecords(typeName);
+                if (mView != null)
+                    mView.showToast("修改成功");
             }
+        };
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(renameRunnable);
         }
-        queryCollectRecords(typeName);
-        mView.showToast("修改成功");
     }
 
 }

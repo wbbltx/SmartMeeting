@@ -48,15 +48,6 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     private TextView tvCancel;
     private TextView tvCreate;
 
-//    private static RecordSubFragment instance = null;
-//
-//    public static  RecordSubFragment getInstance(){
-//        if (instance == null){
-//            instance = new RecordSubFragment();
-//        }
-//        return instance;
-//    }
-
     @Override
     protected RecordsTypePresenter initPresenter() {
         return new RecordsTypePresenter();
@@ -78,10 +69,9 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
 
     @Override
     protected void initStateAndData() {
+        XLog.d(TAG,"initStateAndData");
         adapter = new RecordTypeRecAdapter(getActivity());
         rvRecordList.setAdapter(adapter);
-
-
     }
 
     @Override
@@ -92,7 +82,8 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.loadRecordsPages(DataCacheUtil.getInstance().getChosenClassifyName());
+        mPresenter.loadRecordsPages(DataCacheUtil.getInstance().getName());
+        XLog.d(TAG,"onResume"+ DataCacheUtil.getInstance().getName());
     }
 
     //子条目的点击事件
@@ -112,7 +103,7 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     public void getRightCollectRecordData(List<CollectRecord> collectRecords) {
         collectRecordList.clear();
         collectRecordList.addAll(collectRecords);
-        XLog.d(TAG, "长度是：" + collectRecordList.size());
+//        XLog.d(TAG, "长度是：" + collectRecordList.size());
         adapter.setCollectRecordList(collectRecordList);
     }
 
