@@ -164,9 +164,9 @@ public class CollectRecord {
     public String toString() {
         return "CollectRecord{" +
                 "id=" + id +
-                ", classifyName='" + classifyName + '\'' +
+//                ", classifyName='" + classifyName + '\'' +
                 ", collectRecordName='" + collectRecordName + '\'' +
-                ", collectDate=" + collectDate +
+//                ", collectDate=" + collectDate +
                 '}';
     }
 }

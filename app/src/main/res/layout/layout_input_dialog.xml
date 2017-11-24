@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="40dp"
+        android:layout_margin="20dp"
         android:background="@drawable/dialog_circular_bg">
 
         <LinearLayout
@@ -19,7 +19,8 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:text="@string/change_record_title"
                 android:textColor="@color/gray3"
@@ -33,14 +34,14 @@
             <LinearLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="50dp"
                 android:background="@color/colorWhite"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/etInput"
-                    android:layout_width="210dp"
+                    android:layout_width="131dp"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:gravity="center"
@@ -53,20 +54,19 @@
                 <View
                     android:layout_width="150dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/gray3" />
+                    android:layout_marginTop="5dp"
+                    android:background="@color/simple_blue2" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="10dp"
                 android:background="@color/graydc" />
 
             <LinearLayout
                 android:id="@+id/double_button"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="45dp"
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -82,7 +82,7 @@
                     android:background="@null"
                     android:gravity="center"
                     android:text="C@string/btn_cancel"
-                    android:textColor="#007aff"
+                    android:textColor="@color/gray6"
                     android:textSize="16sp" />
 
                 <View

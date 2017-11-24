@@ -1,21 +1,17 @@
 package com.newchinese.smartmeeting.ui.main.activity;
 
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,21 +20,19 @@ import com.newchinese.coolpensdk.manager.DrawingboardAPI;
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseActivity;
 import com.newchinese.smartmeeting.base.BaseSimpleFragment;
-import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.MainActContract;
 import com.newchinese.smartmeeting.entity.event.OnMaskClicked;
 import com.newchinese.smartmeeting.entity.event.OnPageIndexChangedEvent;
 import com.newchinese.smartmeeting.entity.event.OnPointCatchedEvent;
 import com.newchinese.smartmeeting.entity.event.OnStrokeCatchedEvent;
+import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 import com.newchinese.smartmeeting.presenter.main.MainPresenter;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
-import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
-import com.newchinese.smartmeeting.util.log.XLog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,7 +46,7 @@ import butterknife.BindView;
  * Date           2017/8/17 17:05
  */
 public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> implements MainActContract.View<BluetoothDevice>,
-        RadioGroup.OnCheckedChangeListener, OnPointListener, View.OnClickListener {
+        RadioGroup.OnCheckedChangeListener, OnPointListener, View.OnClickListener, PopWindowListener {
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
     @BindView(R.id.iv_back)
@@ -98,7 +92,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         mineFragment = new MineFragment();
         fragmentManager.beginTransaction().add(R.id.fl_container, meetingFragemnt).commit();
         nowFragment = meetingFragemnt; //当前添加的为RecordsFragment
-
+//进入应用先检测新版本
         mPresenter.checkVersion();
     }
 
@@ -231,23 +225,25 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
 
     @Override
     public void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.update_dialog))
-                .setNegativeButton(getString(R.string.update_nexttime), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        initMaskView();
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton(getString(R.string.update_now), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.downLoadApk(MainActivity.this);
-                        initMaskView();
-                    }
-                })
-                .create().show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(getString(R.string.update_dialog))
+//                .setNegativeButton(getString(R.string.update_nexttime), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        initMaskView();
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .setPositiveButton(getString(R.string.update_now), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        mPresenter.downLoadApk(MainActivity.this);
+//                        initMaskView();
+//                    }
+//                })
+//                .create().show();
+        super.showDialog(this,findViewById(R.id.rl_draw_base));
+        hisInfoWindow.setHintText("立即更新", "下次再说", "优化界面，修改bug", "升级新版本");
     }
 
     @Override
@@ -269,4 +265,17 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
                 break;
         }
     }
+
+    @Override
+    public void onConfirm(int i) {
+        mPresenter.downLoadApk(MainActivity.this);
+        initMaskView();
+    }
+
+    @Override
+    public void onCancel(int i) {
+        initMaskView();
+        hisInfoWindow.dismiss();
+    }
+
 }

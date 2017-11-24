@@ -119,7 +119,7 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
                 requestElectricity();
             }
         };
-        timer.schedule(timerTask, 500, 60000);
+        timer.schedule(timerTask, 1000, 60000);
     }
 
     @Override

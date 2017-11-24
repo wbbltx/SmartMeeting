@@ -222,7 +222,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 pageMode = BluCommonUtils.NORMAL_MODE;
                 adapter.setIsSelectedList(isSelectedList);
                 break;
-            case R.id.tv_create: //选择响应的页之后 点击确认 生成记录或者删除
+            case R.id.tv_create: //选择相应的页之后 点击确认 生成记录或者删除
                 //先判断是否未选择
                 boolean isSelectEmpty = true;
                 for (Boolean isSelected : isSelectedList) {

@@ -311,6 +311,7 @@ public class BluetoothLe {
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "onConnectionStateChange STATE_DISCONNECTED called");
                 bleManager.close();
+//                close();
                 bleManager.setIsConnected(false);
                 bleManager.setPaired(false);
                 mHandler.post(new Runnable() {

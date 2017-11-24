@@ -23,6 +23,7 @@ public class HisInfoWindow extends PopupWindow implements View.OnClickListener {
     private TextView stay_close;
     private TextView open_bluetooth;
     private TextView title;
+    private final TextView content;
 
     public HisInfoWindow(Context context, PopWindowListener popWindowListener) {
         super(context);
@@ -36,7 +37,8 @@ public class HisInfoWindow extends PopupWindow implements View.OnClickListener {
 
         stay_close = (TextView) mView.findViewById(R.id.negativeButton);
         open_bluetooth = (TextView) mView.findViewById(R.id.positiveButton);
-        title = (TextView) mView.findViewById(R.id.title);
+        title = (TextView) mView.findViewById(R.id.etInput);
+        content = (TextView) mView.findViewById(R.id.tv_title);
         open_bluetooth.setOnClickListener(this);
         stay_close.setOnClickListener(this);
 
@@ -50,7 +52,7 @@ public class HisInfoWindow extends PopupWindow implements View.OnClickListener {
         //设置PopupWindow弹出窗体可点击
 //        this.setFocusable(true);
         //设置SelectPicPopupWindow弹出窗体动画效果
-        this.setAnimationStyle(R.style.popup_anim);
+//        this.setAnimationStyle(R.style.popup_anim);
         //实例化一个ColorDrawable颜色为半透明
         ColorDrawable dw = new ColorDrawable(0x3fffff);
         //设置SelectPicPopupWindow弹出窗体的背景
@@ -59,10 +61,11 @@ public class HisInfoWindow extends PopupWindow implements View.OnClickListener {
         this.setOutsideTouchable(false);
     }
 
-    public void setHintText(String confirmText,String cancelText,String title){
+    public void setHintText(String confirmText,String cancelText,String title,String content){
         open_bluetooth.setText(confirmText);
         stay_close.setText(cancelText);
         this.title.setText(title);
+        this.content.setText(content);
     }
 
     @Override

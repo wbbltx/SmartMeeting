@@ -1,12 +1,9 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
-import android.content.Intent;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -14,13 +11,15 @@ import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
 import com.newchinese.smartmeeting.contract.RecordsFragContract;
 import com.newchinese.smartmeeting.entity.bean.CollectRecord;
-import com.newchinese.smartmeeting.entity.listener.OnItemClickedListener;
+import com.newchinese.smartmeeting.entity.event.EditModeEvent;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
-import com.newchinese.smartmeeting.ui.record.activity.CollectPageListActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectRecordsRecyAdapter;
+import com.newchinese.smartmeeting.ui.record.adapter.RecordTypeFragmentAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
-import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,16 +33,21 @@ import butterknife.OnClick;
  * author         xulei
  * Date           2017/8/17 17:30
  */
-public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View,
-        OnItemClickedListener {
+public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View, ViewPager.OnPageChangeListener {
     @BindView(R.id.et_search_content)
     EditText etSearchContent;
     @BindView(R.id.iv_search)
     ImageView ivSearch;
-    @BindView(R.id.rv_record_list)
-    RecyclerView rvRecordList;
-    private CollectRecordsRecyAdapter adapter;
+//    @BindView(R.id.rv_record_list)
+//    RecyclerView rvRecordList;
+    @BindView(R.id.tab_record_fragment)
+    TabLayout mTabLayout;
+    @BindView(R.id.vp_record_fragment)
+    ViewPager mViewPager;
+//    private CollectRecordsRecyAdapter adapter;
     private List<CollectRecord> collectRecordList = new ArrayList<>();
+    private RecordTypeFragmentAdapter recordTypeFragmentAdapter;
+    private static final String TAG = "RecordsFragment";
 
     public RecordsFragment() {
     }
@@ -62,21 +66,26 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     protected void onFragViewCreated() {
         super.onFragViewCreated();
         //初始化RecyclerView
-        rvRecordList.setHasFixedSize(true);
-        rvRecordList.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
-        rvRecordList.setItemAnimator(new DefaultItemAnimator());
+//        rvRecordList.setHasFixedSize(true);
+//        rvRecordList.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
+//        rvRecordList.setItemAnimator(new DefaultItemAnimator());
+        recordTypeFragmentAdapter = new RecordTypeFragmentAdapter(getActivity(), getChildFragmentManager());
+        mViewPager.setAdapter(recordTypeFragmentAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
     protected void initStateAndData() {
-        adapter = new CollectRecordsRecyAdapter(mContext, "records");
-        rvRecordList.setAdapter(adapter);
-        mPresenter.loadAllCollectRecordData();
+//        adapter = new CollectRecordsRecyAdapter(mContext, "records");
+//        rvRecordList.setAdapter(adapter);
+//        mPresenter.loadAllCollectRecordData();
+        DataCacheUtil.getInstance().setChosenClassifyName("全部");
     }
 
     @Override
     protected void initListener() {
-        adapter.setOnItemClickedListener(this);
+//        adapter.setOnItemClickedListener(this);
+        mViewPager.addOnPageChangeListener(this);
         //搜索输入框内容改变监听
         etSearchContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -92,9 +101,9 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().length() == 0) {
-                    mPresenter.loadAllCollectRecordData();
+//                    mPresenter.loadAllCollectRecordData();
                 } else {
-                    mPresenter.searchCollectRecordByName(s.toString());
+//                    mPresenter.searchCollectRecordByName(s.toString());
                 }
             }
         });
@@ -104,7 +113,7 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     @OnClick(R.id.iv_search)
     public void onViewClicked() {
         if (!etSearchContent.getText().toString().isEmpty()) {
-            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
+//            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
         }
     }
 
@@ -119,7 +128,7 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.setCollectRecordList(collectRecordList);
+//                    adapter.setCollectRecordList(collectRecordList);
                 }
             });
         }
@@ -130,27 +139,45 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
      */
     public void refreshData() {
         if (etSearchContent.getText().toString().length() == 0) {
-            mPresenter.loadAllCollectRecordData();
+//            mPresenter.loadAllCollectRecordData();
         } else {
-            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
+//            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
         }
     }
 
-    /**
-     * 列表点击事件
-     */
     @Override
-    public void onClick(View view, int position) {
-        MobclickAgent.onEvent(getActivity(), "book_res", collectRecordList.get(position).getCollectRecordName());
-        DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
-        startActivity(new Intent(mActivity, CollectPageListActivity.class));
-    }
-
-    /**
-     * 列表长点击事件
-     */
-    @Override
-    public void onLongClick(View view, int position) {
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
     }
+
+    @Override
+    public void onPageSelected(int position) {
+        String pageTitle = (String) recordTypeFragmentAdapter.getPageTitle(position);
+
+        DataCacheUtil.getInstance().setChosenClassifyName(pageTitle);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+//    /**
+//     * 列表点击事件
+//     */
+//    @Override
+//    public void onClick(View view, int position) {
+//        MobclickAgent.onEvent(getActivity(), "book_res", collectRecordList.get(position).getCollectRecordName());
+//        DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
+//        startActivity(new Intent(mActivity, CollectPageListActivity.class));
+//    }
+//
+//    /**
+//     * 列表长点击事件
+//     */
+//    @Override
+//    public void onLongClick(View view, int position) {
+//
+//    }
+
 }
