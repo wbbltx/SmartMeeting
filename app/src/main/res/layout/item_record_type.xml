@@ -22,8 +22,9 @@
         android:layout_alignLeft="@id/iv_book"
         android:layout_alignRight="@id/iv_book"
         android:text="市场部工作例会"
+        android:lineSpacingExtra="5dp"
         android:textColor="@color/colorWhite"
-        android:textSize="18sp"/>
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/tv_record_type_time"

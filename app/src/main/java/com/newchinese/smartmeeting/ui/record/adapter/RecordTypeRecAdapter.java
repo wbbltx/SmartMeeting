@@ -44,7 +44,6 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final CollectRecord collectRecord = collectRecordList.get(position);
-//        XLog.d("hahehe",collectRecord.getClassifyName()+" onBindViewHolder："+collectRecordList.size());
         holder.tvRecordTypTitle.setText(collectRecord.getCollectRecordName());
         holder.tvRecordTypTime.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));
         if (isSelectable){
@@ -66,7 +65,13 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
 
     @Override
     public int getItemCount() {
-        XLog.d("hahehe",collectRecordList+" getItemCount："+collectRecordList.size());
+        if (collectRecordList.size() <= 0){
+            XLog.d("hahhe","长度为空");
+            onItemClickedListener.isEmpty(true);
+        }else {
+            XLog.d("hahhe","长度不为空");
+            onItemClickedListener.isEmpty(false);
+        }
         return collectRecordList.size();
     }
 
@@ -78,7 +83,6 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
     public void setCollectRecordList(List<CollectRecord> collectRecordList) {
         this.collectRecordList.clear();
         this.collectRecordList.addAll(collectRecordList);
-        XLog.d("hahehe",this.collectRecordList+" setCollectRecordList："+collectRecordList.size());
         notifyDataSetChanged();
     }
 //设置是否选定

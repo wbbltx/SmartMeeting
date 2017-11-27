@@ -134,7 +134,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
      * 设置标题内容
      */
     public void setTitle(int pageIndex, long date) {
-        tvTitle.setText(getString(R.string.page_number, pageIndex) + " | " + DateUtils.formatLongDate3(date));
+        tvTitle.setText(getString(R.string.page_number, pageIndex));
     }
 
     @OnClick({R.id.iv_back, R.id.iv_share})

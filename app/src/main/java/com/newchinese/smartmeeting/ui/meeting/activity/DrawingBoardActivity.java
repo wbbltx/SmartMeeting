@@ -189,6 +189,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        XLog.d(TAG,"onViewCreated");
         super.onViewCreated(savedInstanceState);
         scanResultDialog = new ScanResultDialog(this);
         dataCacheUtil = DataCacheUtil.getInstance();
@@ -229,7 +230,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             pageIndex = intent.getIntExtra("selectPageIndex", 0);
             setTitleText(pageIndex); //设置当前页数
             //延时一会儿再加载数据库，防止View还未初始化完毕
-            Flowable.timer(100, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+            Flowable.timer(300, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
                 @Override
                 public void accept(Long aLong) throws Exception {
                     mPresenter.readDataBasePoint(pageIndex);
@@ -302,7 +303,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             }
         });
         takePhotoPopWin.setOnDismissListener(this);
-        initGestureListener();
+//        initGestureListener();
     }
 
     private void initGestureListener() {
@@ -317,18 +318,20 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
                         case MotionEvent.ACTION_DOWN://一点触摸down【也是多点触摸第一点down】
                             start.set(event.getX(), event.getY());
+                            Log.d(TAG, "ACTION_DOWN " + drawViewMeeting.getScaleX() + " ++ " + drawViewMeeting.getScaleY() + " ++ " + ivInsertImage.getScaleX() + " ++ " + ivInsertImage.getScaleY());
                             if (drawViewMeeting.getScaleX() > 1 && drawViewMeeting.getScaleY() > 1 && ivInsertImage.getScaleX() > 1 && ivInsertImage.getScaleY() > 1) {
+                                Log.e(TAG, "设置为拖拽模式：");
                                 mode = DRAG;
                             } else {
+                                Log.e(TAG, "设置为翻页模式：");
                                 mode = FLING;
                             }
                             mPosX = event.getX();
                             mPosY = event.getY();
-                            //Log.d(TAG, "mode=NONE");
                             break;
                         case MotionEvent.ACTION_POINTER_DOWN://多点触摸第二点down
                             oldDist = spacing(event);
-//                            Log.e("aaaa", "olddist" + oldDist);
+                            Log.e(TAG, "olddist初始两点的距离：" + oldDist);
                             if (oldDist > 10f) {
                                 mode = ZOOM;
                             }
@@ -342,12 +345,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                                 if (drawViewMeeting.getScaleX() > 1 && drawViewMeeting.getScaleY() > 1 && ivInsertImage.getScaleX() > 1 && ivInsertImage.getScaleY() > 1) {
                                     drawViewMeeting.scrollTo((int) ((mPosX - event.getX()) / 2), (int) ((mPosY - event.getY()) / 2));
                                     ivInsertImage.scrollTo((int) ((mPosX - event.getX()) / 2), (int) ((mPosY - event.getY()) / 2));
+                                    Log.d(TAG, "ACTION_MOVE_mode == DRAG：" + (mPosX - event.getX()) / 2);
                                 }
-
                             } else if (mode == ZOOM) {//多点就是缩放
                                 if (event.getPointerCount() >= 2) {
                                     float newDist = spacing(event);
-                                    Log.d(TAG, "ACTION_MOVE_mode == DRAG：" + newDist);
+                                    Log.d(TAG, "ACTION_MOVE_mode == ZOOM：" + newDist);
                                     if (newDist > 10f) {
                                         float scale = newDist / oldDist;
                                         if (drawViewMeeting.getScaleX() * scale > 2) {
@@ -480,7 +483,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 //                    return false;
 //                } else {
 //                }
-                    return false;
+                return false;
             }
 
         });
@@ -657,7 +660,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                         //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        //清空当页图片，置位编辑状态，置位所有window 
+                        //清空当页图片，置位编辑状态，置位所有window
                         resetInsertImage();
                         closeEditInsertImage();
                         //清空点缓存
@@ -675,10 +678,10 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     //读上一页的数据库数据
                     int position = mPresenter.getCurrentPosition(activeNotePageList, pageIndex);
                     if (position >= 0 && position < (activeNotePageList.size() - 1)) {
-                        //截图 
+                        //截图
                         mPresenter.savePageThumbnail(mPresenter.viewToBitmap(rlDrawViewContainer), pageIndex);
                         drawViewMeeting.clearCanvars(); //换页清空画布
-                        //清空当页图片，置位编辑状态，置位所有window 
+                        //清空当页图片，置位编辑状态，置位所有window
                         resetInsertImage();
                         closeEditInsertImage();
                         //清空点缓存
@@ -704,12 +707,24 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         switch (view.getId()) {
             case R.id.iv_back: //返回键
                 if (mPresenter.isScanning()) {
+                    hideGif();
                     mPresenter.stopScan();
-                } else if (recordService != null && recordService.isRunning()) {
+                }
+                if (recordService.isRunning()) {
                     showDialog1(getString(R.string.leave_warning));
                 } else {
                     finish();
                 }
+                mPresenter.openWrite();
+
+//                if (mPresenter.isScanning()) {
+//                    hideGif();
+//                    mPresenter.stopScan();
+//                } else if (recordService != null && recordService.isRunning()) {
+//                    showDialog1(getString(R.string.leave_warning));
+//                } else {
+//                    finish();
+//                }
                 break;
             case R.id.iv_pen: //笔图标
                 checkState(true);
@@ -1162,6 +1177,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
             ivPen.setImageResource(R.mipmap.weilianjie);
         } else if (flag == 1) {
             hideGif();
+            ivPower.setText("");
             setConnState();
         } else if (flag == -1) {
             hideGif();
@@ -1180,11 +1196,15 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
 
     @Override
     public void onBackPressed() {
+        if (mPresenter.isScanning()) {
+            mPresenter.stopScan();
+        }
         if (recordService.isRunning()) {
             showDialog1(getString(R.string.leave_warning));
         } else {
             super.onBackPressed();
         }
+        mPresenter.openWrite();
     }
 
     private void showDialog1(final String address) {

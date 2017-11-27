@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
+import com.newchinese.smartmeeting.entity.http.Kits;
 import com.newchinese.smartmeeting.entity.listener.PopWindowListener;
 
 /**
@@ -40,10 +41,10 @@ public class MenuPopUpWindow extends PopupWindow implements View.OnClickListener
         //设置PopupWindow的View
         this.setContentView(mView);
         //设置PopupWindow弹出窗体的宽
-        this.setWidth(178);
+        this.setWidth((int)Kits.Dimens.dpToPx(context,89));
         //设置PopupWindow弹出窗体的高
 //        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.setHeight(191);
+        this.setHeight((int)Kits.Dimens.dpToPx(context,95));
         //设置PopupWindow弹出窗体可点击
 //        this.setFocusable(true);
         //设置SelectPicPopupWindow弹出窗体动画效果

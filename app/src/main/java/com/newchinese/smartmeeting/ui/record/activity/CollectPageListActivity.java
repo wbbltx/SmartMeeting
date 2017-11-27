@@ -132,6 +132,11 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     }
 
     @Override
+    public void isEmpty(boolean isEmpty) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_right:

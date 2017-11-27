@@ -28,6 +28,7 @@ import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
 import com.newchinese.smartmeeting.widget.CustomInputDialog;
+import com.newchinese.smartmeeting.widget.NormalDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
     private List<Boolean> isSelectedList = new ArrayList<>();
     private boolean allSelect = false;
     private CustomInputDialog.Builder builder;
+    private NormalDialog.Builder normalDialog;
 
     @Override
     protected int getLayoutId() {
@@ -71,10 +73,10 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
         ivBack.setImageResource(R.mipmap.editmode_cancel);
         tvRight.setVisibility(View.VISIBLE);
         ivPen.setVisibility(View.GONE);
-        tvRight.setText("全选");
-        tvCancel.setText("删除");
+        tvRight.setText(getResources().getString(R.string.select_all));
+        tvCancel.setText(getResources().getString(R.string.delete));
         tvCancel.setEnabled(false);
-        tvCreate.setText("重命名");
+        tvCreate.setText(getResources().getString(R.string.rename));
         tvTitle.setText("选中0项");
         tvCreate.setEnabled(false);
 //        初始化RecyclerView
@@ -107,32 +109,53 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
                 finish();
                 break;
             case R.id.tv_right:
-                if (allSelect){
+                if (!allSelect){
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, true);
                     }
                     tvCreate.setEnabled(false);
                     tvCancel.setEnabled(true);
-                    tvRight.setText("全不选");
+                    tvTitle.setText("选中"+isSelectedList.size()+"项");
+                    tvRight.setText(getResources().getString(R.string.not_select_all));
                 }else {
                     for (int i = 0; i < isSelectedList.size(); i++) {
                         isSelectedList.set(i, false);
                     }
+                    tvTitle.setText("选中0项");
                     tvCreate.setEnabled(false);
                     tvCancel.setEnabled(false);
-                    tvRight.setText("全选");
+                    tvRight.setText(getResources().getString(R.string.select_all));
                 }
                 adapter.setIsSelectedList(isSelectedList);
                 allSelect = !allSelect;
                 break;
             case R.id.tv_cancel://删除
-                mPresenter.deleteCollectRecords(collectRecordList,isSelectedList);
+                confirmDialog();
                 break;
             case R.id.tv_create://重命名
                 reNameDialog();
                 break;
         }
+    }
 
+    public void confirmDialog() {
+        normalDialog = new NormalDialog.Builder(this);
+        normalDialog.setTitle(getString(R.string.delete));
+        normalDialog.setContent("确定要删除该文件？");
+        normalDialog.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.deleteCollectRecords(collectRecordList,isSelectedList);
+                dialog.dismiss();
+            }
+        });
+        normalDialog.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        normalDialog.create().show();
     }
 
     @Override
@@ -161,6 +184,11 @@ public class EditRecordsActivity extends BaseActivity<EditRecordsPresenter,View>
 
     @Override
     public void onLongClick(View view, int position) {
+
+    }
+
+    @Override
+    public void isEmpty(boolean isEmpty) {
 
     }
 

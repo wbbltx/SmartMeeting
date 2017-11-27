@@ -31,6 +31,7 @@ import com.newchinese.smartmeeting.entity.bean.NotePage;
 import com.newchinese.smartmeeting.entity.event.AddDeviceEvent;
 import com.newchinese.smartmeeting.entity.event.CheckBlueStateEvent;
 import com.newchinese.smartmeeting.entity.event.ConnectEvent;
+import com.newchinese.smartmeeting.entity.event.EditModeEvent;
 import com.newchinese.smartmeeting.entity.event.ElectricityReceivedEvent;
 import com.newchinese.smartmeeting.entity.event.HisInfoEvent;
 import com.newchinese.smartmeeting.entity.event.OnHisInfoEvent;
@@ -55,6 +56,7 @@ import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.FirstTimeHintDialog;
 import com.newchinese.smartmeeting.widget.GuiDangInfoWindow;
 import com.newchinese.smartmeeting.widget.MenuPopUpWindow;
+import com.newchinese.smartmeeting.widget.NormalDialog;
 import com.newchinese.smartmeeting.widget.ScanResultDialog;
 import com.umeng.analytics.MobclickAgent;
 
@@ -94,15 +96,15 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     @BindView(R.id.iv_pen)
     ImageView ivPen; //笔图标
     @BindView(R.id.tv_power)//电量
-    TextView tvPower;
+            TextView tvPower;
     @BindView(R.id.rv_page_list)
     RecyclerView rvPageList;
     @BindView(R.id.rl_remind)//归档提醒
-    RelativeLayout rlRemind;
+            RelativeLayout rlRemind;
     @BindView(R.id.gifImageView)
     GifImageView gifImageView;
     @BindView(R.id.dark_background)//背景
-    ImageView bar;
+            ImageView bar;
     private int time = 0;
     private View viewCreateRecord;
     private TextView tvCancel, tvCreate;
@@ -122,6 +124,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
     private FirstTimeHintDialog.Builder hintbuilder;
     private MenuPopUpWindow menuPopUpWindow;
     private GuiDangInfoWindow guiDangInfoWindow;
+    private NormalDialog.Builder normalDialog;
 
     @Override
     protected int getLayoutId() {
@@ -232,8 +235,9 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 }
                 if (!isSelectEmpty) {
                     if (pageMode.equals(BluCommonUtils.DELETE_MODE)) {//直接删除之后将模式设置为普通模式
-                        mPresenter.createSelectedRecords(notePageList, isSelectedList, null, pageMode);
-                        resetEditMode();
+//                        mPresenter.createSelectedRecords(notePageList, isSelectedList, null, pageMode);
+//                        resetEditMode();
+                        confirmDialog();
                     } else if (pageMode.equals(BluCommonUtils.EDIT_MODE)) {//弹出归档提示框
                         guiDangInfoWindow.showAtLocation(findViewById(R.id.rl_parent), Gravity.CENTER, 0, 0);
                     }
@@ -255,10 +259,27 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mPresenter.isScanning()) {
+            mPresenter.stopScan();
+        } else if (mPresenter.isConnected()) {
+            mPresenter.openWrite();
+        }
+        hideGif();
+        super.onBackPressed();
+    }
+
     @OnClick({R.id.iv_back, R.id.iv_pen, R.id.tv_right, R.id.rl_right, R.id.iv_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
+                if (mPresenter.isScanning()) {
+                    hideGif();
+                    mPresenter.stopScan();
+                } else if (mPresenter.isConnected()) {
+                    mPresenter.openWrite();
+                }
                 finish();
                 break;
             case R.id.iv_pen:
@@ -696,6 +717,11 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
 
     }
 
+    @Override
+    public void isEmpty(boolean isEmpty) {
+
+    }
+
     @Subscribe
     public void onEvent(OpenBleEvent openBleEvent) {
         mPresenter.openBle();
@@ -767,6 +793,27 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
         } else {
             ivEmpty.setImageResource(R.mipmap.empty_icon);
         }
+    }
+
+    public void confirmDialog() {
+        normalDialog = new NormalDialog.Builder(this);
+        normalDialog.setTitle(getString(R.string.delete));
+        normalDialog.setContent("确定要删除该文件？");
+        normalDialog.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.createSelectedRecords(notePageList, isSelectedList, null, pageMode);
+                resetEditMode();
+                dialog.dismiss();
+            }
+        });
+        normalDialog.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        normalDialog.create().show();
     }
 
     /**

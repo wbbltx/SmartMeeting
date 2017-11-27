@@ -170,6 +170,11 @@ public class CollectToAddListActivity extends BaseActivity<CollectToAddListPrese
 
     }
 
+    @Override
+    public void isEmpty(boolean isEmpty) {
+
+    }
+
     private void resetState() {
         pwCreateRecord.dismiss();
         for (int i = 0; i < isSelectedList.size(); i++) {

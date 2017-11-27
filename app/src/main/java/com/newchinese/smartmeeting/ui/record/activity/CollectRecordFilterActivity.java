@@ -111,4 +111,9 @@ public class CollectRecordFilterActivity extends BaseActivity<CollectRecordFilte
     public void onLongClick(View view, int position) {
 
     }
+
+    @Override
+    public void isEmpty(boolean isEmpty) {
+
+    }
 }

@@ -78,5 +78,7 @@ public interface DraftBoxActContract {
         void updatePenState(int state);
 
         boolean isScanning();
+
+        void openWrite();
     }
 }

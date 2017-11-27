@@ -104,6 +104,7 @@
     <string name="search">搜索</string>
     <string name="page_number">第%d页</string>
     <string name="style_meeting">会议</string>
+    <string name="rename">重命名</string>
     <!--我的模块-->
     <string name="save">保存</string>
     <string name="record_cancel">放弃</string>

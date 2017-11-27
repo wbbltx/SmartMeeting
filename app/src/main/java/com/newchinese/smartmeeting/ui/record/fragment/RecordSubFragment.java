@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,9 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     @BindView(R.id.rv_record_list)
     RecyclerView rvRecordList;
 
+    @BindView(R.id.iv_impty11)
+    ImageView ivEmpty;
+
     private RecordTypeRecAdapter adapter;
     private List<CollectRecord> collectRecordList = new ArrayList<>();
     private List<Boolean> isSelectedList = new ArrayList<>();
@@ -69,7 +73,6 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
 
     @Override
     protected void initStateAndData() {
-        XLog.d(TAG,"initStateAndData");
         adapter = new RecordTypeRecAdapter(getActivity());
         rvRecordList.setAdapter(adapter);
     }
@@ -83,7 +86,6 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     public void onResume() {
         super.onResume();
         mPresenter.loadRecordsPages(DataCacheUtil.getInstance().getName());
-        XLog.d(TAG,"onResume"+ DataCacheUtil.getInstance().getName());
     }
 
     //子条目的点击事件
@@ -97,6 +99,17 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     public void onLongClick(View view, int position) {
         Intent intent = new Intent(getActivity(), EditRecordsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void isEmpty(boolean isEmpty) {
+        if (isEmpty) {
+            XLog.d(TAG,"数据为空");
+            ivEmpty.setVisibility(View.VISIBLE);
+        } else {
+            XLog.d(TAG,"数据不为空");
+            ivEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override

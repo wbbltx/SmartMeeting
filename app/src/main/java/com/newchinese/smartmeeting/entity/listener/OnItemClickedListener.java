@@ -12,4 +12,6 @@ public interface OnItemClickedListener {
     void onClick(View view, int position);
 
     void onLongClick(View view, int position);
+
+    void isEmpty(boolean isEmpty);
 }

@@ -39,10 +39,8 @@ public class RecordsTypePresenter extends BasePresenter<RecordTypeContract.View>
         List<CollectRecord> collectRecords = null;
         if (className != null) {
             if (className.equals("全部")) {
-                XLog.d(TAG,"查询全部");
                 collectRecords = collectRecordDao.queryBuilder().orderDesc(CollectRecordDao.Properties.CollectDate).list();
             } else {
-                XLog.d(TAG,"查询"+className);
                 collectRecords = collectRecordDao.queryBuilder().where(CollectRecordDao.Properties.ClassifyName.eq(className)).list();
             }
             if (mView != null) {

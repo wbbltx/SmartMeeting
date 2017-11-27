@@ -256,4 +256,9 @@ public class DraftBoxPresenter extends BasePresenter<DraftBoxActContract.View> i
         return BluetoothLe.getDefault().getScanning();
     }
 
+    @Override
+    public void openWrite() {
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+    }
+
 }

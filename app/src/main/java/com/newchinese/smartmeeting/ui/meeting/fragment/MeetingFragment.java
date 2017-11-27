@@ -119,6 +119,11 @@ public class MeetingFragment extends BaseSimpleFragment {
             @Override
             public void onLongClick(View view, int position) {
             }
+
+            @Override
+            public void isEmpty(boolean isEmpty) {
+
+            }
         });
         ivStudy.setOnClickListener(new View.OnClickListener() {
             @Override

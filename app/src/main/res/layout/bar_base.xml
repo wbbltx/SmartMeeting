@@ -41,6 +41,7 @@
                 android:id="@+id/rl_pen_state"
                 android:layout_width="32dp"
                 android:layout_height="32dp">
+
                 <ImageView
                     android:id="@+id/iv_pen"
                     android:layout_width="match_parent"
@@ -74,15 +75,17 @@
             <RelativeLayout
                 android:id="@+id/rl_right"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                >
+
                 <ImageView
                     android:id="@+id/iv_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="15dp"
-                    android:src="@mipmap/icon_menu"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:src="@mipmap/icon_menu" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

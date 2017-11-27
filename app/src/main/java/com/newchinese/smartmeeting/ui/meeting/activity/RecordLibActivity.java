@@ -213,4 +213,9 @@ public class RecordLibActivity extends BaseActivity<RecordLibPresenter, View> im
     public void onLongClick(View view, int position) {
 
     }
+
+    @Override
+    public void isEmpty(boolean isEmpty) {
+
+    }
 }

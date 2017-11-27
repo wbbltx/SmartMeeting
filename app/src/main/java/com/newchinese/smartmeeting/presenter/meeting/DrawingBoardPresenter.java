@@ -734,4 +734,8 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
     public void stopScan(){
         BluetoothLe.getDefault().stopScan();
     }
+
+    public void openWrite() {
+        BluetoothLe.getDefault().sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+    }
 }
