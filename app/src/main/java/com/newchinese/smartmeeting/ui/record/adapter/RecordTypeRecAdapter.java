@@ -45,7 +45,8 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final CollectRecord collectRecord = collectRecordList.get(position);
         holder.tvRecordTypTitle.setText(collectRecord.getCollectRecordName());
-        holder.tvRecordTypTime.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));
+//        holder.tvRecordTypTime.setText(DateUtils.formatLongDate2(collectRecord.getCollectDate()));
+        holder.tvRecordTypTime.setText(getTime(collectRecord.getCollectDate()));
         if (isSelectable){
             holder.ivRecordTypeBackground.setVisibility(View.VISIBLE);
             holder.ivRecordTypSelect.setVisibility(View.GONE);
@@ -63,13 +64,25 @@ public class RecordTypeRecAdapter extends RecyclerView.Adapter<RecordTypeRecAdap
         }
     }
 
+    private String getTime(long preTime){
+        long diff = System.currentTimeMillis() - preTime;
+        if (diff < 60000){
+            return "刚刚";
+        }else if (diff < 3600000 && diff > 60000){
+            return (int)((diff % (1000 * 60 * 60)) / (1000 * 60))+"分钟前";
+        } else if (diff < 86400000 && diff > 3600000){
+            return (int)(diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)+"小时前";
+        }else {
+            return DateUtils.formatLongDate2(preTime);
+        }
+    }
+
+
     @Override
     public int getItemCount() {
         if (collectRecordList.size() <= 0){
-            XLog.d("hahhe","长度为空");
             onItemClickedListener.isEmpty(true);
         }else {
-            XLog.d("hahhe","长度不为空");
             onItemClickedListener.isEmpty(false);
         }
         return collectRecordList.size();

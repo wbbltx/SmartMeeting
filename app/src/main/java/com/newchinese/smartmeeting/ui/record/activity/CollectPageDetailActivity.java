@@ -1,5 +1,6 @@
 package com.newchinese.smartmeeting.ui.record.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,24 +11,32 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseSimpleActivity;
 import com.newchinese.smartmeeting.entity.listener.OnShareListener;
 import com.newchinese.smartmeeting.entity.listener.ShareCallBackListener;
 import com.newchinese.smartmeeting.entity.bean.CollectPage;
+import com.newchinese.smartmeeting.ui.meeting.activity.DraftBoxActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.CollectPageAdapter;
+import com.newchinese.smartmeeting.util.BluCommonUtils;
+import com.newchinese.smartmeeting.util.CustomizedToast;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.DateUtils;
 import com.newchinese.smartmeeting.util.log.XLog;
+import com.newchinese.smartmeeting.widget.CustomInputDialog;
 import com.newchinese.smartmeeting.widget.SharePopWindow;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +58,17 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
     TextView tvTitle;
     @BindView(R.id.vp_thumnbail)
     ViewPager vpThumnbail;
+    @BindView(R.id.iv_jump_page)
+    ImageView ivRight;
+
     private int selectPosition = 0;
     private CollectPage currentPage;
     private List<CollectPage> collectPageList = new ArrayList<>(); //活动收藏记录表中当前所有收藏页
     private CollectPageAdapter adapter;
     private SharePopWindow sharePopWindow;
     private UMImage umImage;
+    private CustomInputDialog.Builder builder;
+    private List<Integer> allpageindex;
 
     @Override
     protected int getLayoutId() {
@@ -63,6 +77,8 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
 
     @Override
     protected void onViewCreated(Bundle savedInstanceState) {
+        ivRight.setVisibility(View.VISIBLE);
+        ivRight.setImageResource(R.mipmap.jump_page);
     }
 
     @Override
@@ -71,6 +87,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
         sharePopWindow.setOnDismissListener(this);
         Intent intent = getIntent();
         selectPosition = intent.getIntExtra("selectPosition", selectPosition);
+        allpageindex = (List<Integer>) intent.getSerializableExtra("allpageindex");
         collectPageList = DataCacheUtil.getInstance().getActiveCollectPageList();
         if (collectPageList.size() > 0 && selectPosition < (collectPageList.size())) {
             currentPage = collectPageList.get(selectPosition);
@@ -137,7 +154,7 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
         tvTitle.setText(getString(R.string.page_number, pageIndex));
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_share})
+    @OnClick({R.id.iv_back, R.id.iv_share, R.id.iv_jump_page})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back: //返回
@@ -146,6 +163,9 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
             case R.id.iv_share: //分享
                 bgDark();
                 sharePopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.BOTTOM, 0, 0);
+                break;
+            case R.id.iv_jump_page:
+                createDialog();
                 break;
         }
     }
@@ -206,5 +226,36 @@ public class CollectPageDetailActivity extends BaseSimpleActivity implements OnS
     protected void onDestroy() {
         super.onDestroy();
         System.gc();
+    }
+
+    /**
+     * 创建Dialog
+     */
+    private void createDialog() {  //最终生成记录之后将模式重置为普通模式
+        builder = new CustomInputDialog.Builder(this);
+        builder.setTitle("跳转到");
+        builder.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (builder.getInputText().isEmpty()) {
+                    Toast.makeText(CollectPageDetailActivity.this, getString(R.string.please_input_title), Toast.LENGTH_SHORT).show();
+                } else {
+                    if (allpageindex.contains(Integer.parseInt(builder.getInputText()))){
+                        vpThumnbail.setCurrentItem(allpageindex.indexOf(Integer.parseInt(builder.getInputText())));
+                    }else {
+                        CustomizedToast.showShort(CollectPageDetailActivity.this,"没有此页！");
+                    }
+//                    MobclickAgent.onEvent(CollectPageDetailActivity.this, "create_archives");
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelableMethod(false);
+//        builder.setInputText();
+        builder.createDoubleButton().show();
     }
 }

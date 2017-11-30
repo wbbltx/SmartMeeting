@@ -79,7 +79,8 @@
     <string name="select_photo">从相册选择照片</string>
     <string name="follow_weibo">关注官方微博</string>
     <string name="change_record_title">变更本次记录名称</string>
-    <string name="write_page_index">| 第%d页</string>
+    <string name="meeting_name">会议名称</string>
+    <string name="write_page_index">第%d页</string>
     <string name="record_page_index">笔迹回放</string>
     <string name="please_collect">请将以下记录归档！</string>
     <string name="create_current_record">生成档案</string>

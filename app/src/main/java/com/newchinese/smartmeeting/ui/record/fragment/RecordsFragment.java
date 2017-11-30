@@ -1,14 +1,10 @@
 package com.newchinese.smartmeeting.ui.record.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.content.Intent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.newchinese.smartmeeting.R;
 import com.newchinese.smartmeeting.base.BaseFragment;
@@ -16,6 +12,7 @@ import com.newchinese.smartmeeting.constant.Constant;
 import com.newchinese.smartmeeting.contract.RecordsFragContract;
 import com.newchinese.smartmeeting.entity.bean.CollectRecord;
 import com.newchinese.smartmeeting.presenter.record.RecordsFragPresenter;
+import com.newchinese.smartmeeting.ui.record.activity.SearchResultActivity;
 import com.newchinese.smartmeeting.ui.record.adapter.RecordTypeFragmentAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
@@ -41,13 +38,11 @@ import magicindicator.buildins.commonnavigator.titles.ColorTransitionPagerTitleV
  * author         xulei
  * Date           2017/8/17 17:30
  */
-public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View{
-    @BindView(R.id.et_search_content)
-    EditText etSearchContent;
+public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implements RecordsFragContract.View {
+    @BindView(R.id.tv_search_content)
+    TextView tvSearchContent;
     @BindView(R.id.iv_search)
     ImageView ivSearch;
-//    @BindView(R.id.rv_record_list)
-//    RecyclerView rvRecordList;
     @BindView(R.id.tab_record_fragment)
     MagicIndicator mTabLayout;
     @BindView(R.id.vp_record_fragment)
@@ -120,34 +115,36 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
 //        mViewPager.addOnPageChangeListener(this);
 //        mViewPager.setOnPageChangeListener(this);
         //搜索输入框内容改变监听
-        etSearchContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.toString().length() == 0) {
+//        etSearchContent.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (s.toString().length() == 0) {
 //                    mPresenter.loadAllCollectRecordData();
-                } else {
+//                } else {
 //                    mPresenter.searchCollectRecordByName(s.toString());
-                }
-            }
-        });
+//                }
+//            }
+//        });
     }
 
 
-    @OnClick(R.id.iv_search)
+    @OnClick({R.id.iv_search,R.id.tv_search_content})
     public void onViewClicked() {
-        if (!etSearchContent.getText().toString().isEmpty()) {
+//        if (!etSearchContent.getText().toString().isEmpty()) {
 //            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
-        }
+//        }
+        Intent intent = new Intent(getActivity(), SearchResultActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -170,13 +167,13 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
     /**
      * 刷新数据
      */
-    public void refreshData() {
-        if (etSearchContent.getText().toString().length() == 0) {
+//    public void refreshData() {
+//        if (etSearchContent.getText().toString().length() == 0) {
 //            mPresenter.loadAllCollectRecordData();
-        } else {
+//        } else {
 //            mPresenter.searchCollectRecordByName(etSearchContent.getText().toString());
-        }
-    }
+//        }
+//    }
 
     @Override
     public void onResume() {
@@ -192,22 +189,5 @@ public class RecordsFragment extends BaseFragment<RecordsFragPresenter> implemen
 //        DataCacheUtil.getInstance().setName(pageTitle);
 //    }
 
-//    /**
-//     * 列表点击事件
-//     */
-//    @Override
-//    public void onClick(View view, int position) {
-//        MobclickAgent.onEvent(getActivity(), "book_res", collectRecordList.get(position).getCollectRecordName());
-//        DataCacheUtil.getInstance().setActiveCollectRecord(collectRecordList.get(position));
-//        startActivity(new Intent(mActivity, CollectPageListActivity.class));
-//    }
-//
-//    /**
-//     * 列表长点击事件
-//     */
-//    @Override
-//    public void onLongClick(View view, int position) {
-//
-//    }
 
 }

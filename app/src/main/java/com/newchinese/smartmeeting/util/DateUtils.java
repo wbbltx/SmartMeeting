@@ -35,6 +35,16 @@ public class DateUtils {
         return sdf.format(longDate);
     }
 
+    public static String formatLongDate6(long longDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
+        return sdf.format(longDate);
+    }
+
+    public static String formatLongDate7(long longDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(longDate);
+    }
+
     /**
      * 两个时间相差距离多少天多少小时多少分多少秒
      *

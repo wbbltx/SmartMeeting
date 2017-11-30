@@ -93,6 +93,11 @@ public class CollectRecordsRecyAdapter extends RecyclerView.Adapter<CollectRecor
 
     @Override
     public int getItemCount() {
+        if (collectRecordList.size() <= 0){
+            onItemClickedListener.isEmpty(true);
+        }else {
+            onItemClickedListener.isEmpty(false);
+        }
         return collectRecordList.size();
     }
 

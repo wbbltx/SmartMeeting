@@ -301,7 +301,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 break;
             case R.id.rl_right:  //点击菜单按钮之后，弹出菜单
 //                adapter.setIsSelectedList(isSelectedList);
-                menuPopUpWindow.showAtLocation(findViewById(R.id.ll_root), Gravity.RIGHT | Gravity.TOP, (int) Kits.Dimens.pxToDp(this, 50), (int) Kits.Dimens.pxToDp(this, 280));
+                menuPopUpWindow.showAtLocation(findViewById(R.id.ll_root), Gravity.RIGHT | Gravity.TOP, (int) Kits.Dimens.dpToPx(this, 13), (int) Kits.Dimens.dpToPx(this, 65));
                 break;
             case R.id.iv_close:
                 rlRemind.setVisibility(View.GONE);
@@ -314,7 +314,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
      */
     private void createDialog() {  //最终生成记录之后将模式重置为普通模式
         builder = new CustomInputDialog.Builder(this);
-        builder.setTitle(getString(R.string.change_record_title));
+        builder.setTitle(getString(R.string.meeting_name));
         builder.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (builder.getInputText().isEmpty()) {

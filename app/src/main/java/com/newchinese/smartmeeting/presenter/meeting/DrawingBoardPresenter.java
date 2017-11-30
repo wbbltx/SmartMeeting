@@ -230,6 +230,20 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
         }
     }
 
+    public void updateTime(final int pageIndex){
+        Runnable updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                NotePage notePage = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()), NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                notePage.setDate(System.currentTimeMillis());
+                notePageDao.update(notePage);
+            }
+        };
+        if (!singleThreadExecutor.isShutdown()) {
+            singleThreadExecutor.execute(updateTimeRunnable);
+        }
+    }
+
     /**
      * 笔记回放
      */

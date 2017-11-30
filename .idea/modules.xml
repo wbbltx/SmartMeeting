@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/SmartMeeting.iml" filepath="$PROJECT_DIR$/SmartMeeting.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/coolpensdk/coolpensdk.iml" filepath="$PROJECT_DIR$/coolpensdk/coolpensdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraryDate/libraryDate.iml" filepath="$PROJECT_DIR$/libraryDate/libraryDate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pickerview/pickerview.iml" filepath="$PROJECT_DIR$/pickerview/pickerview.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\select_circle_back.png",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\src\\main\\res\\drawable-xxhdpi\\select_circle_back.png"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\res\\merged\\release\\drawable-xxhdpi-v4\\date_select.png",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\src\\main\\res\\drawable-xxhdpi\\date_select.png"
+    }
+]

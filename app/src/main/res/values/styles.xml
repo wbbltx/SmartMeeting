@@ -81,4 +81,10 @@
         <item name="android:textSize">32px</item>
         <item name="android:textColor">@color/simple_blue</item>
     </style>
+    
+    <declare-styleable name="RoundView" >
+        <attr name="border_thickness" format="dimension"/>
+        <attr name="border_inside_color" format="color"/>
+        <attr name="border_outside_color" format="color"/>
+    </declare-styleable>
 </resources>

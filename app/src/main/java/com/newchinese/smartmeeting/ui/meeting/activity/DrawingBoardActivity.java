@@ -236,6 +236,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
                     mPresenter.readDataBasePoint(pageIndex);
                     mPresenter.readInsertImageFromData(pageIndex);
                     mPresenter.queryRecordCount(pageIndex);
+                    mPresenter.updateTime(pageIndex);
                 }
             });
         }
@@ -588,7 +589,8 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Override
     public void setTitleText(int pageIndex) {
-        tvTitle.setText(activeNoteRecord.getClassifyName() + " " + getString(R.string.write_page_index, pageIndex)); //设置当前页数
+        tvTitle.setText(getString(R.string.write_page_index, pageIndex)); //设置当前页数
+//        tvTitle.setText(activeNoteRecord.getClassifyName() + " " + getString(R.string.write_page_index, pageIndex)); //设置当前页数
     }
 
     @Override
@@ -1170,7 +1172,7 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
      */
     @Subscribe
     public void onEvent(CheckBlueStateEvent stateEvent) {
-        XLog.d(TAG, TAG + " onEvent");
+        XLog.d(TAG, TAG + " onEvent CheckBlueStateEvent");
         int flag = stateEvent.getFlag();
         if (flag == 0) {
             showGif();
@@ -1199,12 +1201,12 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         if (mPresenter.isScanning()) {
             mPresenter.stopScan();
         }
+        mPresenter.openWrite();
         if (recordService.isRunning()) {
             showDialog1(getString(R.string.leave_warning));
         } else {
             super.onBackPressed();
         }
-        mPresenter.openWrite();
     }
 
     private void showDialog1(final String address) {
@@ -1279,21 +1281,6 @@ public class DrawingBoardActivity extends BaseActivity<DrawingBoardPresenter, Bl
         mPresenter.queryRecordCount(pageIndex);
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus) {
-//            XLog.d(TAG, TAG + " onWindowFocusChanged " + DataCacheUtil.getInstance().getPenState());
-//            if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTED) {
-//                setConnState();
-//            } else if (DataCacheUtil.getInstance().getPenState() == BluCommonUtils.PEN_CONNECTING) {
-//                ivPen.setImageResource(R.mipmap.weilianjie);
-//            } else {
-//                ivPen.setImageResource(R.mipmap.pen_disconnect);
-//                checkState(false);
-//            }
-//        }
-//    }
 
     @Override
     public void onDismiss(DialogInterface dialog) {

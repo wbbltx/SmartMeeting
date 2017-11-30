@@ -18,6 +18,7 @@
     <color name="gray66">#8f000000</color>
     <color name="gray5">#555555</color>
     <color name="gray3">#333333</color>
+    <color name="grayc">#cccccc</color>
     <color name="graye">#eeeeee</color>
     <color name="graydc">#dcdcdc</color>
     <color name="black_alpha_55">#55000000</color>
@@ -25,4 +26,6 @@
     <color name="background">#0f555555</color>
     <color name="zhou_normal">#00000000</color>
     <color name="zhou_pressed">#03a9f4</color>
+    <color name="weixin_login">#3d7bbe</color>
+    <color name="weixin_login1">#3f466d</color>
 </resources>

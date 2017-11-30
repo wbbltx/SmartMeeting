@@ -177,6 +177,10 @@
         <activity android:name=".ui.record.activity.CollectToAddListActivity" />
         <activity android:name=".ui.main.activity.VideoActivity" />
         <activity android:name=".ui.record.activity.EditRecordsActivity" />
+        <activity android:name=".ui.login.activity.ThitdPartyLoginActivity" />
+        <activity android:name=".ui.record.activity.CalendarActivity" />
+        <activity android:name=".ui.record.activity.RecordsByDateActivity" />
+        <activity android:name=".ui.record.activity.SearchResultActivity"></activity>
     </application>
 
 </manifest>

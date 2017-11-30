@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.newchinese.smartmeeting.ui.record.activity.SearchResultActivity">
+
+    <RelativeLayout
+        android:id="@+id/a456"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/simple_background"
+        android:paddingBottom="8dp"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_simple_circle_rect"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="7.5dp"
+            android:paddingEnd="12dp"
+            android:paddingStart="10dp"
+            android:paddingTop="7.5dp">
+
+            <EditText
+                android:id="@+id/et_search_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/search"
+                android:lines="1"
+                android:maxLength="20"
+                android:textColor="@color/gray3"
+                android:textColorHint="@color/gray9"
+                android:textCursorDrawable="@drawable/shape_cursor_color"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:src="@mipmap/record_search" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_search"
+        android:layout_below="@id/a456"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_empty"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/a456">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/file_empey"/>
+    </RelativeLayout>
+
+</RelativeLayout>

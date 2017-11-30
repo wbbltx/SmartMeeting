@@ -54,6 +54,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -346,7 +347,7 @@ public class MainPresenter extends BasePresenter<MainActContract.View> implement
     @Override
     public void checkVersion() {
         RequestVersion requestVersion = new RequestVersion().setPlatform("1").setVersion("1.0");
-        mServices.checkVersion(requestVersion).subscribeOn(Schedulers.io())
+        mServices.checkVersion(requestVersion).delay(500,TimeUnit.MILLISECONDS).subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override
                     public void accept(Subscription subscription) throws Exception {

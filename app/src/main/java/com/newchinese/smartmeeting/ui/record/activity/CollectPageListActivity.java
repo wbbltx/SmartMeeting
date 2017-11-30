@@ -20,6 +20,7 @@ import com.newchinese.smartmeeting.ui.record.adapter.CollectPagesRecyAdapter;
 import com.newchinese.smartmeeting.util.DataCacheUtil;
 import com.newchinese.smartmeeting.util.log.XLog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     private CollectPagesRecyAdapter adapter;
     private CollectRecord activeRecord;
     private List<CollectPage> collectPageList = new ArrayList<>();
+    private List<Integer> integers = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -98,6 +100,9 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
         if (!isFinishing()) {
             collectPageList.clear();
             collectPageList.addAll(collectPages);
+            for (CollectPage collectPage : collectPageList) {
+                integers.add(collectPage.getPageIndex());
+            }
             DataCacheUtil.getInstance().setActiveCollectPageList(collectPageList);
             runOnUiThread(new Runnable() {
                 @Override
@@ -119,6 +124,7 @@ public class CollectPageListActivity extends BaseActivity<CollectPageListActPres
     @Override
     public void onClick(View view, int position) {
         Intent intent = new Intent(this, CollectPageDetailActivity.class);
+        intent.putExtra("allpageindex",(Serializable) integers);
         intent.putExtra("selectPosition", position);
         startActivity(intent);
     }

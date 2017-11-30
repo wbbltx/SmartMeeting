@@ -147,29 +147,29 @@ public class PlayBackActivity extends BaseActivity<PlayBackPresenter, View> impl
                 break;
             case R.id.play_back_start: //开始按钮
                 mPresenter.hasPic(selectPageIndex);
-//                Flowable.timer(500, TimeUnit.MILLISECONDS)
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .doOnNext(new Consumer<Long>() {
-//                    @Override
-//                    public void accept(Long aLong) throws Exception {
-//                        progress++;
-//                        playBackSeekbar.setProgress(progress);
-//                        playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
-//                    }
-//                })
-//                        .doOnComplete(new Action() {
-//                            @Override
-//                            public void run() throws Exception {
-//                                progress = 0;
-//                                playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
-//                            }
-//                        }).subscribe(new Consumer<Long>() {
-//                    @Override
-//                    public void accept(Long aLong) throws Exception {
-//                        mPresenter.readData(selectPageIndex);
-//                    }
-//                });
-//                playBack();
+                Flowable.timer(500, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        progress++;
+                        playBackSeekbar.setProgress(progress);
+                        playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+                    }
+                })
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                progress = 0;
+                                playBackStartTime.setText(DateUtils.getCheckTimeBySeconds(progress * 10 / 1000, "0:00:00"));
+                            }
+                        }).subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        mPresenter.readData(selectPageIndex);
+                    }
+                });
+                playBack();
                 break;
         }
     }

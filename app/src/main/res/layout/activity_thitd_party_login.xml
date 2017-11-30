@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.newchinese.smartmeeting.ui.login.activity.ThitdPartyLoginActivity">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@mipmap/login_background"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/login_flag"
+        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_login_weichat"
+        android:layout_width="320dp"
+        android:layout_height="49dp"
+        android:background="@drawable/bg_third_login"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.65">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/weixin_login"
+            android:textSize="18sp"
+            android:text="微信登录"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/login_wx1"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_login_qq"
+        android:layout_width="320dp"
+        android:layout_height="49dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_login_weichat"
+        android:background="@drawable/bg_third_login"
+        android:layout_marginTop="19dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/weixin_login"
+            android:textSize="18sp"
+            android:text="QQ登录"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/login_qq1"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="27dp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_login_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_login_qq"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="38dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        android:text="手机登陆"/>
+
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_login_qq"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="38dp"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp"
+        android:text="注册"/>
+
+</android.support.constraint.ConstraintLayout>

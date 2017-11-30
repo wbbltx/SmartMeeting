@@ -30,6 +30,7 @@ import com.newchinese.smartmeeting.presenter.main.MainPresenter;
 import com.newchinese.smartmeeting.ui.meeting.activity.DrawingBoardActivity;
 import com.newchinese.smartmeeting.ui.meeting.fragment.MeetingFragment;
 import com.newchinese.smartmeeting.ui.mine.fragment.MineFragment;
+import com.newchinese.smartmeeting.ui.record.activity.CalendarActivity;
 import com.newchinese.smartmeeting.ui.record.fragment.RecordsFragment;
 import com.newchinese.smartmeeting.util.BluCommonUtils;
 import com.newchinese.smartmeeting.util.SharedPreUtils;
@@ -57,6 +58,8 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
     ImageView ivPen;
     @BindView(R.id.mask_one)
     ImageView ivMaskOne;
+    @BindView(R.id.iv_right)
+    ImageView ivRight;
     private FragmentManager fragmentManager;
     private BaseSimpleFragment nowFragment, recordsFragment, meetingFragemnt, mineFragment;
     private DrawingboardAPI drawingboardAPI;
@@ -101,6 +104,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         rgMain.setOnCheckedChangeListener(this);
         drawingboardAPI.setOnPointListener(this);
         ivMaskOne.setOnClickListener(this);
+        ivRight.setOnClickListener(this);
     }
 
     /**
@@ -151,14 +155,18 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
             case R.id.rb_records:
                 changeFragment(recordsFragment);
                 tvTitle.setText(getString(R.string.record));
+                ivRight.setVisibility(View.VISIBLE);
+                ivRight.setImageResource(R.mipmap.calendar);
                 break;
             case R.id.rb_meeting:
                 changeFragment(meetingFragemnt);
                 tvTitle.setText(getString(R.string.meeting));
+                ivRight.setVisibility(View.GONE);
                 break;
             case R.id.rb_mine:
                 changeFragment(mineFragment);
                 tvTitle.setText(getString(R.string.mine));
+                ivRight.setVisibility(View.GONE);
                 break;
         }
     }
@@ -251,7 +259,7 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
         super.onResume();
         //刷新记录数据
         if (recordsFragment != null && recordsFragment.isAdded()) {
-            ((RecordsFragment) recordsFragment).refreshData();
+//            ((RecordsFragment) recordsFragment).refreshData();
         }
         mPresenter.checkRecord();
     }
@@ -262,6 +270,11 @@ public class MainActivity extends BaseActivity<MainPresenter, BluetoothDevice> i
             case R.id.mask_one:
                 ivMaskOne.setVisibility(View.GONE);
                 EventBus.getDefault().post(new OnMaskClicked());
+                break;
+
+            case R.id.iv_right:
+                Intent intent = new Intent(this, CalendarActivity.class);
+                startActivity(intent);
                 break;
         }
     }

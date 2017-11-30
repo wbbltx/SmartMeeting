@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\res\\merged\\androidTest\\debug\\color\\mcv_text_date_light.xml",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\bundles\\debug\\res\\color\\mcv_text_date_light.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\res\\merged\\androidTest\\debug\\color\\mcv_text_date_dark.xml",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\libraryDate\\build\\intermediates\\bundles\\debug\\res\\color\\mcv_text_date_dark.xml"
+    }
+]

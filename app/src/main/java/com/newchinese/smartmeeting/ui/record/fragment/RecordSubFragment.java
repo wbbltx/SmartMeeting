@@ -104,10 +104,8 @@ public class RecordSubFragment extends BaseFragment<RecordsTypePresenter> implem
     @Override
     public void isEmpty(boolean isEmpty) {
         if (isEmpty) {
-            XLog.d(TAG,"数据为空");
             ivEmpty.setVisibility(View.VISIBLE);
         } else {
-            XLog.d(TAG,"数据不为空");
             ivEmpty.setVisibility(View.GONE);
         }
     }
