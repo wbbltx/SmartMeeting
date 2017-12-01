@@ -42,7 +42,10 @@ public final class R {
     public static final class drawable {
         public static final int btn_cancle = 0x7f020000;
         public static final int btn_submit = 0x7f020001;
-        public static final int selector_pickerview_btn = 0x7f020002;
+        public static final int leftbottom = 0x7f020002;
+        public static final int rightbottom = 0x7f020003;
+        public static final int selector_pickerview_btn = 0x7f020004;
+        public static final int topleftright = 0x7f020005;
     }
     public static final class id {
         public static final int btnCancel = 0x7f0a0003;

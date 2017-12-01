@@ -411,6 +411,7 @@ public class DraftBoxActivity extends BaseActivity<DraftBoxPresenter, BluetoothD
                 return;
             }
             if (scanResultDialog != null && !isFinishing()) {
+                XLog.d(TAG, TAG + " 搜索结果1 ");
                 EventBus.getDefault().post(new ScanResultEvent(1));
                 scanResultDialog.setContent(address, "0");
                 scanResultDialog.show();

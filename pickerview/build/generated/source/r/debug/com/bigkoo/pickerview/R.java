@@ -87,7 +87,10 @@ containing a value of this type.
     public static final class drawable {
         public static int btn_cancle=0x7f020000;
         public static int btn_submit=0x7f020001;
-        public static int selector_pickerview_btn=0x7f020002;
+        public static int leftbottom=0x7f020002;
+        public static int rightbottom=0x7f020003;
+        public static int selector_pickerview_btn=0x7f020004;
+        public static int topleftright=0x7f020005;
     }
     public static final class id {
         public static int btnCancel=0x7f0a0003;

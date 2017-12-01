@@ -235,8 +235,10 @@ public class DrawingBoardPresenter extends BasePresenter<DrawingBoardActContract
             @Override
             public void run() {
                 NotePage notePage = notePageDao.queryBuilder().where(NotePageDao.Properties.BookId.eq(activeNoteRecord.getId()), NotePageDao.Properties.PageIndex.eq(pageIndex)).unique();
+                if (notePage != null){
                 notePage.setDate(System.currentTimeMillis());
-                notePageDao.update(notePage);
+                    notePageDao.update(notePage);
+                }
             }
         };
         if (!singleThreadExecutor.isShutdown()) {

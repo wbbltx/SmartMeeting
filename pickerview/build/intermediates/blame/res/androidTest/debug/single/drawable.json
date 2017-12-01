@@ -4,8 +4,20 @@
         "source": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\bundles\\debug\\res\\drawable\\btn_submit.png"
     },
     {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\leftbottom.xml",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\bundles\\debug\\res\\drawable\\leftbottom.xml"
+    },
+    {
         "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\btn_cancle.png",
         "source": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\bundles\\debug\\res\\drawable\\btn_cancle.png"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\rightbottom.xml",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\bundles\\debug\\res\\drawable\\rightbottom.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\topleftright.xml",
+        "source": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\bundles\\debug\\res\\drawable\\topleftright.xml"
     },
     {
         "merged": "D:\\AndroidStudioProjects\\SmartMeeting\\pickerview\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\selector_pickerview_btn.xml",

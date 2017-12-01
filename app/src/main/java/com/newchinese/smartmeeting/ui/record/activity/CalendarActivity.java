@@ -112,7 +112,7 @@ public class CalendarActivity extends BaseSimpleActivity implements OnDateSelect
         widget.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);//选择一天
         dateList1.clear();
         for (Long aLong : dateList) {
-            if (DateUtils.formatLongDate7(aLong).equals(date.getYear() + "-" + (date.getMonth()+1) + "-" + date.getDay())) {
+            if (DateUtils.formatLongDate7(aLong).equals(date.getYear() + "-" + (date.getMonth()+1) + "-" + transfer(date.getDay()))) {
                 dateList1.add(aLong);
             }
         }
@@ -121,6 +121,13 @@ public class CalendarActivity extends BaseSimpleActivity implements OnDateSelect
         intent.putExtra(BluCommonUtils.DATA, date.getCalendar().getTimeInMillis());
         intent.putExtra("alllist", (Serializable) dateList1);
         startActivity(intent);
+    }
+
+    private String transfer(int i){
+        if (i<10 && i>0){
+            return "0"+i;
+        }
+        return String.valueOf(i);
     }
 
     @Override
